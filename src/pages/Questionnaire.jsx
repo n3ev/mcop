@@ -22,6 +22,7 @@ export default function Questionnaire() {
 
   const submitAndNavigate = async (currentAnswers) => {
     const displayName = name.trim()
+    const patience = currentAnswers.patience ?? 'Right now'
     saveSession({
       user: { displayName },
       answers: currentAnswers,
@@ -33,9 +34,9 @@ export default function Questionnaire() {
       const { queueId } = await joinQueue({ displayName, answers: currentAnswers, email: email || null })
       saveSession({ queueId })
     } catch {
-      // backend unavailable — Matching will fall back to demo mode
+      // backend unavailable — destination page handles demo fallback
     }
-    nav('/matching')
+    nav(patience === 'Right now' ? '/matching' : '/waiting')
   }
 
   const advance = (currentAnswers) => {

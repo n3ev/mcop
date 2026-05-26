@@ -2,6 +2,7 @@ import { Routes, Route, Link } from 'react-router-dom'
 import Landing from './pages/Landing.jsx'
 import Questionnaire from './pages/Questionnaire.jsx'
 import Matching from './pages/Matching.jsx'
+import Waiting from './pages/Waiting.jsx'
 import Session from './pages/Session.jsx'
 import PostSession from './pages/PostSession.jsx'
 
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/questionnaire" element={<Questionnaire />} />
           <Route path="/matching" element={<Matching />} />
+          <Route path="/waiting" element={<Waiting />} />
           <Route path="/session" element={<Session />} />
           <Route path="/post-session" element={<PostSession />} />
         </Routes>

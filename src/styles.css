@@ -313,3 +313,16 @@ body {
 .success { color: var(--accent); margin-top: 8px; }
 .soon { margin-top: 12px; opacity: 0.8; }
 .cta-row { margin-top: 8px; text-align: center; }
+
+/* Waiting page */
+.waiting-pun { font-size: 1.4rem; margin: 16px 0 12px; }
+.waiting-tier {
+  display: inline-block;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 16px;
+  margin: 16px 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
