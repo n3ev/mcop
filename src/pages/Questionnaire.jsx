@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { fixedQuestions } from '../data/fixedQuestions.js'
 import { variableQuestions, pickVariableQuestions } from '../data/variableQuestions.js'
 import { saveSession } from '../lib/storage.js'
+import { joinQueue } from '../lib/api.js'
 
 export default function Questionnaire() {
   const nav = useNavigate()
@@ -19,17 +20,27 @@ export default function Questionnaire() {
   const total = allQuestions.length + 1 // +1 for the name step
   const progress = Math.round((step / (total - 1)) * 100)
 
+  const submitAndNavigate = async (currentAnswers) => {
+    const displayName = name.trim()
+    saveSession({
+      user: { displayName },
+      answers: currentAnswers,
+      email: email || null,
+      questionIds: allQuestions.map(q => q.id),
+      startedAt: Date.now(),
+    })
+    try {
+      const { queueId } = await joinQueue({ displayName, answers: currentAnswers, email: email || null })
+      saveSession({ queueId })
+    } catch {
+      // backend unavailable — Matching will fall back to demo mode
+    }
+    nav('/matching')
+  }
+
   const advance = (currentAnswers) => {
-    const isLast = step === allQuestions.length
-    if (isLast) {
-      saveSession({
-        user: { displayName: name.trim() },
-        answers: currentAnswers,
-        email: email || null,
-        questionIds: allQuestions.map(q => q.id),
-        startedAt: Date.now(),
-      })
-      nav('/matching')
+    if (step === allQuestions.length) {
+      submitAndNavigate(currentAnswers)
     } else {
       setStep(step + 1)
     }
