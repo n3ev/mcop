@@ -74,7 +74,7 @@ export default function Questionnaire() {
       {step === 0 && (
         <div className="step">
           <h2>What should we call you?</h2>
-          <p className="muted">This is just for the session. No account needed.</p>
+          <p className="muted">Just for this session. Accounts coming soon — track stats, add friends.</p>
           <input
             className="text-input"
             placeholder="Steve, AlexCrafter, etc."
