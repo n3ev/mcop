@@ -13,9 +13,27 @@ export default function Questionnaire() {
   const [name, setName] = useState('')
   const [step, setStep] = useState(0) // 0 = name, 1..N = questions
   const [answers, setAnswers] = useState({})
+  const [email, setEmail] = useState('')
+  const [awaitingEmail, setAwaitingEmail] = useState(false)
 
   const total = allQuestions.length + 1 // +1 for the name step
   const progress = Math.round((step / (total - 1)) * 100)
+
+  const advance = (currentAnswers) => {
+    const isLast = step === allQuestions.length
+    if (isLast) {
+      saveSession({
+        user: { displayName: name.trim() },
+        answers: currentAnswers,
+        email: email || null,
+        questionIds: allQuestions.map(q => q.id),
+        startedAt: Date.now(),
+      })
+      nav('/matching')
+    } else {
+      setStep(step + 1)
+    }
+  }
 
   const onPickName = () => {
     if (!name.trim()) return
@@ -25,18 +43,16 @@ export default function Questionnaire() {
   const onAnswer = (qid, value) => {
     const next = { ...answers, [qid]: value }
     setAnswers(next)
-    const isLast = step === allQuestions.length
-    if (isLast) {
-      saveSession({
-        user: { displayName: name.trim() },
-        answers: next,
-        questionIds: allQuestions.map(q => q.id),
-        startedAt: Date.now(),
-      })
-      nav('/matching')
-    } else {
-      setStep(step + 1)
+    if (qid === 'patience' && value !== 'Right now') {
+      setAwaitingEmail(true)
+      return
     }
+    advance(next)
+  }
+
+  const onEmailSubmit = () => {
+    setAwaitingEmail(false)
+    advance(answers)
   }
 
   return (
@@ -59,7 +75,27 @@ export default function Questionnaire() {
         </div>
       )}
 
-      {step >= 1 && (() => {
+      {awaitingEmail && (
+        <div className="step">
+          <span className="tag">One more thing</span>
+          <h2>What's your email?</h2>
+          <p className="muted">We'll ping you the moment your match is ready.</p>
+          <input
+            className="text-input"
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && email.trim() && onEmailSubmit()}
+            autoFocus
+          />
+          <button className="btn primary" disabled={!email.trim()} onClick={onEmailSubmit}>
+            Lock in my spot →
+          </button>
+        </div>
+      )}
+
+      {step >= 1 && !awaitingEmail && (() => {
         const q = allQuestions[step - 1]
         const isVariable = q.id.startsWith('v_')
         return (
