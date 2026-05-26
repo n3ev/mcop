@@ -1,4 +1,5 @@
-// Every player answers these 5. Heavily weighted in matching.
+// Every player answers these. Heavily weighted in matching.
+// NOTE: 'patience' is queue-routing data — exclude from compatibility scoring when backend is real.
 export const fixedQuestions = [
   {
     id: 'gamemode',
@@ -24,5 +25,10 @@ export const fixedQuestions = [
     id: 'voice',
     text: 'Comfortable on voice chat?',
     options: ['Yes — Discord ready', 'Text only', 'Maybe, depends on the vibe'],
+  },
+  {
+    id: 'patience',
+    text: 'When do you want to play?',
+    options: ['Right now', 'Within 1 hour', 'Within 2 hours', 'Willing to wait — email me'],
   },
 ]

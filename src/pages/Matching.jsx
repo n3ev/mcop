@@ -5,11 +5,20 @@ import { compatibilityScore, generateFakePartner } from '../lib/matching.js'
 import { fixedQuestions } from '../data/fixedQuestions.js'
 import { variableQuestions } from '../data/variableQuestions.js'
 
+const MATCH_DELAY_MS = 9000
+const PHASE_INTERVAL_MS = 3500
+
 const PHASES = [
-  'Looking for nearby players…',
-  'Reading the End portal…',
-  'Comparing interest signals…',
-  'Confirming a match…',
+  'Scouting the End cities…',
+  'Brewing potion of compatibility…',
+  'Sorting through 1,247 candidates…',
+  'Consulting the village librarian…',
+  'Checking diamond vein coordinates…',
+  'Rolling for loot table compatibility…',
+  'Negotiating with the piglin brutes…',
+  'Triangulating spawn points…',
+  'Waiting for the stronghold to load…',
+  'Scanning active server logs…',
 ]
 
 export default function Matching() {
@@ -33,21 +42,22 @@ export default function Matching() {
       nav('/')
       return
     }
-    const t = setInterval(() => {
-      setPhase(p => {
-        if (p >= PHASES.length - 1) {
-          clearInterval(t)
-          // Generate the fake partner once, reveal
-          const p2 = generateFakePartner(session.answers, questionsById)
-          const s = compatibilityScore(session.answers, p2.answers)
-          setPartner(p2)
-          setScore(s)
-          return p
-        }
-        return p + 1
-      })
-    }, 900)
-    return () => clearInterval(t)
+    const rotateT = setInterval(() => {
+      setPhase(p => (p + 1) % PHASES.length)
+    }, PHASE_INTERVAL_MS)
+
+    const matchT = setTimeout(() => {
+      clearInterval(rotateT)
+      const p2 = generateFakePartner(session.answers, questionsById)
+      const s = compatibilityScore(session.answers, p2.answers)
+      setPartner(p2)
+      setScore(s)
+    }, MATCH_DELAY_MS)
+
+    return () => {
+      clearInterval(rotateT)
+      clearTimeout(matchT)
+    }
   }, [])
 
   const goPlay = () => {
