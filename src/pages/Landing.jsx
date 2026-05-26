@@ -12,7 +12,7 @@ export default function Landing() {
     <section className="hero">
       <div className="hero-eyebrow">
         <span className="hero-eyebrow-dot" />
-        Free · No account needed
+        Now in Beta · Free to play
       </div>
 
       <h1 className="hero-title">Find a Minecraft buddy<br/>in 60 seconds.</h1>
@@ -30,6 +30,18 @@ export default function Landing() {
         <li>💬 Optional Discord swap after</li>
         <li>💾 Save your world for 30 days, free</li>
       </ul>
+
+      <div className="hero-image-wrap">
+        <img
+          src="https://minecraft.wiki/images/Adventure_Wallpaper.png"
+          alt="Two players exploring a Minecraft world"
+          className="hero-image"
+        />
+        <div className="hero-image-caption">
+          <span className="hero-image-caption-text">One world. One hour. Zero awkward silences.</span>
+          <span className="hero-image-caption-tag">Your next session →</span>
+        </div>
+      </div>
     </section>
   )
 }
