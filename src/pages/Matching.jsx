@@ -1,12 +1,14 @@
 import { useEffect, useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { io } from 'socket.io-client'
 import { loadSession, saveSession } from '../lib/storage.js'
 import { compatibilityScore, generateFakePartner } from '../lib/matching.js'
 import { fixedQuestions } from '../data/fixedQuestions.js'
 import { variableQuestions } from '../data/variableQuestions.js'
+import { API_URL } from '../lib/api.js'
 
-const MATCH_DELAY_MS = 9000
 const PHASE_INTERVAL_MS = 3500
+const DEMO_FALLBACK_MS = 15000
 
 const PHASES = [
   'Scouting the End cities…',
@@ -28,7 +30,6 @@ export default function Matching() {
   const [partner, setPartner] = useState(null)
   const [score, setScore] = useState(0)
 
-  // Build a question lookup so the fake partner picks valid options.
   const questionsById = useMemo(() => {
     const all = [
       ...fixedQuestions,
@@ -38,25 +39,42 @@ export default function Matching() {
   }, [])
 
   useEffect(() => {
-    if (!session.answers) {
-      nav('/')
-      return
-    }
+    if (!session.answers) { nav('/'); return }
+
+    let socket = null
+
     const rotateT = setInterval(() => {
       setPhase(p => (p + 1) % PHASES.length)
     }, PHASE_INTERVAL_MS)
 
-    const matchT = setTimeout(() => {
+    const showMatch = (p2, s) => {
       clearInterval(rotateT)
-      const p2 = generateFakePartner(session.answers, questionsById)
-      const s = compatibilityScore(session.answers, p2.answers)
       setPartner(p2)
       setScore(s)
-    }, MATCH_DELAY_MS)
+    }
+
+    // Demo fallback — triggers if no real match arrives in time
+    const demoT = setTimeout(() => {
+      socket?.disconnect()
+      const p2 = generateFakePartner(session.answers, questionsById)
+      const s = compatibilityScore(session.answers, p2.answers)
+      showMatch(p2, s)
+    }, DEMO_FALLBACK_MS)
+
+    // Real socket match
+    if (session.queueId) {
+      socket = io(API_URL, { transports: ['websocket'] })
+      socket.emit('queue_identify', session.queueId)
+      socket.on('match_found', ({ partner: p2, score: s }) => {
+        clearTimeout(demoT)
+        showMatch(p2, s)
+      })
+    }
 
     return () => {
       clearInterval(rotateT)
-      clearTimeout(matchT)
+      clearTimeout(demoT)
+      socket?.disconnect()
     }
   }, [])
 
