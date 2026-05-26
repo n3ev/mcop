@@ -10,7 +10,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="topbar">
-        <Link to="/" className="brand">⛏ MCOP</Link>
+        <Link to="/" className="brand">⛏ MC<span className="brand-accent">OP</span></Link>
         <span className="tagline">Random buddy. One hour. One world.</span>
       </header>
 
