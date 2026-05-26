@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loadSession, clearSession } from '../lib/storage.js'
 import { releaseServer } from '../lib/serverPool.js'
@@ -19,8 +19,7 @@ export default function PostSession() {
   const [shared, setShared] = useState(false)
   const [saveRequested, setSaveRequested] = useState(false)
 
-  // Free up the server slot once they reach this page
-  useMemo(() => {
+  useEffect(() => {
     if (session.server?.id) releaseServer(session.server.id)
   }, [])
 

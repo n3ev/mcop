@@ -11,7 +11,7 @@ export default function Landing() {
     <section className="hero">
       <h1 className="hero-title">Find a Minecraft buddy<br/>in 60 seconds.</h1>
       <p className="hero-sub">
-        Answer 8 quick questions. We pair you with someone whose vibe matches yours.
+        Answer 9 quick questions. We pair you with someone whose vibe matches yours.
         You get a private server and one hour to play together.
       </p>
       <button className="btn primary big" onClick={start}>Find my buddy ⛏</button>
