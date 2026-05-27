@@ -1,5 +1,6 @@
 // Every player answers these. Heavily weighted in matching.
 // NOTE: 'patience' is queue-routing data — exclude from compatibility scoring when backend is real.
+// NOTE: 'edition' is hidden until Bedrock server hosting is supported. When re-enabled, never match Java with Bedrock.
 export const fixedQuestions = [
   {
     id: 'gamemode',
@@ -10,11 +11,6 @@ export const fixedQuestions = [
     id: 'playstyle',
     text: 'Which play style fits you best?',
     options: ['Builder', 'Explorer', 'Redstone engineer', 'PvPer', 'Farmer / villager trader'],
-  },
-  {
-    id: 'edition',
-    text: 'Java or Bedrock?',
-    options: ['Java', 'Bedrock', 'Both'],
   },
   {
     id: 'experience',
