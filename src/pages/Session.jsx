@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loadSession, saveSession } from '../lib/storage.js'
-import { checkoutServer } from '../lib/serverPool.js'
 
 const SESSION_MS = 60 * 60 * 1000 // 1 hour
 
@@ -13,20 +12,17 @@ export default function Session() {
   const [remaining, setRemaining] = useState(SESSION_MS)
   const [copied, setCopied] = useState('')
 
-  // Assign server on first visit
   useEffect(() => {
     if (!session.partner) { nav('/'); return }
-    if (!server) {
-      const s = checkoutServer()
-      if (!s) {
-        // pool empty — show a friendly message
-        setServer({ unavailable: true })
-        return
-      }
+    if (!session.server) {
+      setServer({ unavailable: true })
+      return
+    }
+    // Start the session timer on first visit; preserve it across refreshes
+    if (!session.endsAt) {
       const ends = Date.now() + SESSION_MS
-      setServer(s)
       setEndsAt(ends)
-      saveSession({ server: s, endsAt: ends })
+      saveSession({ endsAt: ends })
     }
   }, [])
 
