@@ -55,20 +55,21 @@ body {
 .topbar {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding-bottom: 32px;
+  gap: 20px;
+  padding-bottom: 40px;
+  padding-top: 12px;
 }
 
 .brand {
-  font-size: 1.1rem;
+  font-size: 1.9rem;
   font-weight: 800;
   color: var(--text);
   text-decoration: none;
-  letter-spacing: -0.3px;
+  letter-spacing: -1px;
 }
 
 .brand-accent { color: var(--green); }
-.tagline { color: var(--muted-dim); font-size: 0.875rem; font-weight: 500; }
+.tagline { color: var(--muted-dim); font-size: 0.95rem; font-weight: 500; }
 .content { flex: 1; display: flex; flex-direction: column; gap: 24px; }
 
 .footer {
@@ -100,6 +101,18 @@ body {
   background: radial-gradient(ellipse, rgba(34,197,94,0.08) 0%, transparent 68%);
   pointer-events: none;
   z-index: 0;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('https://minecraft.wiki/images/Adventure_Wallpaper.png') center center / cover no-repeat;
+  opacity: 0.18;
+  mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 .hero > * { position: relative; z-index: 1; }
@@ -157,20 +170,21 @@ body {
   list-style: none;
   margin: 48px auto 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
-  gap: 12px;
-  max-width: 740px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  max-width: 900px;
   text-align: left;
 }
 
 .hero-bullets li {
   background: var(--bg-1);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 14px 18px;
+  border-radius: 16px;
+  padding: 20px 22px;
   color: var(--text);
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 500;
+  line-height: 1.45;
   transition: border-color 0.2s, background 0.2s;
 }
 
@@ -267,8 +281,7 @@ body {
   cursor: pointer;
   font-size: 0.85rem;
   font-weight: 600;
-  font-family: 'MinecraftTen', inherit;
-  letter-spacing: 0;
+  font-family: 'MinecraftTen', 'Space Grotesk', sans-serif;
   transition: all 0.15s ease;
 }
 
@@ -290,6 +303,7 @@ body {
 }
 
 .btn.primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2dd966 0%, #1da84e 100%);
   box-shadow: 0 0 0 1px rgba(34,197,94,0.5), 0 8px 28px rgba(34,197,94,0.35);
   transform: translateY(-2px);
 }
@@ -614,6 +628,201 @@ body {
   font-size: 0.875rem;
   color: var(--green);
   font-weight: 500;
+}
+
+/* ── How it works ────────────────────────────────────────────────── */
+.how-section {
+  margin: 72px 0 0;
+  text-align: center;
+}
+
+.section-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--green);
+  margin-bottom: 32px;
+}
+
+.how-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 720px) { .how-grid { grid-template-columns: 1fr; } }
+
+.how-card {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 28px 24px;
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.how-card:hover {
+  border-color: rgba(34,197,94,0.22);
+  background: var(--bg-2);
+}
+
+.how-num {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--green);
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 14px;
+  font-family: ui-monospace, monospace;
+}
+
+.how-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: -0.3px;
+}
+
+.how-desc {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+/* ── Stats bar ───────────────────────────────────────────────────── */
+.stats-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 48px auto 0;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 22px 32px;
+  max-width: 640px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.stat-num {
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--green) 0%, var(--green-2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--muted-dim);
+}
+
+.stat-divider {
+  width: 1px;
+  height: 36px;
+  background: var(--border);
+  margin: 0 8px;
+  flex-shrink: 0;
+}
+
+/* ── Reviews ─────────────────────────────────────────────────────── */
+.reviews-section {
+  margin: 72px 0 0;
+  text-align: center;
+}
+
+.review-card {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px 36px;
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: left;
+  transition: opacity 0.5s ease;
+}
+
+.review-stars {
+  color: var(--gold);
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+
+.review-text {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--text);
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+.review-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.review-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--green) 0%, var(--green-dim) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #031a08;
+  flex-shrink: 0;
+}
+
+.review-handle {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--green);
+}
+
+.review-source {
+  font-size: 0.78rem;
+  color: var(--muted-dim);
+  margin-top: 1px;
+}
+
+.review-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.review-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.review-dot.active {
+  background: var(--green);
+  transform: scale(1.3);
 }
 
 /* ── Hero image ──────────────────────────────────────────────────── */
