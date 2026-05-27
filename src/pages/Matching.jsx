@@ -93,6 +93,16 @@ export default function Matching() {
     )
   }
 
+  const breakdown = Object.keys(partner.answers)
+    .filter(qid => qid !== 'patience')
+    .map(qid => ({
+      qid,
+      q: questionsById[qid],
+      theirAnswer: partner.answers[qid],
+      myAnswer: session.answers?.[qid],
+    }))
+    .filter(({ q }) => q)
+
   return (
     <section className="card center">
       <span className="tag good">Match found</span>
@@ -101,7 +111,26 @@ export default function Matching() {
         <span className="score-num">{score}%</span>
         <span className="score-label">compatibility</span>
       </div>
-      <p className="muted">Both of you are about to share a private Minecraft world for one hour.</p>
+
+      {breakdown.length > 0 && (
+        <div className="answer-breakdown">
+          <p className="breakdown-label">How they play</p>
+          {breakdown.map(({ qid, q, theirAnswer, myAnswer }) => (
+            <div key={qid} className="answer-row">
+              <span className="answer-q">{q.text}</span>
+              <div className="answer-vals">
+                <span className="answer-them">{theirAnswer}</span>
+                {myAnswer === theirAnswer
+                  ? <span className="answer-badge match">✓ same as you</span>
+                  : myAnswer && <span className="answer-badge diff">You: {myAnswer}</span>
+                }
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <p className="muted" style={{ marginTop: 24 }}>Both of you are about to share a private Minecraft world for one hour.</p>
       <button className="btn primary big" onClick={goPlay}>Open the server →</button>
     </section>
   )
