@@ -40,7 +40,7 @@ const ALL_PHASES = [
   'Waiting for the chunks to load…',
   'Polling the ender dragon for suggestions…',
   'Cross-referencing seed values…',
-  'Making sure your match isn't a griefer…',
+  "Making sure your match isn't a griefer…",
   'Checking biome preferences…',
   'Consulting the ancient debris…',
   'Someone in the queue keeps dying to fall damage…',
