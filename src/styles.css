@@ -412,6 +412,79 @@ body {
   letter-spacing: 1.2px;
 }
 
+/* ── Answer breakdown ────────────────────────────────────────────── */
+.answer-breakdown {
+  width: 100%;
+  max-width: 480px;
+  margin: 8px 0 0;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.breakdown-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--muted-dim);
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.answer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.answer-row:last-child { border-bottom: none; }
+
+.answer-q {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+  flex: 1;
+  min-width: 0;
+}
+
+.answer-vals {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.answer-them {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.answer-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.answer-badge.match {
+  background: rgba(34,197,94,0.12);
+  border: 1px solid rgba(34,197,94,0.25);
+  color: var(--green);
+}
+
+.answer-badge.diff {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
 /* ── Session ─────────────────────────────────────────────────────── */
 .session-grid {
   display: grid;
