@@ -63,6 +63,7 @@ export default function Matching() {
   const [phase, setPhase] = useState(0)
   const [partner, setPartner] = useState(null)
   const [score, setScore] = useState(0)
+  const [server, setServer] = useState(null)
 
   const questionsById = useMemo(() => {
     const all = [
@@ -81,10 +82,11 @@ export default function Matching() {
       setPhase(p => (p + 1) % phases.length)
     }, PHASE_INTERVAL_MS)
 
-    const showMatch = (p2, s) => {
+    const showMatch = (p2, s, srv) => {
       clearInterval(rotateT)
       setPartner(p2)
       setScore(s)
+      setServer(srv)
     }
 
     // Demo fallback — triggers if no real match arrives in time
@@ -92,16 +94,16 @@ export default function Matching() {
       socket?.disconnect()
       const p2 = generateFakePartner(session.answers, questionsById)
       const s = compatibilityScore(session.answers, p2.answers)
-      showMatch(p2, s)
+      showMatch(p2, s, { host: 'videos-treating.gl.joinmc.link', port: 25565, world: 'mcop-world', note: 'Your private MCOP session' })
     }, DEMO_FALLBACK_MS)
 
     // Real socket match
     if (session.queueId) {
       socket = io(API_URL, { transports: ['websocket'] })
       socket.emit('queue_identify', session.queueId)
-      socket.on('match_found', ({ partner: p2, score: s }) => {
+      socket.on('match_found', ({ partner: p2, score: s, server: srv }) => {
         clearTimeout(demoT)
-        showMatch(p2, s)
+        showMatch(p2, s, srv)
       })
     }
 
@@ -113,7 +115,7 @@ export default function Matching() {
   }, [])
 
   const goPlay = () => {
-    saveSession({ partner, score })
+    saveSession({ partner, score, server })
     nav('/session')
   }
 
