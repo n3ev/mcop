@@ -21,17 +21,17 @@ export default function Questionnaire() {
   const progress = Math.round((step / (total - 1)) * 100)
 
   const submitAndNavigate = async (currentAnswers) => {
-    const displayName = name.trim()
+    const mcUsername = name.trim()
     const patience = currentAnswers.patience ?? 'Right now'
     saveSession({
-      user: { displayName },
+      user: { displayName: mcUsername },
       answers: currentAnswers,
       email: email || null,
       questionIds: allQuestions.map(q => q.id),
       startedAt: Date.now(),
     })
     try {
-      const { queueId } = await joinQueue({ displayName, answers: currentAnswers, email: email || null })
+      const { queueId } = await joinQueue({ displayName: mcUsername, mcUsername, answers: currentAnswers, email: email || null })
       saveSession({ queueId })
     } catch {
       // backend unavailable — destination page handles demo fallback
@@ -73,11 +73,11 @@ export default function Questionnaire() {
 
       {step === 0 && (
         <div className="step">
-          <h2>What should we call you?</h2>
-          <p className="muted">Just for this session. Accounts coming soon — track stats, add friends.</p>
+          <h2>What's your Minecraft username?</h2>
+          <p className="muted">Must match your in-game name exactly — we use it to whitelist you on the server.</p>
           <input
             className="text-input"
-            placeholder="Steve, AlexCrafter, etc."
+            placeholder="e.g. Steve, xX_Notch_Xx"
             value={name}
             onChange={e => setName(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && onPickName()}
