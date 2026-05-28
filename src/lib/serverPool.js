@@ -1,8 +1,5 @@
-// Manual Aternos workflow: you (the admin) pre-create a pool of Aternos servers
-// and add them here. The site assigns the next available one.
-//
-// LATER: move this to a backend DB so "available" is tracked across users,
-// and add an admin route to add/retire servers.
+// old aternos placeholder - server pool is managed by the backend now
+// keeping this around because postsession still references it but it doesn't really do anything useful anymore
 
 const SEED_POOL = [
   { id: 'srv-1', host: 'mcmatch-alpha.aternos.me',   port: 25565, world: 'Alpha',   note: 'Vanilla 1.20' },
@@ -38,7 +35,7 @@ function ensureSeeded() {
 export function checkoutServer() {
   const state = ensureSeeded()
   const idx = state.servers.findIndex(s => !s.inUse)
-  if (idx === -1) return null // pool exhausted
+  if (idx === -1) return null
   state.servers[idx].inUse = true
   save(state)
   return state.servers[idx]
@@ -53,7 +50,6 @@ export function releaseServer(serverId) {
   }
 }
 
-// admin helper if you want to reset during testing
 export function resetPool() {
   localStorage.removeItem(LS_KEY)
 }

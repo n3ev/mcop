@@ -18,7 +18,7 @@ export default function Session() {
       setServer({ unavailable: true })
       return
     }
-    // Start the session timer on first visit; preserve it across refreshes
+    // start the timer on first visit, survives refreshes via localstorage
     if (!session.endsAt) {
       const ends = Date.now() + SESSION_MS
       setEndsAt(ends)

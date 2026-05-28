@@ -89,7 +89,7 @@ export default function Matching() {
       setServer(srv)
     }
 
-    // Demo fallback — triggers if no real match arrives in time
+    // demo fallback if no real match shows up in time
     const demoT = setTimeout(() => {
       socket?.disconnect()
       const p2 = generateFakePartner(session.answers, questionsById)
@@ -97,7 +97,7 @@ export default function Matching() {
       showMatch(p2, s, { host: 'videos-treating.gl.joinmc.link', port: 25565, world: 'mcop-world', note: 'Your private MCOP session' })
     }, DEMO_FALLBACK_MS)
 
-    // Real socket match
+    // real socket match
     if (session.queueId) {
       socket = io(API_URL, { transports: ['websocket'] })
       socket.emit('queue_identify', session.queueId)

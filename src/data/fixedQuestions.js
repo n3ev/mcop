@@ -1,6 +1,6 @@
-// Every player answers these. Heavily weighted in matching.
-// NOTE: 'patience' is queue-routing data — exclude from compatibility scoring when backend is real.
-// NOTE: 'edition' is hidden until Bedrock server hosting is supported. When re-enabled, never match Java with Bedrock.
+// everyone answers these, weighted heavily in matching
+// patience is just for queue routing, not compatibility
+// edition question is disabled until bedrock server hosting is sorted - when it comes back, don't match java with bedrock
 export const fixedQuestions = [
   {
     id: 'gamemode',

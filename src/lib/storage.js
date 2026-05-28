@@ -1,4 +1,4 @@
-// Tiny session-state helper. Replace with auth + backend later.
+// session state helper, will swap for real auth eventually
 const KEY = 'mcop_session_v1'
 
 export function saveSession(data) {

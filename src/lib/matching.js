@@ -1,5 +1,4 @@
-// Simple overlap scoring. Fixed questions count more than variables.
-// Replace this with a backend call when you go multi-user.
+// overlap scoring - fixed questions count double vs variable ones
 
 const FIXED_WEIGHT = 2
 const VARIABLE_WEIGHT = 1
@@ -18,12 +17,11 @@ export function compatibilityScore(answersA, answersB) {
   return Math.round((score / max) * 100)
 }
 
-// Generate a plausible "matched stranger" profile by lightly perturbing the user's answers.
-// Used only for the single-player demo. Real backend would pull a queued partner.
+// only used for the solo demo - real matches come from the backend
+// roughly 70% chance the fake partner shares an answer, otherwise picks something different
 export function generateFakePartner(userAnswers, allQuestionsById) {
   const partner = {}
   for (const [qid, val] of Object.entries(userAnswers)) {
-    // ~70% chance partner picked the same option, otherwise pick another
     if (Math.random() < 0.7) {
       partner[qid] = val
     } else {

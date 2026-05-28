@@ -1,4 +1,4 @@
-// Pool of 20. We pick 3 at random per session.
+// pool of 50, picks 3 at random each session
 export const variableQuestions = [
   { id: 'biome',      text: 'Favorite biome?',                   options: ['Forest', 'Desert', 'Mountains', 'Ocean', 'Nether wastes', 'Mushroom fields'] },
   { id: 'priority',   text: 'Mining or building?',               options: ['Mining', 'Building', 'About equal'] },

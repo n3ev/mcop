@@ -25,12 +25,12 @@ export default function PostSession() {
 
   const submitShare = (e) => {
     e.preventDefault()
-    // TODO: POST to backend so both players see each other's contact
+    // still need to wire this up to the backend so both players get each other's handle
     setShared(true)
   }
 
   const requestSave = () => {
-    // TODO: POST to backend → trigger world archive on your Aternos pool server
+    // world save not wired up yet, just shows the confirmation for now
     setSaveRequested(true)
   }
 
