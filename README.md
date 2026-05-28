@@ -17,22 +17,6 @@ built this because finding a minecraft buddy on reddit takes forever and most po
 - minecraft: paper 1.21.4, exposed via playit.gg
 - api tunnel: cloudflare tunnel (api.mcop.world)
 
-## running locally
-
-```bash
-# frontend
-npm install
-npm run dev
-```
-
-```bash
-# backend
-cd mcop-server
-npm install
-npm run dev
-```
-
-set `VITE_API_URL=http://localhost:3001` in a `.env` file in the root if you want to point at a local backend. defaults to localhost:3001 anyway.
 
 ## project layout
 
