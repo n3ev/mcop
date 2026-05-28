@@ -8,7 +8,7 @@ import { variableQuestions } from '../data/variableQuestions.js'
 import { API_URL } from '../lib/api.js'
 
 const PHASE_INTERVAL_MS = 3500
-const DEMO_FALLBACK_MS = 15000
+const DEMO_FALLBACK_MS = 90000
 
 const ALL_PHASES = [
   'Scouting the End cities…',
@@ -85,7 +85,7 @@ export default function Matching() {
     const showMatch = (p2, s, srv) => {
       clearInterval(rotateT)
       setPartner(p2)
-      setScore(s)
+      setScore(Math.max(s, 60))
       setServer(srv)
     }
 
