@@ -1,94 +1,89 @@
-# MCOP
+# mcop
 
-A React app that pairs two random Minecraft players via a short interest questionnaire, gives them a shared Aternos server for one hour, then offers to swap socials and save their world.
+minecraft matchmaking. answer 9 questions about how you play, get paired with someone compatible, jump into a private server together for an hour. free, no account needed.
 
-This is the **frontend skeleton** — every screen and flow is wired up. Backend integration points are marked with `// TODO:` comments.
+live at [mcop.world](https://mcop.world)
 
-## Run it locally
+## what it does
+
+you fill out a short questionnaire (playstyle, game mode, experience, voice chat etc), the backend queues you up and matches you with someone whose answers line up with yours. both players get the address for a private paper server and have an hour together. optionally swap discords at the end.
+
+built this because finding a minecraft buddy on reddit takes forever and most posts go unanswered.
+
+## stack
+
+- frontend: react + vite + plain css, deployed on vercel
+- backend: node + express + socket.io, self-hosted on my pc
+- minecraft: paper 1.21.4, exposed via playit.gg
+- api tunnel: cloudflare tunnel (api.mcop.world)
+
+## running locally
 
 ```bash
+# frontend
 npm install
 npm run dev
 ```
 
-Open http://localhost:5173
-
-## Build for production
-
 ```bash
-npm run build
-npm run preview   # to test the production build locally
+# backend
+cd mcop-server
+npm install
+npm run dev
 ```
 
-## Project layout
+set `VITE_API_URL=http://localhost:3001` in a `.env` file in the root if you want to point at a local backend. defaults to localhost:3001 anyway.
+
+## project layout
 
 ```
 src/
-├── main.jsx                 entry, sets up router
-├── App.jsx                  layout shell + routes
-├── styles.css               all styling (single file for now)
-├── data/
-│   ├── fixedQuestions.js    5 questions everyone answers (weight 2)
-│   └── variableQuestions.js pool of 20, picks 3 random (weight 1)
-├── lib/
-│   ├── matching.js          compatibilityScore() + fake partner generator
-│   ├── serverPool.js        manual Aternos pool, checkout/release
-│   └── storage.js           localStorage session helper
-└── pages/
-    ├── Landing.jsx
-    ├── Questionnaire.jsx    name → 5 fixed → 3 variable
-    ├── Matching.jsx         loading phases → reveal partner + score
-    ├── Session.jsx          server IP + 1-hour countdown
-    └── PostSession.jsx      share socials + save world CTA
+  data/
+    fixedQuestions.js     questions everyone answers
+    variableQuestions.js  pool of 50, picks 3 random bonus ones per session
+  lib/
+    matching.js           compatibility scoring + fake partner for solo demo
+    storage.js            localstorage session wrapper
+    api.js                api client
+    serverPool.js         old placeholder, not used anymore
+  pages/
+    Landing.jsx
+    Questionnaire.jsx
+    Matching.jsx
+    Waiting.jsx
+    Session.jsx
+    PostSession.jsx
+  components/
+    BugReport.jsx         bug report modal
+mcop-server/
+  index.js               express + socket.io backend
 ```
 
-## How the flow works today
+## what works
 
-1. **Landing** — single CTA, clears any prior session.
-2. **Questionnaire** — collects a display name, then 5 fixed questions, then 3 randomly picked from a pool of 20. Answers stored in `localStorage`.
-3. **Matching** — fakes the "finding partner" UX, then generates a synthetic partner whose answers are 70% aligned with yours and shows a compatibility %.
-4. **Session** — checks out the next available server from `serverPool.js`, displays IP/port with copy buttons, runs a live 1-hour countdown. At zero, routes to post-session.
-5. **PostSession** — releases the server slot back to the pool, offers social share (Discord / Insta / Snap / Steam), offers "save world free for 30 days", and shows the future $3.99/mo paywall placeholder.
+- questionnaire + compatibility algorithm
+- real-time matching via websockets
+- real paper server assigned on match
+- rcon whitelist so only matched players can join
+- 1 hour countdown timer
+- world resets automatically after each session
+- everything auto-starts on boot
 
-## Adding your real Aternos servers
+## still todo
 
-Edit `src/lib/serverPool.js` and replace `SEED_POOL` with your actual server hostnames:
+- email notifications (resend, not wired up yet)
+- social handle exchange is ui only right now
+- world save after session is ui only
+- bedrock not supported, java only for now
 
-```js
-const SEED_POOL = [
-  { id: 'srv-1', host: 'your-real-server.aternos.me', port: 25565, world: 'World A', note: 'Vanilla 1.21' },
-  // ...
-]
-```
+## adding more servers
 
-If you want to reset the local pool state during testing, open browser devtools and run `localStorage.removeItem('mc_match_server_pool_v1')`.
+1. copy the mcop-minecraft folder
+2. change the port in server.properties
+3. create a new playit.gg tunnel pointing at that port
+4. set up a new systemd service for it
+5. uncomment the second entry in SERVER_POOL in mcop-server/index.js and fill in the tunnel url
 
-## What's mocked vs real
+---
 
-| Piece | Status | Where to upgrade |
-|---|---|---|
-| Questionnaire | ✅ Real | — |
-| Matching score | ✅ Real algorithm | `src/lib/matching.js` |
-| Partner discovery | ⚠️ Faked (single-user) | Needs backend + WebSocket queue |
-| Server assignment | ⚠️ Local pool | Move pool to backend DB |
-| 1-hour timer | ✅ Real (uses real timestamps) | — |
-| Social handle exchange | ⚠️ UI only | Needs backend to store + email |
-| World save | ⚠️ UI only | Needs Aternos admin automation |
-| Paywall | 🔜 Placeholder text | Stripe + the save flow |
-
-## Next steps toward launch
-
-1. **Backend**: spin up a small Node/Express + Postgres (or Supabase) to handle the matchmaking queue, server pool, and saved socials.
-2. **Realtime matching**: add WebSockets (Socket.io is simplest) so two queued players actually find each other.
-3. **Email**: SendGrid or Resend to fire "you matched on socials" notifications.
-4. **Deploy**: drop this repo on Vercel or Netlify (zero config — both auto-detect Vite). Point your domain at it.
-5. **Stripe**: add a $3.99/mo plan and gate the "keep playing past 30 days" CTA on `PostSession.jsx`.
-
-## Deploying to Vercel (fastest path)
-
-```bash
-npm i -g vercel
-vercel
-```
-
-Accept the defaults — Vercel auto-detects Vite. You'll get a public URL in ~30 seconds.
+made by neev - discord: neev1198

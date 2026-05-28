@@ -7,7 +7,7 @@ import { joinQueue } from '../lib/api.js'
 
 export default function Questionnaire() {
   const nav = useNavigate()
-  // Pick 3 variable questions ONCE per mount. Prefix their IDs with v_ so matching weights them lower.
+  // pick 3 bonus questions once per mount, prefix with v_ so they count less in matching
   const variables = useMemo(() => pickVariableQuestions(3).map(q => ({ ...q, id: 'v_' + q.id })), [])
   const allQuestions = useMemo(() => [...fixedQuestions, ...variables], [variables])
 

@@ -5,6 +5,7 @@ import Matching from './pages/Matching.jsx'
 import Waiting from './pages/Waiting.jsx'
 import Session from './pages/Session.jsx'
 import PostSession from './pages/PostSession.jsx'
+import BugReport from './components/BugReport.jsx'
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
 
       <footer className="footer">
         <span>© {new Date().getFullYear()} MCOP · Not affiliated with Mojang or Aternos</span>
+        <BugReport />
       </footer>
     </div>
   )
