@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const WEB3FORMS_KEY = 'REPLACE_WITH_YOUR_KEY'
+const WEB3FORMS_KEY = '469775ad-d571-4c52-b507-891f1df4970a'
 
 export default function BugReport() {
   const [open, setOpen] = useState(false)
