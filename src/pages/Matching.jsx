@@ -7,6 +7,7 @@ import { fixedQuestions, patienceQuestion } from '../data/fixedQuestions.js'
 import { profileQuestions } from '../data/profileQuestions.js'
 import { variableQuestions } from '../data/variableQuestions.js'
 import { API_URL } from '../lib/api.js'
+import Avatar from '../components/Avatar.jsx'
 
 const PHASE_INTERVAL_MS = 3500
 const DEMO_FALLBACK_MS = 90000
@@ -147,6 +148,7 @@ export default function Matching() {
   return (
     <section className="card center">
       <span className="tag good">Match found</span>
+      <Avatar name={partner.mcUsername || partner.displayName} size={72} className="match-avatar" />
       <h2 className="match-name">You're paired with <span className="highlight">{partner.displayName}</span></h2>
       <div className="score">
         <span className="score-num">{score}%</span>

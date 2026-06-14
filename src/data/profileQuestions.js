@@ -33,6 +33,12 @@ const extraProfileQuestions = [
     text: 'Preferred difficulty?',
     options: ['Peaceful', 'Easy', 'Normal', 'Hard'],
   },
+  {
+    id: 'loadout',
+    text: 'Preferred start?',
+    // these labels must stay in sync with loadoutCommands() in the backend
+    options: ['Vanilla', 'Iron kit', 'Elytra + fireworks', 'Creative'],
+  },
 ]
 
 // permanent profile = the core questions plus the extras

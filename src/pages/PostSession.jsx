@@ -2,6 +2,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loadSession, clearSession } from '../lib/storage.js'
 import { shareContact, getPartnerContact } from '../lib/session.js'
+import { addFriend, blockBuddy } from '../lib/social.js'
+import { useAuth } from '../context/AuthContext.jsx'
+import Avatar from '../components/Avatar.jsx'
 
 const SOCIALS = [
   { id: 'discord',   label: 'Discord',   placeholder: 'username or @user' },
@@ -14,6 +17,9 @@ const SOCIALS = [
 export default function PostSession() {
   const nav = useNavigate()
   const session = useMemo(() => loadSession(), [])
+  const { user } = useAuth()
+  const [friendMsg, setFriendMsg] = useState('')
+  const [blocked, setBlocked] = useState(false)
   const [picked, setPicked] = useState('discord')
   const [handle, setHandle] = useState('')
   const [shared, setShared] = useState(false)
@@ -54,13 +60,41 @@ export default function PostSession() {
 
   const newSession = () => { clearSession(); nav('/') }
 
+  const onAddFriend = async () => {
+    try {
+      const { status } = await addFriend(session.matchId)
+      setFriendMsg(status === 'accepted' ? "You're now friends! 🎉" : 'Friend request sent ✓')
+    } catch (e) { setFriendMsg(e.message) }
+  }
+  const onBlock = async () => {
+    try { await blockBuddy(session.matchId); setBlocked(true) } catch { /* ignore */ }
+  }
+
   return (
     <section className="card">
       <h2>Hour's up — that was fun.</h2>
-      <p className="muted">
-        You played with <strong>{session.partner?.displayName}</strong> ({session.score}% match)
-        {session.server?.host && <> on <code>{session.server.host}</code></>}.
-      </p>
+      <div className="post-partner">
+        <Avatar name={session.partner?.mcUsername || session.partner?.displayName} size={44} />
+        <p className="muted">
+          You played with <strong>{session.partner?.displayName}</strong> ({session.score}% match)
+          {session.server?.host && <> on <code>{session.server.host}</code></>}.
+        </p>
+      </div>
+
+      {user && session.matchId && (
+        <div className="buddy-actions">
+          {blocked ? (
+            <span className="muted small">You won't be matched with them again.</span>
+          ) : friendMsg ? (
+            <span className="success small">{friendMsg}</span>
+          ) : (
+            <>
+              <button className="btn small primary" onClick={onAddFriend}>+ Add friend</button>
+              <button className="btn small ghost" onClick={onBlock}>Don't match again</button>
+            </>
+          )}
+        </div>
+      )}
 
       <div className="post-grid">
         <div className="post-card">

@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import { apiGetMatches } from '../lib/auth.js'
+import { getFriends, respondFriend } from '../lib/social.js'
 import { startMatch } from '../lib/play.js'
 import { profileQuestions } from '../data/profileQuestions.js'
+import Avatar from '../components/Avatar.jsx'
 
 function timeAgo(iso) {
   const d = (Date.now() - new Date(iso).getTime()) / 1000
@@ -17,12 +19,20 @@ function timeAgo(iso) {
 export default function Dashboard() {
   const nav = useNavigate()
   const { user } = useAuth()
-  const [history, setHistory] = useState({ matches: [], total: 0 })
+  const [history, setHistory] = useState({ matches: [], total: 0, stats: { total: 0, buddies: 0, hours: 0 } })
+  const [social, setSocial] = useState({ friends: [], pending: [] })
   const [busy, setBusy] = useState(false)
 
+  const loadSocial = () => getFriends().then(setSocial).catch(() => {})
   useEffect(() => {
     apiGetMatches().then(setHistory).catch(() => {})
+    loadSocial()
   }, [])
+
+  const respond = async (fromUserId, accept) => {
+    await respondFriend(fromUserId, accept).catch(() => {})
+    loadSocial()
+  }
 
   const prefs = user.preferences
   const hasPrefs = prefs && Object.keys(prefs).length > 0
@@ -76,15 +86,65 @@ export default function Dashboard() {
         )}
       </div>
 
+      {history.stats?.total > 0 && (
+        <div className="panel-stats">
+          <div className="stat"><span className="stat-num">{history.stats.total}</span><span className="stat-label">sessions</span></div>
+          <div className="stat-divider" />
+          <div className="stat"><span className="stat-num">{history.stats.buddies}</span><span className="stat-label">buddies</span></div>
+          <div className="stat-divider" />
+          <div className="stat"><span className="stat-num">{history.stats.hours}h</span><span className="stat-label">played</span></div>
+        </div>
+      )}
+
+      {social.pending.length > 0 && (
+        <div className="panel-history">
+          <span className="panel-history-label">Friend requests</span>
+          <ul className="match-list">
+            {social.pending.map(p => (
+              <li key={p.id} className="match-item">
+                <span className="friend-row">
+                  <Avatar name={p.mcUsername || p.displayName} size={28} />
+                  {p.displayName || p.mcUsername || 'Someone'}
+                </span>
+                <span className="friend-actions">
+                  <button className="btn small primary" onClick={() => respond(p.id, true)}>Accept</button>
+                  <button className="btn small ghost" onClick={() => respond(p.id, false)}>Decline</button>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {social.friends.length > 0 && (
+        <div className="panel-history">
+          <span className="panel-history-label">Friends</span>
+          <ul className="match-list">
+            {social.friends.map(f => (
+              <li key={f.id} className="match-item">
+                <span className="friend-row">
+                  <Avatar name={f.mcUsername || f.displayName} size={28} />
+                  {f.displayName || f.mcUsername || 'Friend'}
+                </span>
+                {f.mcUsername && <span className="match-meta">{f.mcUsername}</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {history.matches.length > 0 && (
         <div className="panel-history">
           <span className="panel-history-label">Recent buddies</span>
           <ul className="match-list">
             {history.matches.slice(0, 4).map((m, i) => (
               <li key={i} className="match-item">
-                <span className="match-partner">
-                  {m.partner_name || 'A buddy'}
-                  {m.partner_contact && <span className="match-contact">{m.partner_contact}</span>}
+                <span className="friend-row">
+                  <Avatar name={m.partner_name} size={28} />
+                  <span className="match-partner">
+                    {m.partner_name || 'A buddy'}
+                    {m.partner_contact && <span className="match-contact">{m.partner_contact}</span>}
+                  </span>
                 </span>
                 <span className="match-meta">{timeAgo(m.created_at)}</span>
               </li>
