@@ -82,6 +82,9 @@ export default function Auth({ mode }) {
           <>New here? <Link to="/signup">Create an account</Link></>
         )}
       </p>
+      {!isSignup && (
+        <p className="auth-switch muted"><Link to="/forgot">Forgot password?</Link></p>
+      )}
     </section>
   )
 }

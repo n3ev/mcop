@@ -8,6 +8,9 @@ import PostSession from './pages/PostSession.jsx'
 import Auth from './pages/Auth.jsx'
 import Account from './pages/Account.jsx'
 import Preferences from './pages/Preferences.jsx'
+import Settings from './pages/Settings.jsx'
+import ForgotPassword from './pages/ForgotPassword.jsx'
+import ResetPassword from './pages/ResetPassword.jsx'
 import BugReport from './components/BugReport.jsx'
 import { useAuth } from './context/AuthContext.jsx'
 
@@ -21,6 +24,7 @@ function HeaderAuth() {
           {user.displayName || user.email}
           {user.mcVerified && <span className="mc-dot" title="Minecraft linked" />}
         </Link>
+        <Link to="/settings" className="header-link">Settings</Link>
         <button className="btn small ghost" onClick={logout}>Log out</button>
       </div>
     )
@@ -54,6 +58,9 @@ export default function App() {
           <Route path="/signup" element={<Auth mode="signup" />} />
           <Route path="/account" element={<Account />} />
           <Route path="/preferences" element={<Preferences />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/forgot" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       </main>
 
