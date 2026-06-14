@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loadSession, saveSession } from '../lib/storage.js'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const SESSION_MS = 60 * 60 * 1000 // 1 hour
 
 export default function Session() {
   const nav = useNavigate()
+  const { user } = useAuth()
+  const loadout = user?.preferences?.loadout
   const session = useMemo(() => loadSession(), [])
   const [server, setServer] = useState(session.server || null)
   const [endsAt, setEndsAt] = useState(session.endsAt || null)
@@ -88,6 +91,10 @@ export default function Session() {
             <li>Paste <code>{server.host}</code> into Server Address</li>
             <li>Hit Done, then Join</li>
           </ol>
+
+          {loadout && loadout !== 'Vanilla' && (
+            <p className="muted small">Your start: <strong>{loadout}</strong> — applied automatically when you join.</p>
+          )}
         </div>
 
         <aside className="timer">

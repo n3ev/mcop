@@ -254,6 +254,33 @@ body {
   word-break: break-word;
 }
 
+/* avatars */
+.mc-avatar {
+  border-radius: 8px;
+  image-rendering: pixelated;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.match-avatar { margin: 4px auto 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+
+/* post-session partner + buddy actions */
+.post-partner { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.post-partner p { margin: 0; }
+.buddy-actions { display: flex; gap: 10px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
+
+/* dashboard stats + friends */
+.panel-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+.friend-row { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; }
+.friend-actions { display: flex; gap: 6px; }
+
 .footer {
   margin-top: 48px;
   padding-top: 20px;
