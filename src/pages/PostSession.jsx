@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loadSession, clearSession } from '../lib/storage.js'
-import { releaseServer } from '../lib/serverPool.js'
+import { shareContact, getPartnerContact } from '../lib/session.js'
 
 const SOCIALS = [
-  { id: 'discord',   label: 'Discord',   placeholder: 'username#0000 or @user' },
+  { id: 'discord',   label: 'Discord',   placeholder: 'username or @user' },
   { id: 'instagram', label: 'Instagram', placeholder: '@handle' },
   { id: 'snapchat',  label: 'Snapchat',  placeholder: '@handle' },
   { id: 'steam',     label: 'Steam',     placeholder: 'profile URL or ID' },
@@ -17,40 +17,55 @@ export default function PostSession() {
   const [picked, setPicked] = useState('discord')
   const [handle, setHandle] = useState('')
   const [shared, setShared] = useState(false)
+  const [partnerContact, setPartnerContact] = useState(null)
+  const [error, setError] = useState('')
+  const [busy, setBusy] = useState(false)
   const [saveRequested, setSaveRequested] = useState(false)
 
+  const canExchange = !!session.matchId && !!session.role
+
+  // once we've shared, poll for the partner's handle until it arrives
   useEffect(() => {
-    if (session.server?.id) releaseServer(session.server.id)
-  }, [])
+    if (!shared || !canExchange || partnerContact || picked === 'none') return
+    const t = setInterval(async () => {
+      const { partner } = await getPartnerContact(session.matchId, session.role)
+      if (partner) setPartnerContact(partner)
+    }, 4000)
+    return () => clearInterval(t)
+  }, [shared, partnerContact, picked])
 
-  const submitShare = (e) => {
+  const submitShare = async (e) => {
     e.preventDefault()
-    // still need to wire this up to the backend so both players get each other's handle
-    setShared(true)
+    setError('')
+    if (picked === 'none') { setShared(true); return }
+    if (!canExchange) { setShared(true); return } // demo / no live session to exchange through
+    setBusy(true)
+    try {
+      const label = SOCIALS.find(s => s.id === picked)?.label
+      const { partner } = await shareContact({ matchId: session.matchId, role: session.role, platform: label, handle })
+      setShared(true)
+      if (partner) setPartnerContact(partner)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setBusy(false)
+    }
   }
 
-  const requestSave = () => {
-    // world save not wired up yet, just shows the confirmation for now
-    setSaveRequested(true)
-  }
-
-  const newSession = () => {
-    clearSession()
-    nav('/')
-  }
+  const newSession = () => { clearSession(); nav('/') }
 
   return (
     <section className="card">
       <h2>Hour's up — that was fun.</h2>
       <p className="muted">
         You played with <strong>{session.partner?.displayName}</strong> ({session.score}% match)
-        on <code>{session.server?.host}</code>.
+        {session.server?.host && <> on <code>{session.server.host}</code></>}.
       </p>
 
       <div className="post-grid">
         <div className="post-card">
           <h3>Stay in touch?</h3>
-          <p className="muted small">Optional. We'll only share your handle if your buddy shares back.</p>
+          <p className="muted small">Optional. We'll only show your handle to your buddy if they share back.</p>
 
           {!shared ? (
             <form onSubmit={submitShare}>
@@ -72,23 +87,31 @@ export default function PostSession() {
                   onChange={e => setHandle(e.target.value)}
                 />
               )}
-              <button className="btn primary" type="submit" disabled={picked !== 'none' && !handle.trim()}>
-                {picked === 'none' ? 'Skip sharing' : 'Share with buddy'}
+              {error && <p className="auth-error">{error}</p>}
+              <button className="btn primary" type="submit" disabled={busy || (picked !== 'none' && !handle.trim())}>
+                {busy ? 'Sharing…' : picked === 'none' ? 'Skip sharing' : 'Share with buddy'}
               </button>
             </form>
+          ) : partnerContact ? (
+            <div className="contact-reveal">
+              <p className="success">You're connected! 🎉</p>
+              <p className="muted small">{session.partner?.displayName} shared:</p>
+              <div className="contact-box">{partnerContact}</div>
+            </div>
+          ) : picked === 'none' ? (
+            <p className="muted">No worries — maybe next time.</p>
           ) : (
-            <p className="success">Shared. If your buddy reciprocates, we'll email both of you.</p>
+            <p className="success">Shared ✓ Waiting for {session.partner?.displayName || 'your buddy'} to share back… {canExchange ? '' : '(they\'ll get it next time they\'re on)'}</p>
           )}
         </div>
 
         <div className="post-card">
           <h3>Save your world</h3>
           <p className="muted small">
-            We can keep <strong>{session.server?.world}</strong> alive on our Aternos pool for one free month
-            so you can hop back in.
+            We can keep your world alive for one free month so you can hop back in.
           </p>
           {!saveRequested ? (
-            <button className="btn primary" onClick={requestSave}>Save world — free for 30 days</button>
+            <button className="btn primary" onClick={() => setSaveRequested(true)}>Save world — free for 30 days</button>
           ) : (
             <p className="success">Saved ✓ You'll get the connect details by email.</p>
           )}

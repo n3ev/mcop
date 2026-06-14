@@ -33,8 +33,8 @@ export default function Waiting() {
 
     socket.on('queue_joined', ({ position: pos }) => setPosition(pos))
 
-    socket.on('match_found', ({ partner, score }) => {
-      saveSession({ partner, score })
+    socket.on('match_found', ({ partner, score, server, matchId, role }) => {
+      saveSession({ partner, score, server, matchId, role })
       socket.disconnect()
       nav('/session')
     })

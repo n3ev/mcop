@@ -82,7 +82,10 @@ export default function Dashboard() {
           <ul className="match-list">
             {history.matches.slice(0, 4).map((m, i) => (
               <li key={i} className="match-item">
-                <span className="match-partner">{m.partner_name || 'A buddy'}</span>
+                <span className="match-partner">
+                  {m.partner_name || 'A buddy'}
+                  {m.partner_contact && <span className="match-contact">{m.partner_contact}</span>}
+                </span>
                 <span className="match-meta">{timeAgo(m.created_at)}</span>
               </li>
             ))}
