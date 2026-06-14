@@ -72,6 +72,26 @@ body {
 .tagline { color: var(--muted-dim); font-size: 0.95rem; font-weight: 500; }
 .content { flex: 1; display: flex; flex-direction: column; gap: 24px; }
 
+/* header auth */
+.header-auth { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+.header-user { color: var(--text); font-size: 0.85rem; font-weight: 600; }
+.header-link {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+.header-link:hover { color: var(--text); }
+
+/* auth pages */
+.auth-card { max-width: 440px; margin: 0 auto; width: 100%; }
+.auth-form { display: flex; flex-direction: column; gap: 14px; margin-top: 22px; }
+.auth-error { color: #f87171; font-size: 0.85rem; margin: -2px 0 2px; }
+.auth-switch { margin-top: 20px; text-align: center; font-size: 0.875rem; }
+.auth-switch a { color: var(--green); text-decoration: none; font-weight: 600; }
+.auth-switch a:hover { text-decoration: underline; }
+
 .footer {
   margin-top: 48px;
   padding-top: 20px;
