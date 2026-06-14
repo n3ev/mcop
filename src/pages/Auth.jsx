@@ -18,9 +18,13 @@ export default function Auth({ mode }) {
     setError('')
     setBusy(true)
     try {
-      if (isSignup) await signup({ email, password, displayName })
-      else await login({ email, password })
-      nav('/')
+      if (isSignup) {
+        await signup({ email, password, displayName })
+        nav('/preferences') // first thing: set up your profile
+      } else {
+        await login({ email, password })
+        nav('/')
+      }
     } catch (err) {
       setError(err.message)
     } finally {

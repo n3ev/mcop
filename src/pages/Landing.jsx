@@ -33,14 +33,11 @@ const REVIEWS = [
 
 function Reviews() {
   const [idx, setIdx] = useState(0)
-
   useEffect(() => {
     const t = setInterval(() => setIdx(i => (i + 1) % REVIEWS.length), 5000)
     return () => clearInterval(t)
   }, [])
-
   const r = REVIEWS[idx]
-
   return (
     <section className="reviews-section">
       <p className="section-eyebrow">What players say</p>
@@ -72,32 +69,34 @@ export default function Landing() {
     nav('/questionnaire')
   }
 
-  // logged-in users get their dashboard instead of the guest landing
-  if (loading) return null
-  if (user) return <Dashboard />
-
   return (
     <section className="hero">
       <div className="hero-eyebrow">
         <span className="hero-eyebrow-dot" />
-        Now in Beta · Free to play
+        {user ? `Welcome back, ${user.displayName || 'player'}` : 'Now in Beta · Free to play'}
       </div>
 
       <h1 className="hero-title">Find a Minecraft buddy<br/>in 60 seconds.</h1>
 
       <p className="hero-sub">
-        Answer 9 quick questions. We pair you with someone whose vibe matches yours.
+        Answer a few quick questions. We pair you with someone whose vibe matches yours.
         Private server. One hour. No strings.
       </p>
 
-      <button className="btn primary big" onClick={start}>Find my buddy ⛏</button>
-
-      <ul className="hero-bullets">
-        <li>🎯 Matched by playstyle, not luck</li>
-        <li>🌍 Free Minecraft server for 1 hour</li>
-        <li>💬 Optional Discord swap after</li>
-        <li>💾 Save your world for 30 days, free</li>
-      </ul>
+      {/* same page for everyone — guests get the CTA, logged-in users get their panel here */}
+      {loading ? null : user ? (
+        <Dashboard />
+      ) : (
+        <>
+          <button className="btn primary big" onClick={start}>Find my buddy ⛏</button>
+          <ul className="hero-bullets">
+            <li>🎯 Matched by playstyle, not luck</li>
+            <li>🌍 Free Minecraft server for 1 hour</li>
+            <li>💬 Optional Discord swap after</li>
+            <li>💾 Save your world for 30 days, free</li>
+          </ul>
+        </>
+      )}
 
       <div className="hero-image-wrap">
         <img
@@ -116,8 +115,8 @@ export default function Landing() {
         <div className="how-grid">
           <div className="how-card">
             <span className="how-num">01</span>
-            <h3 className="how-title">Answer 9 questions</h3>
-            <p className="how-desc">Playstyle, game mode, experience, vibe. Done in under 60 seconds — no account needed.</p>
+            <h3 className="how-title">Answer a few questions</h3>
+            <p className="how-desc">Playstyle, game mode, experience, vibe. Done in under 60 seconds — sign up to save it.</p>
           </div>
           <div className="how-card">
             <span className="how-num">02</span>
@@ -133,25 +132,13 @@ export default function Landing() {
       </section>
 
       <div className="stats-bar">
-        <div className="stat">
-          <span className="stat-num">60s</span>
-          <span className="stat-label">to match</span>
-        </div>
+        <div className="stat"><span className="stat-num">60s</span><span className="stat-label">to match</span></div>
         <div className="stat-divider" />
-        <div className="stat">
-          <span className="stat-num">1hr</span>
-          <span className="stat-label">free server</span>
-        </div>
+        <div className="stat"><span className="stat-num">1hr</span><span className="stat-label">free server</span></div>
         <div className="stat-divider" />
-        <div className="stat">
-          <span className="stat-num">30d</span>
-          <span className="stat-label">world save</span>
-        </div>
+        <div className="stat"><span className="stat-num">30d</span><span className="stat-label">world save</span></div>
         <div className="stat-divider" />
-        <div className="stat">
-          <span className="stat-num">free</span>
-          <span className="stat-label">always</span>
-        </div>
+        <div className="stat"><span className="stat-num">free</span><span className="stat-label">always</span></div>
       </div>
 
       <Reviews />

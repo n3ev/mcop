@@ -3,9 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import { apiGetMatches } from '../lib/auth.js'
 import { startMatch } from '../lib/play.js'
-import { fixedQuestions } from '../data/fixedQuestions.js'
-
-const PREF_KEYS = fixedQuestions.filter(q => q.id !== 'patience')
+import { profileQuestions } from '../data/profileQuestions.js'
 
 function timeAgo(iso) {
   const d = (Date.now() - new Date(iso).getTime()) / 1000
@@ -15,6 +13,7 @@ function timeAgo(iso) {
   return `${Math.floor(d / 86400)}d ago`
 }
 
+// personalized panel shown inside the shared landing page for logged-in users
 export default function Dashboard() {
   const nav = useNavigate()
   const { user } = useAuth()
@@ -27,6 +26,7 @@ export default function Dashboard() {
 
   const prefs = user.preferences
   const hasPrefs = prefs && Object.keys(prefs).length > 0
+  const chips = hasPrefs ? profileQuestions.filter(q => prefs[q.id]).slice(0, 6) : []
 
   const quickPlay = async () => {
     setBusy(true)
@@ -40,66 +40,55 @@ export default function Dashboard() {
   }
 
   return (
-    <section className="dash">
-      <h1 className="dash-title">Welcome back{user.displayName ? `, ${user.displayName}` : ''} ⛏</h1>
-
+    <div className="user-panel">
       {!user.mcVerified && (
-        <div className="dash-card warn">
-          <div>
-            <h3>Link your Minecraft account</h3>
-            <p className="muted small">Verify your username once to unlock one-click play and skip typing it every time.</p>
-          </div>
-          <Link to="/account" className="btn primary">Link now</Link>
+        <div className="panel-banner">
+          <span>Link your Minecraft account to play with one click.</span>
+          <Link to="/account" className="btn small primary">Link now</Link>
         </div>
       )}
 
-      <div className="dash-card">
-        <div className="dash-card-head">
-          <h3>Your play style</h3>
-          {hasPrefs && <Link to="/questionnaire" className="header-link">Try a new style →</Link>}
-        </div>
-
+      <div className="panel-main">
         {hasPrefs ? (
           <>
-            <div className="pref-chips">
-              {PREF_KEYS.map(q => prefs[q.id] && (
+            <div className="panel-prefs">
+              {chips.map(q => (
                 <span key={q.id} className="pref-chip"><span className="pref-chip-k">{q.id}</span>{prefs[q.id]}</span>
               ))}
+              <Link to="/preferences" className="pref-edit">Edit</Link>
             </div>
+
             {user.mcVerified ? (
               <button className="btn primary big" disabled={busy} onClick={quickPlay}>
-                {busy ? 'Finding your buddy…' : 'Play with saved preferences ⛏'}
+                {busy ? 'Finding your buddy…' : 'Play with my style ⛏'}
               </button>
             ) : (
-              <p className="muted small">Link your Minecraft account above to play with one click.</p>
+              <button className="btn primary big" onClick={() => nav('/account')}>Link account to play ⛏</button>
             )}
+            <button className="btn ghost" onClick={() => nav('/questionnaire')}>Play a different style</button>
           </>
         ) : (
           <>
-            <p className="muted small">You haven't set your preferences yet. Answer a few quick questions and we'll remember them.</p>
-            <button className="btn primary big" onClick={() => nav('/questionnaire')}>Set my play style</button>
+            <p className="muted">Set up your profile so we can find your best matches.</p>
+            <button className="btn primary big" onClick={() => nav('/preferences')}>Set up my profile</button>
+            <button className="btn ghost" onClick={() => nav('/questionnaire')}>Or just play a quick one</button>
           </>
         )}
       </div>
 
-      <div className="dash-card">
-        <div className="dash-card-head">
-          <h3>Match history</h3>
-          <span className="muted small">{history.total} total</span>
-        </div>
-        {history.matches.length === 0 ? (
-          <p className="muted small">No matches yet. Your past buddies will show up here.</p>
-        ) : (
+      {history.matches.length > 0 && (
+        <div className="panel-history">
+          <span className="panel-history-label">Recent buddies</span>
           <ul className="match-list">
-            {history.matches.map((m, i) => (
+            {history.matches.slice(0, 4).map((m, i) => (
               <li key={i} className="match-item">
                 <span className="match-partner">{m.partner_name || 'A buddy'}</span>
-                <span className="match-meta">{m.score}% · {timeAgo(m.created_at)}</span>
+                <span className="match-meta">{timeAgo(m.created_at)}</span>
               </li>
             ))}
           </ul>
-        )}
-      </div>
-    </section>
+        </div>
+      )}
+    </div>
   )
 }
