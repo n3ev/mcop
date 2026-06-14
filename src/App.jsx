@@ -6,6 +6,7 @@ import Waiting from './pages/Waiting.jsx'
 import Session from './pages/Session.jsx'
 import PostSession from './pages/PostSession.jsx'
 import Auth from './pages/Auth.jsx'
+import Account from './pages/Account.jsx'
 import BugReport from './components/BugReport.jsx'
 import { useAuth } from './context/AuthContext.jsx'
 
@@ -15,7 +16,10 @@ function HeaderAuth() {
   if (user) {
     return (
       <div className="header-auth">
-        <span className="header-user">{user.displayName || user.email}</span>
+        <Link to="/account" className="header-user">
+          {user.displayName || user.email}
+          {user.mcVerified && <span className="mc-dot" title="Minecraft linked" />}
+        </Link>
         <button className="btn small ghost" onClick={logout}>Log out</button>
       </div>
     )
@@ -47,6 +51,7 @@ export default function App() {
           <Route path="/post-session" element={<PostSession />} />
           <Route path="/login" element={<Auth mode="login" />} />
           <Route path="/signup" element={<Auth mode="signup" />} />
+          <Route path="/account" element={<Account />} />
         </Routes>
       </main>
 
