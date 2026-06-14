@@ -41,3 +41,24 @@ export async function apiMe() {
   const data = await res.json()
   return data.user
 }
+
+// returns { user }
+export async function apiSavePreferences(answers) {
+  const res = await fetch(`${API_URL}/auth/preferences`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
+    body: JSON.stringify({ answers }),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(data.error || 'could not save preferences')
+  return data
+}
+
+// returns { matches, total }
+export async function apiGetMatches() {
+  const res = await fetch(`${API_URL}/auth/matches`, {
+    headers: { Authorization: 'Bearer ' + getToken() },
+  })
+  if (!res.ok) return { matches: [], total: 0 }
+  return res.json()
+}

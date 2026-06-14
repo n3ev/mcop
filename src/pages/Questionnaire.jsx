@@ -2,49 +2,61 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { fixedQuestions } from '../data/fixedQuestions.js'
 import { variableQuestions, pickVariableQuestions } from '../data/variableQuestions.js'
-import { saveSession } from '../lib/storage.js'
-import { joinQueue } from '../lib/api.js'
+import { useAuth } from '../context/AuthContext.jsx'
+import { apiSavePreferences } from '../lib/auth.js'
+import { startMatch } from '../lib/play.js'
 
 export default function Questionnaire() {
   const nav = useNavigate()
+  const { user, setUser } = useAuth()
+
+  // verified accounts skip the username step — we use their linked username.
+  // guests and unverified accounts still type one.
+  const needsName = !user || !user.mcVerified
+
   // pick 3 bonus questions once per mount, prefix with v_ so they count less in matching
   const variables = useMemo(() => pickVariableQuestions(3).map(q => ({ ...q, id: 'v_' + q.id })), [])
   const allQuestions = useMemo(() => [...fixedQuestions, ...variables], [variables])
 
   const [name, setName] = useState('')
-  const [step, setStep] = useState(0) // 0 = name, 1..N = questions
+  const [step, setStep] = useState(needsName ? 0 : 1) // 0 = name, 1..N = questions
   const [answers, setAnswers] = useState({})
   const [email, setEmail] = useState('')
   const [awaitingEmail, setAwaitingEmail] = useState(false)
+  const [savedView, setSavedView] = useState(false) // logged-in "preferences saved" screen
+  const [busy, setBusy] = useState(false)
 
-  const total = allQuestions.length + 1 // +1 for the name step
-  const progress = Math.round((step / (total - 1)) * 100)
+  const progress = Math.min(100, Math.round((step / allQuestions.length) * 100))
 
-  const submitAndNavigate = async (currentAnswers) => {
-    const mcUsername = name.trim()
-    const patience = currentAnswers.patience ?? 'Right now'
-    saveSession({
-      user: { displayName: mcUsername },
-      answers: currentAnswers,
-      email: email || null,
-      questionIds: allQuestions.map(q => q.id),
-      startedAt: Date.now(),
-    })
-    try {
-      const { queueId } = await joinQueue({ displayName: mcUsername, mcUsername, answers: currentAnswers, email: email || null })
-      saveSession({ queueId })
-    } catch {
-      // backend unavailable — destination page handles demo fallback
+  const identity = () => ({
+    displayName: needsName ? name.trim() : (user.displayName || user.mcUsername),
+    mcUsername: needsName ? name.trim() : user.mcUsername,
+  })
+
+  const play = async (finalAnswers) => {
+    setBusy(true)
+    const { displayName, mcUsername } = identity()
+    const target = await startMatch({ displayName, mcUsername, answers: finalAnswers, email: email || null })
+    nav(target)
+  }
+
+  // reached the end of the questions
+  const finish = async (finalAnswers) => {
+    if (user) {
+      // save to the account, then let them choose to play now or head back
+      try {
+        const { user: updated } = await apiSavePreferences(finalAnswers)
+        setUser(updated)
+      } catch { /* ignore, they can still play */ }
+      setSavedView(true)
+    } else {
+      play(finalAnswers)
     }
-    nav(patience === 'Right now' ? '/matching' : '/waiting')
   }
 
   const advance = (currentAnswers) => {
-    if (step === allQuestions.length) {
-      submitAndNavigate(currentAnswers)
-    } else {
-      setStep(step + 1)
-    }
+    if (step === allQuestions.length) finish(currentAnswers)
+    else setStep(step + 1)
   }
 
   const onPickName = () => {
@@ -55,7 +67,8 @@ export default function Questionnaire() {
   const onAnswer = (qid, value) => {
     const next = { ...answers, [qid]: value }
     setAnswers(next)
-    if (qid === 'patience' && value !== 'Right now') {
+    // guests give an email for the non-instant patience tiers
+    if (qid === 'patience' && value !== 'Right now' && !user) {
       setAwaitingEmail(true)
       return
     }
@@ -67,11 +80,27 @@ export default function Questionnaire() {
     advance(answers)
   }
 
+  if (savedView) {
+    return (
+      <section className="card center">
+        <span className="tag good">Saved</span>
+        <h2>Your play style is locked in</h2>
+        <p className="muted">We'll remember these so you can jump straight into a match next time.</p>
+        <div className="saved-actions">
+          <button className="btn primary big" disabled={busy} onClick={() => play(answers)}>
+            {busy ? 'Finding your buddy…' : 'Play now ⛏'}
+          </button>
+          <button className="btn ghost" onClick={() => nav('/')}>Back to dashboard</button>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section className="card">
       <div className="progress"><div className="progress-bar" style={{ width: progress + '%' }} /></div>
 
-      {step === 0 && (
+      {step === 0 && needsName && (
         <div className="step">
           <h2>What's your Minecraft username?</h2>
           <p className="muted">Must match your in-game name exactly — we use it to whitelist you on the server.</p>

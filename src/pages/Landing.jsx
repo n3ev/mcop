@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { clearSession } from '../lib/storage.js'
+import { useAuth } from '../context/AuthContext.jsx'
+import Dashboard from './Dashboard.jsx'
 
 const REVIEWS = [
   {
@@ -64,10 +66,15 @@ function Reviews() {
 
 export default function Landing() {
   const nav = useNavigate()
+  const { user, loading } = useAuth()
   const start = () => {
     clearSession()
     nav('/questionnaire')
   }
+
+  // logged-in users get their dashboard instead of the guest landing
+  if (loading) return null
+  if (user) return <Dashboard />
 
   return (
     <section className="hero">
