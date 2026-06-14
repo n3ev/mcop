@@ -62,3 +62,37 @@ export async function apiGetMatches() {
   if (!res.ok) return { matches: [], total: 0 }
   return res.json()
 }
+
+async function authedJson(path, method, body) {
+  const res = await fetch(`${API_URL}${path}`, {
+    method,
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
+    body: body ? JSON.stringify(body) : undefined,
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(data.error || 'something went wrong')
+  return data
+}
+
+// password reset (no auth)
+export async function apiForgot(email) {
+  await fetch(`${API_URL}/auth/forgot`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }),
+  })
+  return { ok: true } // always ok, never leak whether the email exists
+}
+export async function apiReset(token, password) {
+  const res = await fetch(`${API_URL}/auth/reset`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token, password }),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(data.error || 'could not reset password')
+  return data
+}
+
+// account management (auth)
+export const apiUpdateProfile = (displayName) => authedJson('/auth/profile', 'PUT', { displayName })
+export const apiChangePassword = (currentPassword, newPassword) => authedJson('/auth/change-password', 'POST', { currentPassword, newPassword })
+export const apiDeleteAccount = () => authedJson('/auth/account', 'DELETE')
+export const apiGetBlocked = () => authedJson('/auth/blocked', 'GET')
+export const apiUnblock = (userId) => authedJson('/auth/unblock', 'POST', { userId })

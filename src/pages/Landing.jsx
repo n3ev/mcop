@@ -1,8 +1,31 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { clearSession } from '../lib/storage.js'
+import { fetchActivity } from '../lib/api.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import Dashboard from './Dashboard.jsx'
+
+function ActivityTicker() {
+  const [stats, setStats] = useState(null)
+  useEffect(() => {
+    let on = true
+    const load = () => fetchActivity().then(s => { if (on) setStats(s) })
+    load()
+    const t = setInterval(load, 12000)
+    return () => { on = false; clearInterval(t) }
+  }, [])
+  if (!stats) return null
+  const bits = []
+  if (stats.online > 0) bits.push(`${stats.online} online now`)
+  if (stats.matchesToday > 0) bits.push(`${stats.matchesToday} matched today`)
+  if (bits.length === 0) return null
+  return (
+    <div className="activity-ticker">
+      <span className="activity-dot" />
+      {bits.join(' · ')}
+    </div>
+  )
+}
 
 const REVIEWS = [
   {
@@ -82,6 +105,8 @@ export default function Landing() {
         Answer a few quick questions. We pair you with someone whose vibe matches yours.
         Private server. One hour. No strings.
       </p>
+
+      <ActivityTicker />
 
       {/* same page for everyone — guests get the CTA, logged-in users get their panel here */}
       {loading ? null : user ? (

@@ -281,6 +281,41 @@ body {
 .friend-row { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; }
 .friend-actions { display: flex; gap: 6px; }
 
+/* settings */
+.settings-block { padding: 18px 0; border-top: 1px solid var(--border); }
+.settings-block:first-of-type { border-top: none; }
+.settings-block h3 { font-size: 1rem; font-weight: 700; margin-bottom: 12px; }
+.settings-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.settings-row .text-input { flex: 1; min-width: 180px; }
+.settings-block.danger h3 { color: #f87171; }
+.btn.danger {
+  background: rgba(248,113,113,0.12);
+  border: 1px solid rgba(248,113,113,0.4);
+  color: #fca5a5;
+}
+.btn.danger:hover:not(:disabled) { background: rgba(248,113,113,0.2); }
+
+/* activity ticker */
+.activity-ticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 auto 28px;
+  padding: 6px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.activity-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green-glow);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
 .footer {
   margin-top: 48px;
   padding-top: 20px;
