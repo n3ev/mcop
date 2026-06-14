@@ -1,6 +1,5 @@
-// everyone answers these, weighted heavily in matching
-// patience is just for queue routing, not compatibility
-// edition question is disabled until bedrock server hosting is sorted - when it comes back, don't match java with bedrock
+// the short "temporary" set — guests and anyone playing a one-off style answer these.
+// patience is NOT here anymore, it's a session thing (see patienceQuestion below), not a saved trait.
 export const fixedQuestions = [
   {
     id: 'gamemode',
@@ -22,9 +21,11 @@ export const fixedQuestions = [
     text: 'Comfortable on voice chat?',
     options: ['Yes — Discord ready', 'Text only', 'Maybe, depends on the vibe'],
   },
-  {
-    id: 'patience',
-    text: 'When do you want to play?',
-    options: ['Right now', 'Within 1 hour', 'Within 2 hours', 'Willing to wait — email me'],
-  },
 ]
+
+// asked as its own step in the temporary/play flow only. routes the queue, never saved as a preference.
+export const patienceQuestion = {
+  id: 'patience',
+  text: 'When do you want to play?',
+  options: ['Right now', 'Within 1 hour', 'Within 2 hours', 'Willing to wait — email me'],
+}

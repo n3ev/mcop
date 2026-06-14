@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { io } from 'socket.io-client'
 import { loadSession, saveSession } from '../lib/storage.js'
 import { compatibilityScore, generateFakePartner } from '../lib/matching.js'
-import { fixedQuestions } from '../data/fixedQuestions.js'
+import { fixedQuestions, patienceQuestion } from '../data/fixedQuestions.js'
+import { profileQuestions } from '../data/profileQuestions.js'
 import { variableQuestions } from '../data/variableQuestions.js'
 import { API_URL } from '../lib/api.js'
 
@@ -68,6 +69,8 @@ export default function Matching() {
   const questionsById = useMemo(() => {
     const all = [
       ...fixedQuestions,
+      ...profileQuestions,
+      patienceQuestion,
       ...variableQuestions.map(q => ({ ...q, id: 'v_' + q.id })),
     ]
     return Object.fromEntries(all.map(q => [q.id, q]))

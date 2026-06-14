@@ -1,106 +1,61 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { fixedQuestions } from '../data/fixedQuestions.js'
-import { variableQuestions, pickVariableQuestions } from '../data/variableQuestions.js'
+import { fixedQuestions, patienceQuestion } from '../data/fixedQuestions.js'
 import { useAuth } from '../context/AuthContext.jsx'
-import { apiSavePreferences } from '../lib/auth.js'
 import { startMatch } from '../lib/play.js'
 
+// the temporary / one-off flow: guests, or a logged-in user trying a different style for a single session.
+// nothing here is saved to the account — permanent preferences live on /preferences.
 export default function Questionnaire() {
   const nav = useNavigate()
-  const { user, setUser } = useAuth()
+  const { user } = useAuth()
 
-  // verified accounts skip the username step — we use their linked username.
-  // guests and unverified accounts still type one.
+  // verified accounts already have a linked username, so skip that step
   const needsName = !user || !user.mcVerified
-
-  // pick 3 bonus questions once per mount, prefix with v_ so they count less in matching
-  const variables = useMemo(() => pickVariableQuestions(3).map(q => ({ ...q, id: 'v_' + q.id })), [])
-  const allQuestions = useMemo(() => [...fixedQuestions, ...variables], [variables])
 
   const [name, setName] = useState('')
   const [step, setStep] = useState(needsName ? 0 : 1) // 0 = name, 1..N = questions
   const [answers, setAnswers] = useState({})
+  const [phase, setPhase] = useState('questions') // questions | patience | email
   const [email, setEmail] = useState('')
-  const [awaitingEmail, setAwaitingEmail] = useState(false)
-  const [savedView, setSavedView] = useState(false) // logged-in "preferences saved" screen
   const [busy, setBusy] = useState(false)
 
-  const progress = Math.min(100, Math.round((step / allQuestions.length) * 100))
+  const totalQ = fixedQuestions.length
+  const progress = Math.min(100, Math.round((step / (totalQ + 1)) * 100))
 
   const identity = () => ({
     displayName: needsName ? name.trim() : (user.displayName || user.mcUsername),
     mcUsername: needsName ? name.trim() : user.mcUsername,
   })
 
-  const play = async (finalAnswers) => {
+  const play = async (finalAnswers, finalEmail) => {
     setBusy(true)
     const { displayName, mcUsername } = identity()
-    const target = await startMatch({ displayName, mcUsername, answers: finalAnswers, email: email || null })
+    const target = await startMatch({ displayName, mcUsername, answers: finalAnswers, email: finalEmail || email || user?.email || null })
     nav(target)
   }
 
-  // reached the end of the questions
-  const finish = async (finalAnswers) => {
-    if (user) {
-      // save to the account, then let them choose to play now or head back
-      try {
-        const { user: updated } = await apiSavePreferences(finalAnswers)
-        setUser(updated)
-      } catch { /* ignore, they can still play */ }
-      setSavedView(true)
-    } else {
-      play(finalAnswers)
-    }
-  }
-
-  const advance = (currentAnswers) => {
-    if (step === allQuestions.length) finish(currentAnswers)
-    else setStep(step + 1)
-  }
-
-  const onPickName = () => {
-    if (!name.trim()) return
-    setStep(1)
-  }
+  const onPickName = () => { if (name.trim()) setStep(1) }
 
   const onAnswer = (qid, value) => {
     const next = { ...answers, [qid]: value }
     setAnswers(next)
-    // guests give an email for the non-instant patience tiers
-    if (qid === 'patience' && value !== 'Right now' && !user) {
-      setAwaitingEmail(true)
-      return
-    }
-    advance(next)
+    if (step === totalQ) setPhase('patience')   // done with the core questions
+    else setStep(step + 1)
   }
 
-  const onEmailSubmit = () => {
-    setAwaitingEmail(false)
-    advance(answers)
+  const onPatience = (value) => {
+    const next = { ...answers, patience: value }
+    setAnswers(next)
+    if (value !== 'Right now' && !user) setPhase('email') // guests leave an email
+    else play(next)
   }
 
-  if (savedView) {
+  // name step
+  if (phase === 'questions' && step === 0 && needsName) {
     return (
-      <section className="card center">
-        <span className="tag good">Saved</span>
-        <h2>Your play style is locked in</h2>
-        <p className="muted">We'll remember these so you can jump straight into a match next time.</p>
-        <div className="saved-actions">
-          <button className="btn primary big" disabled={busy} onClick={() => play(answers)}>
-            {busy ? 'Finding your buddy…' : 'Play now ⛏'}
-          </button>
-          <button className="btn ghost" onClick={() => nav('/')}>Back to dashboard</button>
-        </div>
-      </section>
-    )
-  }
-
-  return (
-    <section className="card">
-      <div className="progress"><div className="progress-bar" style={{ width: progress + '%' }} /></div>
-
-      {step === 0 && needsName && (
+      <section className="card">
+        <div className="progress"><div className="progress-bar" style={{ width: progress + '%' }} /></div>
         <div className="step">
           <h2>What's your Minecraft username?</h2>
           <p className="muted">Must match your in-game name exactly — we use it to whitelist you on the server.</p>
@@ -114,9 +69,32 @@ export default function Questionnaire() {
           />
           <button className="btn primary" disabled={!name.trim()} onClick={onPickName}>Continue</button>
         </div>
-      )}
+      </section>
+    )
+  }
 
-      {awaitingEmail && (
+  // patience step
+  if (phase === 'patience') {
+    return (
+      <section className="card">
+        <div className="progress"><div className="progress-bar" style={{ width: '90%' }} /></div>
+        <div className="step">
+          <span className="tag">Last one</span>
+          <h2>{patienceQuestion.text}</h2>
+          <div className="options">
+            {patienceQuestion.options.map(opt => (
+              <button key={opt} className="option" disabled={busy} onClick={() => onPatience(opt)}>{opt}</button>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  // email step (guests choosing a non-instant tier)
+  if (phase === 'email') {
+    return (
+      <section className="card">
         <div className="step">
           <span className="tag">One more thing</span>
           <h2>What's your email?</h2>
@@ -127,32 +105,31 @@ export default function Questionnaire() {
             placeholder="you@example.com"
             value={email}
             onChange={e => setEmail(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && email.trim() && onEmailSubmit()}
+            onKeyDown={e => e.key === 'Enter' && email.trim() && play(answers, email)}
             autoFocus
           />
-          <button className="btn primary" disabled={!email.trim()} onClick={onEmailSubmit}>
+          <button className="btn primary" disabled={!email.trim() || busy} onClick={() => play(answers, email)}>
             Lock in my spot →
           </button>
         </div>
-      )}
+      </section>
+    )
+  }
 
-      {step >= 1 && !awaitingEmail && (() => {
-        const q = allQuestions[step - 1]
-        const isVariable = q.id.startsWith('v_')
-        return (
-          <div className="step">
-            <span className="tag">{isVariable ? 'Bonus question' : `Question ${step} of ${fixedQuestions.length}`}</span>
-            <h2>{q.text}</h2>
-            <div className="options">
-              {q.options.map(opt => (
-                <button key={opt} className="option" onClick={() => onAnswer(q.id, opt)}>
-                  {opt}
-                </button>
-              ))}
-            </div>
-          </div>
-        )
-      })()}
+  // a core question
+  const q = fixedQuestions[step - 1]
+  return (
+    <section className="card">
+      <div className="progress"><div className="progress-bar" style={{ width: progress + '%' }} /></div>
+      <div className="step">
+        <span className="tag">Question {step} of {totalQ}</span>
+        <h2>{q.text}</h2>
+        <div className="options">
+          {q.options.map(opt => (
+            <button key={opt} className="option" onClick={() => onAnswer(q.id, opt)}>{opt}</button>
+          ))}
+        </div>
+      </div>
     </section>
   )
 }

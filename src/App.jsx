@@ -7,6 +7,7 @@ import Session from './pages/Session.jsx'
 import PostSession from './pages/PostSession.jsx'
 import Auth from './pages/Auth.jsx'
 import Account from './pages/Account.jsx'
+import Preferences from './pages/Preferences.jsx'
 import BugReport from './components/BugReport.jsx'
 import { useAuth } from './context/AuthContext.jsx'
 
@@ -52,6 +53,7 @@ export default function App() {
           <Route path="/login" element={<Auth mode="login" />} />
           <Route path="/signup" element={<Auth mode="signup" />} />
           <Route path="/account" element={<Account />} />
+          <Route path="/preferences" element={<Preferences />} />
         </Routes>
       </main>
 
