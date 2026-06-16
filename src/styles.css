@@ -1199,3 +1199,65 @@ body {
   padding: 4px 12px;
   white-space: nowrap;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   COZY-MINECRAFT REDESIGN — foundation layer
+   Remaps the old flat palette to the warm cozy-night tokens and lays
+   down the global pixel rules. Component skins build on top of this.
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  --bg-0: var(--page-bg);
+  --text: var(--page-text);
+  --muted: var(--page-text-muted);
+  --muted-dim: #8a775c;
+  --border: rgba(255, 240, 214, 0.10);
+  --border-accent: rgba(232, 112, 42, 0.45);
+  --green: var(--grass-2);      /* nature accent */
+  --green-2: var(--ember);      /* warm highlight */
+  --green-dim: var(--leaf);
+  --green-glow: var(--glow-warm);
+  --gold: var(--xp);
+  --blue: var(--sky);
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--page-bg);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 12% 100%, var(--glow-warm) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 45% at 88% 0%, var(--glow-ember) 0%, transparent 60%),
+    radial-gradient(rgba(255, 240, 214, 0.025) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 28px 28px;
+  color: var(--page-text);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Minecraft has no rounded corners */
+*, *::before, *::after { border-radius: 0 !important; }
+
+/* keep pixel art crisp */
+img, .mc-avatar { image-rendering: pixelated; }
+
+/* pixel font for UI chrome only — body copy stays in readable Nunito */
+h1, h2, h3, h4,
+.brand, .hero-title, .hero-eyebrow, .btn, .tag, .section-eyebrow,
+.timer-clock, .score-num, .stat-num, .breakdown-label,
+.panel-history-label, .how-num, .activity-ticker {
+  font-family: var(--font-pixel);
+  letter-spacing: 0;
+}
+
+/* signature Minecraft hard text shadow (no blur) */
+.hero-title, .brand, .btn, .tag, .score-num, .timer-clock, .stat-num {
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.45);
+}
+
+/* hard requirement: respect reduced motion everywhere */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
