@@ -1286,3 +1286,131 @@ h1, h2, h3, h4, .hero-title, .brand, .match-name,
     scroll-behavior: auto !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   MCOP REDESIGN — component skins (Minecraft GUI)
+   Real <button>/<input> underneath; this is skin only, so keyboard +
+   screen-reader behaviour is preserved. Bevels = stacked hard shadows.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── inventory / stone panels ─────────────────────────────────────── */
+.card, .post-card, .how-card, .dash-card, .review-card, .timer,
+.stats-bar, .answer-breakdown, .link-box, .modal, .account-rows,
+.panel-banner, .contact-box, .activity-ticker, .waiting-tier {
+  background: rgba(22, 25, 30, 0.88) !important;
+  border: 2px solid #0b0d10 !important;
+  box-shadow:
+    inset 2px 2px 0 rgba(255, 255, 255, 0.10),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.45),
+    0 6px 0 rgba(0, 0, 0, 0.35) !important;
+  backdrop-filter: blur(2px);
+}
+
+/* ── Minecraft GUI buttons ────────────────────────────────────────── */
+.btn, .option {
+  font-family: var(--font-pixel);
+  color: #f3f5f2;
+  background: linear-gradient(#6b7079, #565b63);
+  border: 2px solid #0b0d10;
+  box-shadow:
+    inset 2px 2px 0 rgba(255, 255, 255, 0.28),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.45);
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+  transition: filter 0.08s, transform 0.04s;
+}
+.btn:hover:not(:disabled), .option:hover {
+  filter: brightness(1.14);
+  outline: 2px solid #ffffff;
+  outline-offset: -2px;
+}
+.btn:active:not(:disabled), .option:active {
+  transform: translateY(2px);
+  box-shadow:
+    inset -2px -2px 0 rgba(255, 255, 255, 0.18),
+    inset 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+.btn:disabled { filter: grayscale(0.5) brightness(0.75); opacity: 0.7; }
+
+.btn.primary {
+  background: linear-gradient(#6cc24a, #4f9a31);
+}
+.btn.danger {
+  background: linear-gradient(#d04a3b, #a32c20);
+}
+.btn.ghost {
+  background: linear-gradient(#3a3f47, #2c3037);
+}
+.btn.small { box-shadow: inset 1px 1px 0 rgba(255,255,255,0.28), inset -1px -1px 0 rgba(0,0,0,0.45); border-width: 2px; }
+
+/* selected option (preferences) reads as a pressed/lit button */
+.option.selected {
+  background: linear-gradient(#4f9a31, #3a7a24) !important;
+  outline: 2px solid var(--green-2);
+  outline-offset: -2px;
+}
+
+/* ── inset slots: inputs ──────────────────────────────────────────── */
+.text-input, .bug-textarea, input[type="text"], input[type="email"],
+input[type="password"], textarea {
+  font-family: var(--font-pixel);
+  color: #f3f5f2;
+  background: rgba(0, 0, 0, 0.45) !important;
+  border: 2px solid #0b0d10 !important;
+  box-shadow:
+    inset 2px 2px 0 rgba(0, 0, 0, 0.5),
+    inset -2px -2px 0 rgba(255, 255, 255, 0.06) !important;
+}
+.text-input::placeholder, .bug-textarea::placeholder { color: #7d8a80; }
+.text-input:focus, .bug-textarea:focus, textarea:focus,
+input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+  outline: 2px solid var(--green-2) !important;
+  outline-offset: 1px;
+}
+
+/* ── tags / chips ─────────────────────────────────────────────────── */
+.tag, .chip, .pref-chip, .answer-badge, .mc-badge {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 2px solid #0b0d10 !important;
+  box-shadow: inset 1px 1px 0 rgba(255,255,255,0.12) !important;
+  color: var(--text);
+}
+.tag.good { color: var(--green-2); }
+
+/* ── header as a wooden/stone hotbar ──────────────────────────────── */
+.topbar {
+  background: rgba(18, 20, 24, 0.92);
+  border: 2px solid #0b0d10;
+  box-shadow:
+    inset 2px 2px 0 rgba(255,255,255,0.08),
+    inset -2px -2px 0 rgba(0,0,0,0.45);
+  padding: 14px 18px;
+  margin-bottom: 8px;
+}
+.brand { color: var(--green-2); }
+
+/* ── footer as a bedrock strip ────────────────────────────────────── */
+.footer {
+  background: rgba(10, 11, 13, 0.92);
+  border: 2px solid #0b0d10;
+  box-shadow: inset 2px 2px 0 rgba(255,255,255,0.05);
+  padding: 16px 18px;
+  margin-top: 40px;
+}
+
+/* ── global visible focus ring (accessibility) ────────────────────── */
+a:focus-visible, button:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* avatars sit in inventory-style slots */
+.mc-avatar {
+  border: 2px solid #0b0d10 !important;
+  box-shadow: inset 1px 1px 0 rgba(255,255,255,0.15), inset -1px -1px 0 rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.4);
+}
+
+/* progress bars read like an XP/loading bar */
+.progress { background: rgba(0,0,0,0.5); border: 2px solid #0b0d10; height: 14px; }
+.progress-bar { background: linear-gradient(#86e05a, #4f9a31); height: 100%; }
