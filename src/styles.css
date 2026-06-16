@@ -1492,3 +1492,83 @@ body::before { animation: mcop-pan 70s ease-in-out infinite alternate; transform
   .mcop-logo { --tile: 60px; }
   .hero-splash { font-size: 0.75rem; right: -10px; }
 }
+
+/* ── partitioning: central content column, world shows in the gutters ─ */
+.app {
+  max-width: 1040px !important;
+  padding: 0 24px 24px !important;
+  background: rgba(8, 10, 14, 0.62);
+  border-left: 3px solid #0b0d10;
+  border-right: 3px solid #0b0d10;
+  box-shadow:
+    inset 3px 0 0 rgba(255, 255, 255, 0.05),
+    inset -3px 0 0 rgba(0, 0, 0, 0.45),
+    0 0 90px rgba(0, 0, 0, 0.55);
+}
+.topbar { margin: 0 -24px 8px; padding-left: 24px; padding-right: 24px; }
+.footer { margin-left: -24px; margin-right: -24px; }
+.footer-controls { display: flex; align-items: center; gap: 16px; }
+
+/* ── XP-bar loader (matchmaking) ──────────────────────────────────── */
+.xpbar {
+  width: 100%;
+  max-width: 360px;
+  height: 16px;
+  margin: 20px auto;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid #0b0d10;
+  box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+.xpbar-fill {
+  height: 100%;
+  width: 40%;
+  background: linear-gradient(#86e05a, #4f9a31);
+  animation: mcop-xp 1.5s ease-in-out infinite;
+}
+@keyframes mcop-xp {
+  0%   { margin-left: -42%; }
+  100% { margin-left: 100%; }
+}
+
+/* ── redstone lever (accessible checkbox) ─────────────────────────── */
+.lever { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+.lever-input { position: absolute; opacity: 0; width: 0; height: 0; }
+.lever-base {
+  position: relative;
+  width: 30px; height: 20px;
+  background: linear-gradient(#8a8a8a, #5a5a5a);
+  border: 2px solid #0b0d10;
+  box-shadow: inset 1px 1px 0 rgba(255,255,255,0.2), inset -1px -1px 0 rgba(0,0,0,0.5);
+  flex-shrink: 0;
+}
+.lever-handle {
+  position: absolute;
+  left: 3px; top: -5px;
+  width: 7px; height: 16px;
+  background: linear-gradient(#b8945f, #6b4a2b);
+  border: 2px solid #0b0d10;
+  transform: rotate(-32deg);
+  transform-origin: bottom center;
+  transition: transform 0.14s ease;
+}
+.lever-on .lever-handle {
+  transform: rotate(32deg);
+  left: auto; right: 3px;
+  box-shadow: 0 0 8px 1px rgba(192, 57, 43, 0.7);
+}
+.lever-label { font-size: 0.72rem; color: var(--muted); }
+
+/* ── click particles ──────────────────────────────────────────────── */
+.click-particle {
+  position: fixed;
+  width: 6px; height: 6px;
+  background: var(--green-2);
+  pointer-events: none;
+  z-index: 9999;
+  image-rendering: pixelated;
+  animation: mcop-particle 0.45s ease-out forwards;
+}
+@keyframes mcop-particle {
+  to { transform: translate(var(--dx), var(--dy)); opacity: 0; }
+}
