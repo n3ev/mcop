@@ -11,8 +11,12 @@ import Preferences from './pages/Preferences.jsx'
 import Settings from './pages/Settings.jsx'
 import ForgotPassword from './pages/ForgotPassword.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
+import { useEffect } from 'react'
 import BugReport from './components/BugReport.jsx'
+import SoundToggle from './components/SoundToggle.jsx'
 import { useAuth } from './context/AuthContext.jsx'
+import { playClick } from './lib/sound.js'
+import { burst } from './lib/particles.js'
 
 function HeaderAuth() {
   const { user, logout, loading } = useAuth()
@@ -38,6 +42,18 @@ function HeaderAuth() {
 }
 
 export default function App() {
+  // minecraft click sound + block-break particles on any button/link
+  useEffect(() => {
+    const onClick = (e) => {
+      const el = e.target.closest('button, .btn, .option, a[href]')
+      if (!el || el.disabled) return
+      playClick()
+      burst(e.clientX, e.clientY)
+    }
+    document.addEventListener('click', onClick)
+    return () => document.removeEventListener('click', onClick)
+  }, [])
+
   return (
     <div className="app">
       <header className="topbar">
@@ -65,8 +81,11 @@ export default function App() {
       </main>
 
       <footer className="footer">
-        <span>© {new Date().getFullYear()} MCOP · Not affiliated with Mojang or Aternos</span>
-        <BugReport />
+        <span>© {new Date().getFullYear()} MCOP · Not affiliated with Mojang or Microsoft</span>
+        <div className="footer-controls">
+          <SoundToggle />
+          <BugReport />
+        </div>
       </footer>
     </div>
   )

@@ -128,8 +128,10 @@ export default function Matching() {
   if (!partner) {
     return (
       <section className="card center">
-        <div className="spinner" />
         <h2>{phases[phase]}</h2>
+        <div className="xpbar" role="progressbar" aria-label="Finding your buddy">
+          <div className="xpbar-fill" />
+        </div>
         <p className="muted">Hang tight — this usually takes under a minute.</p>
       </section>
     )
