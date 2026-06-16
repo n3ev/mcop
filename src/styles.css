@@ -1201,35 +1201,61 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   COZY-MINECRAFT REDESIGN — foundation layer
-   Remaps the old flat palette to the warm cozy-night tokens and lays
-   down the global pixel rules. Component skins build on top of this.
+   MCOP REDESIGN — foundation layer
+   Clean dark UI over a full-bleed Minecraft backdrop. Monocraft is used
+   everywhere; green is the primary accent. This block is last in the
+   cascade so it sets the baseline the component skins build on.
    ═══════════════════════════════════════════════════════════════════ */
 :root {
-  --bg-0: var(--page-bg);
-  --text: var(--page-text);
-  --muted: var(--page-text-muted);
-  --muted-dim: #8a775c;
-  --border: rgba(255, 240, 214, 0.10);
-  --border-accent: rgba(232, 112, 42, 0.45);
-  --green: var(--grass-2);      /* nature accent */
-  --green-2: var(--ember);      /* warm highlight */
-  --green-dim: var(--leaf);
-  --green-glow: var(--glow-warm);
-  --gold: var(--xp);
-  --blue: var(--sky);
+  --bg-0: #0e1116;
+  --bg-1: rgba(255, 255, 255, 0.045);
+  --bg-2: rgba(255, 255, 255, 0.08);
+  --bg-hover: rgba(255, 255, 255, 0.12);
+  --text: #f3f5f2;
+  --muted: #c2ccc4;
+  --muted-dim: #8a958c;
+  --border: rgba(255, 255, 255, 0.13);
+  --border-accent: rgba(95, 174, 59, 0.55);
+  --green: #5FAE3B;
+  --green-2: #86e05a;
+  --green-dim: #3E7A2A;
+  --green-glow: rgba(95, 174, 59, 0.30);
+  --gold: #FFCE42;
+  --blue: #3F76E4;
 }
 
+/* one font, everywhere — tuned for legibility in monospace */
+html, body, input, button, textarea, select {
+  font-family: var(--font-pixel);
+}
+html { background-color: var(--bg-0); }
 body {
-  font-family: var(--font-body);
-  background-color: var(--page-bg);
-  background-image:
-    radial-gradient(ellipse 80% 50% at 12% 100%, var(--glow-warm) 0%, transparent 60%),
-    radial-gradient(ellipse 70% 45% at 88% 0%, var(--glow-ember) 0%, transparent 60%),
-    radial-gradient(rgba(255, 240, 214, 0.025) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 28px 28px;
-  color: var(--page-text);
-  transition: background-color 0.4s ease, color 0.4s ease;
+  font-size: 15px;
+  line-height: 1.7;
+  letter-spacing: 0;
+  color: var(--text);
+  background: transparent; /* let the fixed backdrop (::before) show through */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* full-bleed Minecraft backdrop that always covers the viewport,
+   with a dark overlay so foreground text stays readable */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: var(--bg-image) center center / cover no-repeat fixed;
+  image-rendering: pixelated;
+}
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(10, 12, 16, 0.74) 0%, rgba(10, 12, 16, 0.9) 100%),
+    radial-gradient(ellipse 90% 60% at 50% -10%, rgba(95, 174, 59, 0.10), transparent 70%);
 }
 
 /* Minecraft has no rounded corners */
@@ -1238,18 +1264,17 @@ body {
 /* keep pixel art crisp */
 img, .mc-avatar { image-rendering: pixelated; }
 
-/* pixel font for UI chrome only — body copy stays in readable Nunito */
-h1, h2, h3, h4,
-.brand, .hero-title, .hero-eyebrow, .btn, .tag, .section-eyebrow,
-.timer-clock, .score-num, .stat-num, .breakdown-label,
-.panel-history-label, .how-num, .activity-ticker {
-  font-family: var(--font-pixel);
-  letter-spacing: 0;
+/* monospace throws off the old tight tracking — normalise it everywhere */
+h1, h2, h3, h4, .hero-title, .brand, .match-name,
+.score-num, .timer-clock, .stat-num, .dash-title {
+  letter-spacing: 0 !important;
+  font-weight: normal;
 }
 
-/* signature Minecraft hard text shadow (no blur) */
-.hero-title, .brand, .btn, .tag, .score-num, .timer-clock, .stat-num {
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.45);
+/* hard Minecraft text shadow (no blur) on text that sits over imagery */
+.hero-title, .brand, .hero-eyebrow, .btn, .tag,
+.score-num, .timer-clock, .stat-num, .section-eyebrow {
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
 }
 
 /* hard requirement: respect reduced motion everywhere */
