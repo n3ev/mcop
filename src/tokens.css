@@ -1,7 +1,9 @@
 /* ─────────────────────────────────────────────────────────────────
-   MCOP cozy-minecraft design tokens
-   Monocraft is OFL (github.com/IdreesInc/Monocraft) — self-hosted below.
-   Body copy uses Nunito (Google Fonts, OFL) loaded in index.html.
+   MCOP design tokens
+   Monocraft (OFL, github.com/IdreesInc/Monocraft) self-hosted below,
+   used across the whole site. No fixed "palette" — a clean dark base
+   over a full-bleed Minecraft backdrop, green as the primary accent,
+   other colours used where they serve the page.
    ───────────────────────────────────────────────────────────────── */
 
 @font-face {
@@ -13,73 +15,16 @@
 }
 
 :root {
-  /* fonts */
-  --font-pixel: 'Monocraft', ui-monospace, monospace;
-  --font-body: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-pixel: 'Monocraft', ui-monospace, 'Courier New', monospace;
 
-  /* surfaces — cozy interior */
-  --parchment: #F2E6CF;
-  --parchment-2: #ECE0C8;
-  --gui-gray: #C6C6C6;
-  --slot: #8B8B8B;
-  --ink: #2B2118;
+  /* full-bleed backdrop — drop your own world screenshot here to swap it */
+  --bg-image: url('/assets/screenshots/panorama.webp');
 
-  /* wood */
-  --oak-light: #B8945F;
-  --oak: #9B6F3F;
-  --dark-oak: #6B4A2B;
-
-  /* fire / hearth */
-  --torch: #E8702A;
-  --flame: #FF9D3D;
-  --ember: #FFD98C;
-  --redstone: #C0392B;
-
-  /* nature */
-  --grass: #5FAE3B;
-  --grass-2: #7EC850;
-  --leaf: #3E7A2A;
-  --sky: #79A6D2;
-  --lapis: #3F76E4;
-
-  /* special */
-  --xp: #FFCE42;
-  --splash: #FFFF55;
-  --emerald: #2ECC71;
-  --stone: #7F7F7F;
-  --stone-2: #9D9D9D;
-  --stone-3: #5A5A5A;
-
-  /* bevels — hard, no blur */
-  --bevel-light: rgba(255, 255, 255, 0.55);
-  --bevel-dark: rgba(0, 0, 0, 0.45);
-
-  /* spacing scale */
+  /* spacing scale (used consistently everywhere) */
   --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px;
   --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
 
-  /* motion */
-  --flicker-speed: 2.6s;
-
-  /* ── role tokens: cozy NIGHT (default) ── */
-  --page-bg: #1b140d;        /* dark warm dusk */
-  --page-bg-2: #241a11;
-  --page-text: var(--parchment);
-  --page-text-muted: #c9b79a;
-  --accent: var(--torch);
-  --accent-soft: var(--ember);
-  --glow-warm: rgba(232, 112, 42, 0.22);
-  --glow-ember: rgba(255, 217, 140, 0.16);
-}
-
-/* ── role tokens: bright DAY (overworld) ── */
-[data-theme="day"] {
-  --page-bg: #8ec3ec;
-  --page-bg-2: #b7dcf4;
-  --page-text: var(--ink);
-  --page-text-muted: #5a4b38;
-  --accent: var(--torch);
-  --accent-soft: var(--redstone);
-  --glow-warm: rgba(255, 157, 61, 0.28);
-  --glow-ember: rgba(127, 200, 255, 0.20);
+  /* raw colours available when a component wants one */
+  --grass: #5FAE3B; --grass-2: #86e05a; --leaf: #3E7A2A;
+  --torch: #E8702A; --gold: #FFCE42; --redstone: #C0392B; --lapis: #3F76E4;
 }
