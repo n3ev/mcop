@@ -1572,3 +1572,37 @@ body::before { animation: mcop-pan 70s ease-in-out infinite alternate; transform
 @keyframes mcop-particle {
   to { transform: translate(var(--dx), var(--dy)); opacity: 0; }
 }
+
+/* ── oak signs: section labels rendered as hung wooden signs ───────── */
+.section-eyebrow, .panel-history-label, .hero-eyebrow {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+  color: #3a2a18 !important;
+  font-family: var(--font-pixel);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+  background:
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.05) 0 11px, rgba(0,0,0,0.11) 11px 13px),
+    linear-gradient(#c69a63, #a9763f) !important;
+  border: 3px solid #5a3d22 !important;
+  box-shadow:
+    inset 2px 2px 0 rgba(255,255,255,0.22),
+    inset -2px -2px 0 rgba(0,0,0,0.28),
+    0 4px 0 rgba(0,0,0,0.30) !important;
+  padding: 8px 16px !important;
+  position: relative;
+  margin-top: 16px;
+}
+/* corner nails so each label reads as a sign hung on the wall */
+.section-eyebrow::before, .section-eyebrow::after,
+.panel-history-label::before, .panel-history-label::after,
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content: '';
+  position: absolute;
+  top: -7px;
+  width: 5px;
+  height: 7px;
+  background: #2b2118;
+}
+.section-eyebrow::before, .panel-history-label::before, .hero-eyebrow::before { left: 11px; }
+.section-eyebrow::after, .panel-history-label::after, .hero-eyebrow::after { right: 11px; }
