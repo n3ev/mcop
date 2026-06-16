@@ -1414,3 +1414,81 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 /* progress bars read like an XP/loading bar */
 .progress { background: rgba(0,0,0,0.5); border: 2px solid #0b0d10; height: 14px; }
 .progress-bar { background: linear-gradient(#86e05a, #4f9a31); height: 100%; }
+
+/* ── slow panorama pan on the backdrop ────────────────────────────── */
+body::before { animation: mcop-pan 70s ease-in-out infinite alternate; transform-origin: center; }
+@keyframes mcop-pan {
+  from { transform: scale(1.12) translate3d(-2.2%, 0, 0); }
+  to   { transform: scale(1.12) translate3d(2.2%, 0, 0); }
+}
+
+/* ── title screen: logo + splash ──────────────────────────────────── */
+.title-screen {
+  position: relative;
+  display: inline-block;
+  margin: 8px auto 18px;
+}
+.mcop-logo {
+  display: grid;
+  grid-template-columns: repeat(2, var(--tile, 84px));
+  grid-template-rows: repeat(2, var(--tile, 84px));
+  gap: 6px;
+}
+.logo-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-pixel);
+  font-size: calc(var(--tile, 84px) * 0.58);
+  color: #f3f5f2;
+  border: 3px solid #0b0d10;
+  box-shadow: inset 3px 3px 0 rgba(255,255,255,0.18), inset -3px -3px 0 rgba(0,0,0,0.5);
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.6);
+  overflow: hidden;
+}
+.logo-letter { background: linear-gradient(#8a8a8a, #5a5a5a); }
+.logo-plank {
+  color: #2B2118;
+  text-shadow: 1px 1px 0 rgba(255,255,255,0.25);
+  background:
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.12) 0 2px, transparent 2px 14px),
+    linear-gradient(#b8945f, #9b6f3f);
+}
+.logo-fire { position: relative; background: #160d06; }
+.logo-flame {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 72%;
+  background: radial-gradient(ellipse at 50% 100%, #FFF3B0 0%, #FFCE42 25%, #FF9D3D 50%, #E8702A 72%, transparent 82%);
+  animation: mcop-flicker 2.6s ease-in-out infinite;
+}
+@keyframes mcop-flicker {
+  0%, 100% { opacity: 0.85; transform: scaleY(1); }
+  25%      { opacity: 0.95; transform: scaleY(1.06); }
+  50%      { opacity: 1;    transform: scaleY(1.14); }
+  75%      { opacity: 0.9;  transform: scaleY(1.04); }
+}
+
+.hero-splash {
+  position: absolute;
+  right: -28px;
+  bottom: -14px;
+  color: var(--gold);
+  font-family: var(--font-pixel);
+  font-size: 0.95rem;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.6);
+  transform: rotate(-18deg);
+  transform-origin: center;
+  animation: mcop-bob 0.9s ease-in-out infinite;
+  white-space: nowrap;
+  pointer-events: none;
+}
+@keyframes mcop-bob {
+  0%, 100% { transform: rotate(-18deg) scale(1); }
+  50%      { transform: rotate(-18deg) scale(1.08); }
+}
+
+@media (max-width: 600px) {
+  .mcop-logo { --tile: 60px; }
+  .hero-splash { font-size: 0.75rem; right: -10px; }
+}
