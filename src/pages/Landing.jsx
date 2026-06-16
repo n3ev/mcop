@@ -4,6 +4,8 @@ import { clearSession } from '../lib/storage.js'
 import { fetchActivity } from '../lib/api.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import Dashboard from './Dashboard.jsx'
+import Logo from '../components/Logo.jsx'
+import SplashText from '../components/SplashText.jsx'
 
 function ActivityTicker() {
   const [stats, setStats] = useState(null)
@@ -94,16 +96,19 @@ export default function Landing() {
 
   return (
     <section className="hero">
+      <div className="title-screen">
+        <Logo />
+        <SplashText />
+      </div>
+
       <div className="hero-eyebrow">
         <span className="hero-eyebrow-dot" />
         {user ? `Welcome back, ${user.displayName || 'player'}` : 'Now in Beta · Free to play'}
       </div>
 
-      <h1 className="hero-title">Find a Minecraft buddy<br/>in 60 seconds.</h1>
-
       <p className="hero-sub">
-        Answer a few quick questions. We pair you with someone whose vibe matches yours.
-        Private server. One hour. No strings.
+        Find a Minecraft buddy in 60 seconds. Answer a few quick questions, we pair you
+        with someone whose vibe matches yours. Private server. One hour. No strings.
       </p>
 
       <ActivityTicker />
@@ -122,18 +127,6 @@ export default function Landing() {
           </ul>
         </>
       )}
-
-      <div className="hero-image-wrap">
-        <img
-          src="https://minecraft.wiki/images/Adventure_Wallpaper.png"
-          alt="Two players exploring a Minecraft world"
-          className="hero-image"
-        />
-        <div className="hero-image-caption">
-          <span className="hero-image-caption-text">One world. One hour. Zero awkward silences.</span>
-          <span className="hero-image-caption-tag">Your next session →</span>
-        </div>
-      </div>
 
       <section className="how-section">
         <p className="section-eyebrow">How it works</p>
