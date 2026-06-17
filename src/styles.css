@@ -1573,6 +1573,28 @@ body::before { animation: mcop-pan 70s ease-in-out infinite alternate; transform
   to { transform: translate(var(--dx), var(--dy)); opacity: 0; }
 }
 
+/* ── session: quest banner, in-game controls, presence ────────────── */
+.quest-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 18px;
+  padding: 14px 18px;
+  background: rgba(255, 206, 66, 0.10);
+  border: 2px solid #0b0d10;
+  box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.12), inset -2px -2px 0 rgba(0,0,0,0.4);
+}
+.quest-label { font-size: 0.72rem; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; }
+.quest-text { font-size: 1.05rem; color: var(--text); }
+
+.ingame-controls { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+.controls-label { font-size: 0.7rem; color: var(--muted-dim); text-transform: uppercase; letter-spacing: 1px; }
+.controls-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+
+.presence { margin-left: 10px; font-size: 0.8rem; font-weight: 700; }
+.presence.on { color: var(--green-2); }
+.presence.off { color: var(--muted-dim); }
+
 /* ── oak signs: section labels rendered as hung wooden signs ───────── */
 .section-eyebrow, .panel-history-label, .hero-eyebrow {
   display: inline-flex !important;
