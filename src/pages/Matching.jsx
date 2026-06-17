@@ -66,7 +66,7 @@ export default function Matching() {
   const [partner, setPartner] = useState(null)
   const [score, setScore] = useState(0)
   const [server, setServer] = useState(null)
-  const [matchMeta, setMatchMeta] = useState({ matchId: null, role: null })
+  const [matchMeta, setMatchMeta] = useState({ matchId: null, role: null, quest: null, endsAt: null })
 
   const questionsById = useMemo(() => {
     const all = [
@@ -107,9 +107,9 @@ export default function Matching() {
     if (session.queueId) {
       socket = io(API_URL, { transports: ['websocket'] })
       socket.emit('queue_identify', session.queueId)
-      socket.on('match_found', ({ partner: p2, score: s, server: srv, matchId, role }) => {
+      socket.on('match_found', ({ partner: p2, score: s, server: srv, matchId, role, quest, endsAt }) => {
         clearTimeout(demoT)
-        showMatch(p2, s, srv, { matchId, role })
+        showMatch(p2, s, srv, { matchId, role, quest, endsAt })
       })
     }
 
@@ -121,7 +121,11 @@ export default function Matching() {
   }, [])
 
   const goPlay = () => {
-    saveSession({ partner, score, server, matchId: matchMeta.matchId, role: matchMeta.role })
+    saveSession({
+      partner, score, server,
+      matchId: matchMeta.matchId, role: matchMeta.role,
+      quest: matchMeta.quest, endsAt: matchMeta.endsAt,
+    })
     nav('/session')
   }
 
