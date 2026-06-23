@@ -1595,36 +1595,101 @@ body::before { animation: mcop-pan 70s ease-in-out infinite alternate; transform
 .presence.on { color: var(--green-2); }
 .presence.off { color: var(--muted-dim); }
 
-/* ── oak signs: section labels rendered as hung wooden signs ───────── */
+/* ── wooden signs (real textures) ─────────────────────────────────────
+   Hanging sign for section labels, standing post sign for status tags.
+   Text is dropped onto the board area so nothing reads as empty.
+   Textures live in public/assets/textures/.
+   ─────────────────────────────────────────────────────────────────── */
 .section-eyebrow, .panel-history-label, .hero-eyebrow {
   display: inline-flex !important;
-  align-items: center;
+  align-items: flex-end;          /* board sits in the lower part of the sign */
+  justify-content: center;
   gap: 8px;
-  color: #3a2a18 !important;
+  color: #2b2118 !important;
   font-family: var(--font-pixel);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.22) !important;
-  background:
-    repeating-linear-gradient(90deg, rgba(0,0,0,0.05) 0 11px, rgba(0,0,0,0.11) 11px 13px),
-    linear-gradient(#c69a63, #a9763f) !important;
-  border: 3px solid #5a3d22 !important;
-  box-shadow:
-    inset 2px 2px 0 rgba(255,255,255,0.22),
-    inset -2px -2px 0 rgba(0,0,0,0.28),
-    0 4px 0 rgba(0,0,0,0.30) !important;
-  padding: 8px 16px !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  background: url('/assets/textures/sign-hanging.png') center / 100% 100% no-repeat !important;
+  border: none !important;
+  box-shadow: none !important;
+  min-width: 180px;
+  min-height: 96px;
+  padding: 0 30px 20px !important;
+  margin-top: 8px;
   position: relative;
-  margin-top: 16px;
 }
-/* corner nails so each label reads as a sign hung on the wall */
+/* the texture has its own chains — kill the old CSS nails */
 .section-eyebrow::before, .section-eyebrow::after,
 .panel-history-label::before, .panel-history-label::after,
-.hero-eyebrow::before, .hero-eyebrow::after {
-  content: '';
-  position: absolute;
-  top: -7px;
-  width: 5px;
-  height: 7px;
-  background: #2b2118;
+.hero-eyebrow::before, .hero-eyebrow::after { display: none !important; }
+
+/* status tags ride the standing post sign (board is the upper part) */
+.tag {
+  background: url('/assets/textures/sign-post.png') center / 100% 100% no-repeat !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #2b2118 !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  display: inline-flex !important;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 128px;
+  min-height: 104px;
+  padding: 16px 16px 0 !important;
 }
-.section-eyebrow::before, .panel-history-label::before, .hero-eyebrow::before { left: 11px; }
-.section-eyebrow::after, .panel-history-label::after, .hero-eyebrow::after { right: 11px; }
+.tag.good { color: #1f4d12 !important; }
+
+/* hero feature "tabs" → standing post signs */
+.hero-bullets li, .hero-bullets li:hover {
+  background: url('/assets/textures/sign-post.png') center / 100% 100% no-repeat !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #2b2118 !important;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.28) !important;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: center;
+  min-height: 128px;
+  padding: 20px 16px 0 !important;
+  font-weight: 700;
+}
+
+/* the session timer hangs from a sign */
+.timer {
+  background: url('/assets/textures/sign-hanging.png') center / 100% 100% no-repeat !important;
+  border: none !important;
+  box-shadow: none !important;
+  min-height: 230px;
+  padding: 74px 22px 26px !important;
+}
+.timer-label { color: #5a3d22 !important; }
+.timer-clock {
+  color: #2b2118 !important;
+  -webkit-text-fill-color: #2b2118 !important;
+  background: none !important;
+  filter: none !important;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.3) !important;
+}
+
+/* stat blocks → small post signs (drop the bar + dividers) */
+.stats-bar, .panel-stats {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  gap: 10px !important;
+}
+.stat-divider { display: none !important; }
+.stat {
+  background: url('/assets/textures/sign-post.png') center / 100% 100% no-repeat !important;
+  min-height: 112px;
+  padding: 18px 6px 0 !important;
+  justify-content: flex-start;
+}
+.stat-num {
+  color: #2b2118 !important;
+  -webkit-text-fill-color: #2b2118 !important;
+  background: none !important;
+  filter: none !important;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.3) !important;
+}
+.stat-label { color: #5a3d22 !important; }
