@@ -10,6 +10,7 @@ import { API_URL } from '../lib/api.js'
 import Avatar from '../components/Avatar.jsx'
 import { playXp } from '../lib/sound.js'
 import { fireworks } from '../lib/particles.js'
+import { toast } from '../lib/toast.js'
 
 const PHASE_INTERVAL_MS = 3500
 const DEMO_FALLBACK_MS = 90000
@@ -64,6 +65,7 @@ export default function Matching() {
   const nav = useNavigate()
   const session = useMemo(() => loadSession(), [])
   const phases = useMemo(() => shuffle(ALL_PHASES), [])
+  const seed = useMemo(() => String((Math.random() * 2 - 1) * 9007199254740991 | 0), [])
   const [phase, setPhase] = useState(0)
   const [partner, setPartner] = useState(null)
   const [score, setScore] = useState(0)
@@ -97,6 +99,7 @@ export default function Matching() {
       if (meta) setMatchMeta(meta)
       playXp()
       fireworks()
+      toast(`Buddy found: ${p2.displayName}`)
     }
 
     // demo fallback if no real match shows up in time
@@ -136,12 +139,14 @@ export default function Matching() {
   if (!partner) {
     return (
       <section className="card center">
+        <span className="tag">Generating world</span>
         <div className="compass" aria-hidden="true"><span className="compass-needle" /></div>
         <h2>{phases[phase]}</h2>
         <div className="xpbar" role="progressbar" aria-label="Finding your buddy">
           <div className="xpbar-fill" />
         </div>
         <p className="muted">Hang tight — this usually takes under a minute.</p>
+        <p className="gen-seed">Seed: {seed} · Biome: Friendship Plains</p>
       </section>
     )
   }

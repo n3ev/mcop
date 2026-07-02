@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import { linkStart, linkVerify, linkStatus } from '../lib/mc.js'
+import { toast } from '../lib/toast.js'
+import { playXp } from '../lib/sound.js'
 
 export default function Account() {
   const nav = useNavigate()
@@ -50,6 +52,8 @@ export default function Account() {
       const { user: updated } = await linkVerify(code.trim())
       setUser(updated)
       setPhase('done')
+      playXp()
+      toast('Minecraft account linked')
     } catch (e) { setError(e.message) } finally { setBusy(false) }
   }
 

@@ -158,3 +158,55 @@ export function playHissBoom() {
     bsrc.start(t + 1.2, Math.random(), 0.6)
   } catch { /* */ }
 }
+
+/* ── jukebox: an ambient note-block tune, synthesized, off by default ──
+   a gentle random walk over C-major pentatonic, note-block "harp"
+   plucks (sine with a fast decay). starts only from a user gesture. */
+const SCALE = [261.6, 293.7, 329.6, 392.0, 440.0, 523.3, 587.3, 659.3, 784.0]
+let musicTimer = null
+let walk = 4
+
+function pluck(freq, vol = 0.05) {
+  if (muted) return
+  try {
+    const c = ac()
+    const t = c.currentTime
+    const osc = c.createOscillator()
+    const gain = c.createGain()
+    osc.type = 'sine'
+    osc.frequency.value = freq
+    gain.gain.setValueAtTime(vol, t)
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.9)
+    osc.connect(gain).connect(c.destination)
+    osc.start(t)
+    osc.stop(t + 1)
+    // a quiet octave shimmer
+    const o2 = c.createOscillator()
+    const g2 = c.createGain()
+    o2.type = 'sine'
+    o2.frequency.value = freq * 2
+    g2.gain.setValueAtTime(vol * 0.3, t)
+    g2.gain.exponentialRampToValueAtTime(0.0001, t + 0.5)
+    o2.connect(g2).connect(c.destination)
+    o2.start(t)
+    o2.stop(t + 0.6)
+  } catch { /* */ }
+}
+
+export const isMusicOn = () => !!musicTimer
+
+export function startMusic() {
+  if (musicTimer) return
+  musicTimer = setInterval(() => {
+    if (Math.random() < 0.22) return // rests keep it airy
+    walk = Math.max(0, Math.min(SCALE.length - 1, walk + [-2, -1, -1, 1, 1, 2][Math.floor(Math.random() * 6)]))
+    pluck(SCALE[walk])
+    if (Math.random() < 0.3) setTimeout(() => pluck(SCALE[Math.max(0, walk - 2)], 0.035), 300)
+  }, 640)
+  pluck(SCALE[4])
+}
+
+export function stopMusic() {
+  clearInterval(musicTimer)
+  musicTimer = null
+}

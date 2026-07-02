@@ -11,13 +11,14 @@ import Preferences from './pages/Preferences.jsx'
 import Settings from './pages/Settings.jsx'
 import ForgotPassword from './pages/ForgotPassword.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import BugReport from './components/BugReport.jsx'
 import SoundToggle from './components/SoundToggle.jsx'
 import Lever from './components/Lever.jsx'
 import { useAuth } from './context/AuthContext.jsx'
-import { playClick, playTick, playHissBoom } from './lib/sound.js'
+import { playClick, playTick, playHissBoom, playError, isMusicOn, startMusic, stopMusic } from './lib/sound.js'
 import { burst, explosion } from './lib/particles.js'
+import { toast } from './lib/toast.js'
 
 const reduced = () =>
   window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -27,32 +28,101 @@ function HeaderAuth() {
   if (loading) return null
   if (user) {
     return (
-      <div className="header-auth">
+      <nav className="header-auth" aria-label="Account">
         <Link to="/account" className="header-user">
           {user.displayName || user.email}
           {user.mcVerified && <span className="mc-dot" title="Minecraft linked" />}
         </Link>
         <Link to="/settings" className="header-link">Settings</Link>
-        <button className="btn small ghost" onClick={logout}>Log out</button>
-      </div>
+        <button className="header-link" onClick={logout}>Log out</button>
+      </nav>
     )
   }
   return (
-    <div className="header-auth">
+    <nav className="header-auth" aria-label="Account">
       <Link to="/login" className="header-link">Log in</Link>
-      <Link to="/signup" className="btn small primary">Sign up</Link>
-    </div>
+      <Link to="/signup" className="header-link">Sign up</Link>
+    </nav>
   )
 }
 
-// day/night — a real redstone lever. lit lever = daylight on. night is default.
+// day/night — a real redstone lever. lit lever = daylight on. dusk is home.
 function ThemeToggle() {
   const [day, setDay] = useState(localStorage.getItem('mcop_theme') === 'day')
   useEffect(() => {
     document.documentElement.dataset.theme = day ? 'day' : 'night'
     localStorage.setItem('mcop_theme', day ? 'day' : 'night')
   }, [day])
-  return <Lever on={day} label={day ? 'Day' : 'Night'} onChange={setDay} />
+  return <Lever on={day} label={day ? 'Day' : 'Dusk'} onChange={setDay} />
+}
+
+// ambient note-block tune; a lever on the jukebox, never autoplays
+function JukeboxToggle() {
+  const [on, setOn] = useState(false)
+  useEffect(() => () => stopMusic(), [])
+  return (
+    <Lever
+      on={on}
+      label="Jukebox"
+      onChange={(v) => { setOn(v); if (v) startMusic(); else stopMusic() }}
+    />
+  )
+}
+
+// the sun and the moon share the sky; the lever decides who's up
+function SkyBodies() {
+  return (
+    <>
+      <img className="sky-body sun" src="/assets/textures/blocks/sun.png" alt="" aria-hidden="true" />
+      <img className="sky-body moon" src="/assets/textures/blocks/moon.png" alt="" aria-hidden="true" />
+    </>
+  )
+}
+
+// F3-style depth readout: from cloud level down to bedrock as you scroll
+function DepthMeter() {
+  const [y, setY] = useState(64)
+  useEffect(() => {
+    let raf = 0
+    const onScroll = () => {
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(() => {
+        const max = document.documentElement.scrollHeight - window.innerHeight
+        const p = max > 0 ? window.scrollY / max : 0
+        setY(Math.round(64 - p * 128))
+      })
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => { window.removeEventListener('scroll', onScroll); cancelAnimationFrame(raf) }
+  }, [])
+  return <div className="depth-meter" aria-hidden="true">Y: {y}</div>
+}
+
+// achievement toasts (fired via lib/toast.js from anywhere)
+function Toast() {
+  const [t, setT] = useState(null)
+  const timer = useRef(null)
+  useEffect(() => {
+    const on = (e) => {
+      setT(null) // restart the animation even for back-to-back toasts
+      requestAnimationFrame(() => setT(e.detail))
+      clearTimeout(timer.current)
+      timer.current = setTimeout(() => setT(null), 3900)
+    }
+    window.addEventListener('mcop:toast', on)
+    return () => { window.removeEventListener('mcop:toast', on); clearTimeout(timer.current) }
+  }, [])
+  if (!t) return null
+  return (
+    <div className="toast" role="status">
+      <img className="toast-icon" src={t.icon} alt="" />
+      <div>
+        <div className="toast-title">{t.title}</div>
+        <div className="toast-text">{t.text}</div>
+      </div>
+    </div>
+  )
 }
 
 // konami code → a creeper spawns. that's it. that's the feature.
@@ -63,11 +133,11 @@ function CreeperEgg({ show }) {
   return (
     <div className="creeper" aria-hidden="true">
       <svg viewBox="0 0 8 8" shapeRendering="crispEdges">
-        <rect width="8" height="8" fill="#5FAE3B" />
+        <rect width="8" height="8" fill="#6abe30" />
         <rect x="0" y="0" width="2" height="1" fill="#4c8f2f" />
         <rect x="5" y="7" width="3" height="1" fill="#4c8f2f" />
-        <rect x="7" y="1" width="1" height="2" fill="#6fc247" />
-        <rect x="0" y="5" width="1" height="2" fill="#6fc247" />
+        <rect x="7" y="1" width="1" height="2" fill="#8fd15c" />
+        <rect x="0" y="5" width="1" height="2" fill="#8fd15c" />
         <rect x="1" y="2" width="2" height="2" fill="#0d0d0d" />
         <rect x="5" y="2" width="2" height="2" fill="#0d0d0d" />
         <rect x="3" y="4" width="2" height="2" fill="#0d0d0d" />
@@ -81,12 +151,13 @@ function CreeperEgg({ show }) {
 export default function App() {
   const location = useLocation()
   const [creeper, setCreeper] = useState(false)
+  const bedrockTaps = useRef(0)
 
   // minecraft click sound + block-break particles on any button/link,
   // soft tick on hover (pointer devices only)
   useEffect(() => {
     const onClick = (e) => {
-      const el = e.target.closest('button, .btn, .option, a[href]')
+      const el = e.target.closest('button, .btn, .option, a[href], .lever')
       if (!el || el.disabled) return
       playClick()
       burst(e.clientX, e.clientY)
@@ -122,8 +193,8 @@ export default function App() {
     return () => document.removeEventListener('keydown', onKey)
   }, [])
 
-  // scroll reveals: blocks assemble as they enter the viewport.
-  // pure enhancement — reduced-motion users never get the classes at all.
+  // scroll reveals: the world assembles as it enters the viewport.
+  // reduced-motion users never get the classes at all.
   useEffect(() => {
     if (reduced() || !('IntersectionObserver' in window)) return
     const io = new IntersectionObserver((entries) => {
@@ -135,24 +206,40 @@ export default function App() {
     }, { threshold: 0.12 })
     const scan = () => {
       document
-        .querySelectorAll('.how-card, .stat, .review-card, .post-card, .dash-card, .hero-bullets li')
+        .querySelectorAll('.how-card, .stat, .review-card, .post-card, .hero-bullets li, .panel-history')
         .forEach((el, i) => {
-          if (el.classList.contains('rv-in')) return // already revealed
+          if (el.classList.contains('rv-in')) return
           el.classList.add('rv')
           el.style.setProperty('--rv-d', (i % 6) * 55 + 'ms')
-          io.observe(el) // safe to re-observe after effect re-runs
+          io.observe(el)
         })
     }
     scan()
-    const t1 = setTimeout(scan, 400)   // async content (dashboard, stats)
+    const t1 = setTimeout(scan, 400)
     const t2 = setTimeout(scan, 1200)
     return () => { clearTimeout(t1); clearTimeout(t2); io.disconnect() }
   }, [location.pathname])
 
+  // you can't break bedrock. you can try.
+  const tapBedrock = (e) => {
+    if (e.target.closest('button, a, .lever, input')) return
+    bedrockTaps.current += 1
+    if (bedrockTaps.current === 5) {
+      bedrockTaps.current = 0
+      playError()
+      explosion(e.clientX, e.clientY)
+      toast("You can't break bedrock.", 'Achievement Get!', '/assets/textures/blocks/bedrock.png')
+    }
+  }
+
   return (
     <div className="app">
+      <SkyBodies />
+      <div className="horizon" aria-hidden="true" />
+      <DepthMeter />
+
       <header className="topbar">
-        <Link to="/" className="brand">⛏ MC<span className="brand-accent">OP</span></Link>
+        <Link to="/" className="brand">MC<span className="brand-accent">OP</span></Link>
         <span className="tagline">Random buddy. One hour. One world.</span>
         <div className="topbar-lever"><ThemeToggle /></div>
         <HeaderAuth />
@@ -161,29 +248,32 @@ export default function App() {
       <main className="content">
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/questionnaire" element={<Questionnaire />} />
-          <Route path="/matching" element={<Matching />} />
-          <Route path="/waiting" element={<Waiting />} />
-          <Route path="/session" element={<Session />} />
-          <Route path="/post-session" element={<PostSession />} />
-          <Route path="/login" element={<Auth mode="login" />} />
-          <Route path="/signup" element={<Auth mode="signup" />} />
-          <Route path="/account" element={<Account />} />
-          <Route path="/preferences" element={<Preferences />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/forgot" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/questionnaire" element={<div className="page"><Questionnaire /></div>} />
+          <Route path="/matching" element={<div className="page"><Matching /></div>} />
+          <Route path="/waiting" element={<div className="page"><Waiting /></div>} />
+          <Route path="/session" element={<div className="page"><Session /></div>} />
+          <Route path="/post-session" element={<div className="page"><PostSession /></div>} />
+          <Route path="/login" element={<div className="page"><Auth mode="login" /></div>} />
+          <Route path="/signup" element={<div className="page"><Auth mode="signup" /></div>} />
+          <Route path="/account" element={<div className="page"><Account /></div>} />
+          <Route path="/preferences" element={<div className="page"><Preferences /></div>} />
+          <Route path="/settings" element={<div className="page"><Settings /></div>} />
+          <Route path="/forgot" element={<div className="page"><ForgotPassword /></div>} />
+          <Route path="/reset-password" element={<div className="page"><ResetPassword /></div>} />
         </Routes>
       </main>
 
-      <footer className="footer">
+      <footer className="footer" onClick={tapBedrock}>
         <span>© {new Date().getFullYear()} MCOP · Not affiliated with Mojang or Microsoft</span>
+        <a href="https://github.com/n3ev/mcop/blob/main/CREDITS.md" target="_blank" rel="noreferrer">Credits</a>
         <div className="footer-controls">
           <SoundToggle />
+          <JukeboxToggle />
           <BugReport />
         </div>
       </footer>
 
+      <Toast />
       <CreeperEgg show={creeper} />
     </div>
   )

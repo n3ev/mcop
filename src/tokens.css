@@ -1,10 +1,9 @@
-/* ─────────────────────────────────────────────────────────────────
-   MCOP design tokens
-   Monocraft (OFL, github.com/IdreesInc/Monocraft) self-hosted below,
-   used across the whole site. No fixed "palette" — a clean dark base
-   over a full-bleed Minecraft backdrop, green as the primary accent,
-   other colours used where they serve the page.
-   ───────────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════
+   MCOP design tokens — "The Cross-Section"
+   A homestead at dusk. The page is a cutaway of a Minecraft world:
+   sky → grass → stone → deepslate → bedrock. Warm, torch-lit, alive.
+   Monocraft (OFL, github.com/IdreesInc/Monocraft) self-hosted.
+   ═══════════════════════════════════════════════════════════════════ */
 
 @font-face {
   font-family: 'Monocraft';
@@ -17,14 +16,61 @@
 :root {
   --font-pixel: 'Monocraft', ui-monospace, 'Courier New', monospace;
 
-  /* full-bleed backdrop — drop your own world screenshot here to swap it */
-  --bg-image: url('/assets/screenshots/panorama.webp');
+  /* dusk sky (default world) */
+  --sky-top: #1d1b33;
+  --sky-mid: #45304e;
+  --sky-glow: #b05c33;
+  /* day sky */
+  --day-top: #4f8fd0;
+  --day-mid: #79aede;
+  --day-glow: #ffe9b8;
 
-  /* spacing scale (used consistently everywhere) */
+  /* material palette (sampled from the CC0 tile set for cohesion) */
+  --wood-1: #c99e6a;      /* planks light */
+  --wood-2: #9b6f3f;      /* planks mid */
+  --wood-3: #6b4a2b;      /* dark oak */
+  --ink: #2b2118;         /* dark-wood text on boards */
+  --ink-soft: #4a3a26;
+  --parchment: #e8dcc2;
+
+  --grass: #6abe30;
+  --grass-2: #8fd15c;
+  --leaf: #3e7a2a;
+  --torch: #ffb23d;
+  --ember: #e8702a;
+  --gold: #ffd876;
+  --xp: #8fd15c;
+  --redstone: #cf4136;
+  --diamond: #6fe3e1;
+  --lapis: #3f76e4;
+
+  /* GUI grays (classic button/panel language) */
+  --gui-1: #6b7079;
+  --gui-2: #565b63;
+  --gui-dark: #2c3037;
+  --gui-edge: #0b0d10;
+
+  /* text on the dark world */
+  --text: #f4efe6;
+  --muted: #cfc6b8;
+  --muted-dim: #97917f;
+
+  /* panel surfaces */
+  --panel: rgba(21, 19, 26, 0.90);
+  --panel-2: rgba(14, 13, 18, 0.92);
+  --border: rgba(244, 239, 230, 0.14);
+
+  /* spacing scale */
   --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px;
   --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
 
-  /* raw colours available when a component wants one */
-  --grass: #5FAE3B; --grass-2: #86e05a; --leaf: #3E7A2A;
-  --torch: #E8702A; --gold: #FFCE42; --redstone: #C0392B; --lapis: #3F76E4;
+  /* one block = the world's grid unit (48px on desktop) */
+  --block: 48px;
+
+  /* motion */
+  --steps: steps(5);
+}
+
+@media (max-width: 720px) {
+  :root { --block: 36px; }
 }
