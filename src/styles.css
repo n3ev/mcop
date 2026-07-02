@@ -152,7 +152,10 @@ html[data-theme='day'] .cloud { background: rgba(255,255,255,0.5); box-shadow: 3
   align-items: center;
   gap: 18px;
   padding: 12px 22px;
-  background: linear-gradient(rgba(255, 240, 214, 0.06), rgba(0, 0, 0, 0.3)), #33241a;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.30), rgba(0, 0, 0, 0.44)),
+    url('/assets/textures/blocks/topbar.png') center / 48px;
+  image-rendering: pixelated;
   border-bottom: 3px solid var(--gui-edge);
   box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.08), 0 3px 0 rgba(0, 0, 0, 0.35);
 }
@@ -201,7 +204,7 @@ html[data-theme='day'] .cloud { background: rgba(255,255,255,0.5); box-shadow: 3
   border: 0 solid transparent;
   border-left-width: 22px;
   border-right-width: 22px;
-  border-image: url('/assets/textures/hang-chains.png') 0 52 fill / 0 22px stretch;
+  border-image: url('/assets/textures/hang-chains.png') 0 40 fill / 0 25px stretch;
   pointer-events: none;
 }
 .header-link:hover, .header-user:hover, .header-auth .btn:hover:not(:disabled) {
@@ -482,7 +485,7 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
   padding: 3px 16px;
   margin-bottom: 42px;
   border: 11px solid transparent;
-  border-image: url('/assets/textures/post-board.png') 14 fill / 11px round;
+  border-image: url('/assets/textures/post-board.png') 16 fill / 11px round;
   color: #20160c;
   font-size: 0.95rem;
   text-transform: uppercase;
@@ -527,7 +530,7 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
   border: 0 solid transparent;
   border-left-width: 30px;
   border-right-width: 30px;
-  border-image: url('/assets/textures/hang-chains.png') 0 52 fill / 0 30px stretch;
+  border-image: url('/assets/textures/hang-chains.png') 0 40 fill / 0 35px stretch;
   pointer-events: none;
 }
 .section-eyebrow { margin-bottom: 30px; animation: sign-sway 7s ease-in-out infinite; transform-origin: 50% -50px; }
@@ -543,7 +546,7 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
   padding: 14px 8px;
   text-align: center;
   border: 16px solid transparent;
-  border-image: url('/assets/textures/hang-board.png') 18 fill / 16px round;
+  border-image: url('/assets/textures/hang-board.png') 16 fill / 16px round;
   animation: sign-sway 6s ease-in-out infinite;
   transform-origin: 50% -46px;
 }
@@ -557,7 +560,7 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
   border: 0 solid transparent;
   border-left-width: 33px;
   border-right-width: 33px;
-  border-image: url('/assets/textures/hang-chains.png') 0 52 fill / 0 33px stretch;
+  border-image: url('/assets/textures/hang-chains.png') 0 40 fill / 0 38px stretch;
   pointer-events: none;
 }
 .timer-label { color: var(--ink-soft); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1.2px; }
@@ -586,7 +589,7 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
   flex-direction: column;
   gap: 14px;
   border: 18px solid transparent;
-  border-image: url('/assets/textures/hang-board.png') 20 fill / 18px round;
+  border-image: url('/assets/textures/hang-board.png') 16 fill / 18px round;
   color: var(--ink);
   animation: sign-drop 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.15);
   transform-origin: 50% -60px;
@@ -601,7 +604,7 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
   border: 0 solid transparent;
   border-left-width: 40px;
   border-right-width: 40px;
-  border-image: url('/assets/textures/hang-chains.png') 0 52 fill / 0 40px stretch;
+  border-image: url('/assets/textures/hang-chains.png') 0 40 fill / 0 47px stretch;
   pointer-events: none;
 }
 @keyframes sign-drop {
@@ -721,7 +724,7 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
   min-height: 112px;
   padding: 10px 8px;
   border: 13px solid transparent;
-  border-image: url('/assets/textures/post-board.png') 14 fill / 13px round;
+  border-image: url('/assets/textures/post-board.png') 16 fill / 13px round;
   color: #20160c;
   font-size: 0.98rem;
   line-height: 1.5;
@@ -1319,7 +1322,7 @@ html[data-theme='day'] .ember { display: none; }
   .topbar { flex-wrap: wrap; gap: 8px 12px; padding: 8px 12px; }
   .header-auth { gap: 10px; margin-left: 0; }
   .header-link, .header-user, .header-auth .btn { min-width: 70px; font-size: 0.68rem; margin-top: 20px; }
-  .header-link::before, .header-user::before, .header-auth .btn::before { top: -27px; height: 20px; border-left-width: 15px; border-right-width: 15px; border-image-width: 0 15px; }
+  .header-link::before, .header-user::before, .header-auth .btn::before { top: -27px; height: 20px; border-left-width: 17px; border-right-width: 17px; border-image-width: 0 17px; }
   .card { padding: 22px 18px; }
   .stratum-sky { min-height: auto; padding: 36px 16px 84px; }
   .hero-bullets { gap: 12px; margin-bottom: -84px; }
@@ -1409,53 +1412,32 @@ html[data-theme='day'] .ember { display: none; }
   animation: glow-breathe 2.8s ease-in-out infinite;
 }
 
-/* rails: placeholder strip until the real rail texture lands
-   (then: background url(rail.png) repeat-x and delete this gradient) */
+/* real vanilla rails running along the shaft floor */
 .shaft-rails {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 26px;
+  height: 30px;
   background:
-    repeating-linear-gradient(90deg, transparent 0 10px, rgba(61, 43, 31, 0.9) 10px 24px, transparent 24px 34px),
-    linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)),
-    rgba(20, 16, 12, 0.9);
-  border-top: 3px solid #101010;
-  box-shadow: inset 0 6px 0 rgba(158, 158, 168, 0.35), inset 0 8px 0 rgba(0, 0, 0, 0.4);
+    url('/assets/textures/blocks/rail.png') left bottom / 30px repeat-x,
+    linear-gradient(rgba(14, 11, 9, 0.92), rgba(14, 11, 9, 0.92));
+  image-rendering: pixelated;
   z-index: 2;
 }
 
-/* the cart rolls forever. placeholder silhouette — swap for the real
-   minecart sprite (.minecart gets a background image) when it lands. */
+/* the cart rolls forever — real minecart side face from the entity atlas */
 .minecart {
   position: absolute;
-  bottom: 20px;
+  bottom: 24px;
   left: 0;
-  width: 92px;
-  height: 56px;
+  width: 86px;
+  height: 76px;
+  background: url('/assets/textures/blocks/minecart.png') center / contain no-repeat;
+  image-rendering: pixelated;
   z-index: 3;
   animation: cart-roll 24s linear infinite;
   will-change: transform;
-}
-.minecart::before {  /* body */
-  content: '';
-  position: absolute;
-  inset: 0 0 12px 0;
-  background: linear-gradient(#8b8f98 0 22%, #5c6068 22% 100%);
-  border: 3px solid #101014;
-  box-shadow: inset 0 -10px 0 rgba(0, 0, 0, 0.35), inset 0 4px 0 rgba(255, 255, 255, 0.15);
-}
-.minecart::after {   /* wheels */
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 12px;
-  width: 16px;
-  height: 14px;
-  background: #26282e;
-  border: 2px solid #101014;
-  box-shadow: 46px 0 0 #26282e, 46px 0 0 2px #101014;
 }
 @keyframes cart-roll {
   0%   { transform: translateX(-120px); }

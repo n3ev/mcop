@@ -1,16 +1,14 @@
 # Asset credits
 
-MCOP is a fan-made community project, not affiliated with Mojang or Microsoft.
-All visual and audio theming is original or openly licensed — no Mojang assets are used.
+MCOP is a fan-made community project, **not affiliated with Mojang or Microsoft**.
 
 ## Textures & sprites
-- **16×16 Block Texture Set** by [ARoachIFoundOnMyPillow](https://opengameart.org/content/16x16-block-texture-set) — CC0.
-  Used for the world strata (grass, dirt, stone, ores, deepslate/schist, obsidian, planks, log, gravel)
-  and plant sprites (grasses, flowers, mushrooms, fern, sapling, spiderweb, crystal) in
-  `public/assets/textures/blocks/`. Redstone ore is a hue-shifted derivative of the crystalline ore tile.
-- **Torch, sun and moon sprites** — original pixel art made for MCOP (CC0).
-- **Sign textures** (`sign-post`, `sign-hanging` and their 9-slice parts) — MCOP's own photographed/cleaned assets.
-- **Panorama backdrop** (`screenshots/panorama.webp`) — MCOP's own in-game screenshot.
+- **Minecraft block, sign, rail, minecart, sun and moon textures** — © Mojang/Microsoft,
+  from the vanilla game assets (via the [minecraft-assets](https://github.com/InventivetalentDev/minecraft-assets)
+  mirror, version 26.2). Used non-commercially as fan content with the disclaimer above,
+  at the direction of the site owner. Files live in `public/assets/textures/` (the sign
+  9-slice parts are crops/upscales of the vanilla GUI sign textures).
+- **Panorama screenshot** and the superseded sign photographs — MCOP's own captures.
 - **MCOP logo** — original artwork.
 
 ## Fonts
