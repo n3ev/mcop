@@ -235,7 +235,6 @@ export default function App() {
   return (
     <div className="app">
       <SkyBodies />
-      <div className="horizon" aria-hidden="true" />
       <DepthMeter />
 
       <header className="topbar">

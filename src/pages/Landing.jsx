@@ -158,9 +158,16 @@ const FLORA = [
   ['sprite-fern', '69%'], ['sprite-grass', '80%'], ['sprite-daisy', '91%'],
 ]
 
-function Ridge({ variant, flora }) {
+// mobs that stroll the grass at dusk. drop Neev's walking GIFs into
+// public/assets/textures/mobs/ and list them here: [file, height, dur, delay]
+const MOBS = [
+  // ['sheep.gif', 52, '48s', '0s'],
+  // ['zombie.gif', 60, '64s', '-20s'],
+]
+
+function Ridge({ flora }) {
   return (
-    <div className={'ridge' + (variant ? ` ridge--${variant}` : '')} aria-hidden="true">
+    <div className="ridge" aria-hidden="true">
       {flora && FLORA.map(([name, fx], i) => (
         <img
           key={i}
@@ -169,6 +176,32 @@ function Ridge({ variant, flora }) {
           alt=""
           style={{ '--fx': fx, '--fdelay': -(i * 0.7) + 's' }}
         />
+      ))}
+      {flora && !reduced() && MOBS.map(([file, h, dur, delay], i) => (
+        <img
+          key={'m' + i}
+          className="mob"
+          src={`/assets/textures/mobs/${file}`}
+          alt=""
+          style={{ '--mh': h + 'px', '--mdur': dur, '--mdelay': delay }}
+        />
+      ))}
+    </div>
+  )
+}
+
+// a jagged seam between two strata: blocks of the lower layer flow up,
+// blocks of the upper layer flow down
+const T = (name) => `url('/assets/textures/blocks/${name}.png')`
+
+function Seam({ upper, lower, ups = ['4%', '19%', '38%', '57%', '76%', '91%'], downs = ['11%', '29%', '49%', '68%', '84%'] }) {
+  return (
+    <div className="seam" aria-hidden="true">
+      {ups.map((sx, i) => (
+        <span key={'u' + i} className="seam-block up" style={{ '--sx': sx, '--tex': T(lower) }} />
+      ))}
+      {downs.map((sx, i) => (
+        <span key={'d' + i} className="seam-block down" style={{ '--sx': sx, '--tex': T(upper) }} />
       ))}
     </div>
   )
@@ -198,7 +231,7 @@ export default function Landing() {
         <Embers />
 
         <div className="title-screen">
-          <Logo size={106} />
+          <Logo size={128} />
           <SplashText />
         </div>
 
@@ -227,6 +260,7 @@ export default function Landing() {
             </ul>
           </>
         )}
+        <div className="dig-cue">▼ dig deeper ▼</div>
       </section>
 
       {/* ── ground level ── */}
@@ -256,7 +290,7 @@ export default function Landing() {
       </section>
 
       {/* ── the mine ── */}
-      <Ridge variant="gravel" />
+      <Seam upper="dirt" lower="stone" />
       <section className="stratum-stone">
         {ORES.map(([name, ox, oy], i) => (
           <img
@@ -280,6 +314,7 @@ export default function Landing() {
       </section>
 
       {/* ── the cave ── */}
+      <Seam upper="stone" lower="deepslate" ups={['9%', '26%', '44%', '63%', '81%', '95%']} downs={['3%', '17%', '35%', '54%', '73%', '89%']} />
       <section className="stratum-deep">
         <img className="cave-torch" src="/assets/textures/blocks/torch.png" alt="" aria-hidden="true" style={{ '--tx': '12%', '--ty': '32%' }} />
         <img className="cave-torch" src="/assets/textures/blocks/torch.png" alt="" aria-hidden="true" style={{ '--tx': '85%', '--ty': '38%' }} />
@@ -288,6 +323,32 @@ export default function Landing() {
         <img className="cave-decor" src="/assets/textures/blocks/sprite-mushroom-brown.png" alt="" aria-hidden="true" style={{ '--dx': '74%', '--db': '5%' }} />
         <img className="cave-decor" src="/assets/textures/blocks/sprite-crystal.png" alt="" aria-hidden="true" style={{ '--dx': '91%', '--db': '8%' }} />
         <Reviews />
+      </section>
+
+      {/* ── the mineshaft: end of the line, one last call to play ── */}
+      <Seam upper="deepslate" lower="stone" ups={['6%', '22%', '41%', '60%', '78%', '93%']} downs={['13%', '31%', '51%', '70%', '86%']} />
+      <section className="stratum-mineshaft">
+        {/* timber frames */}
+        <div className="shaft-post" style={{ '--px': '9%' }} aria-hidden="true" />
+        <div className="shaft-post" style={{ '--px': 'calc(9% + 220px)' }} aria-hidden="true" />
+        <div className="shaft-lintel" style={{ '--lx': '9%', '--lw': 'calc(220px + 20px)' }} aria-hidden="true" />
+        <div className="shaft-post" style={{ '--px': '72%' }} aria-hidden="true" />
+        <div className="shaft-post" style={{ '--px': 'calc(72% + 220px)' }} aria-hidden="true" />
+        <div className="shaft-lintel" style={{ '--lx': '72%', '--lw': 'calc(220px + 20px)' }} aria-hidden="true" />
+        <img className="shaft-torch" src="/assets/textures/blocks/torch.png" alt="" aria-hidden="true" style={{ '--tx': 'calc(9% + 105px)' }} />
+        <img className="shaft-torch" src="/assets/textures/blocks/torch.png" alt="" aria-hidden="true" style={{ '--tx': 'calc(72% + 105px)' }} />
+
+        <div className="wrap">
+          <p className="section-eyebrow">End of the line</p>
+          <h2>Grab a pickaxe. Find your buddy.</h2>
+          <p className="muted" style={{ maxWidth: 560, margin: '0 auto 26px' }}>
+            You made it to the bottom of the world. The only thing left to do is play.
+          </p>
+          <button className="btn primary big" onClick={start}>Find my buddy ⛏</button>
+        </div>
+
+        <div className="minecart" aria-hidden="true" />
+        <div className="shaft-rails" aria-hidden="true" />
       </section>
     </div>
   )
