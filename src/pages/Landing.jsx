@@ -229,6 +229,7 @@ export default function Landing() {
       <section className="stratum-sky hero">
         <Clouds />
         <Embers />
+        {!reduced() && <span className="shooting-star" aria-hidden="true" />}
 
         <div className="title-screen">
           <Logo size={128} />
@@ -347,6 +348,19 @@ export default function Landing() {
           <button className="btn primary big" onClick={start}>Find my buddy ⛏</button>
         </div>
 
+        {!reduced() && Array.from({ length: 5 }, (_, i) => (
+          <span
+            key={'o' + i}
+            className="xp-orb"
+            aria-hidden="true"
+            style={{
+              '--x': (10 + (i * 173) % 82) + '%',
+              '--dur': (8 + (i * 61) % 40 / 10) + 's',
+              '--delay': -((i * 227) % 90 / 10) + 's',
+              '--drift': (((i * 37) % 30) - 15) + 'px',
+            }}
+          />
+        ))}
         <div className="minecart" aria-hidden="true" />
         <div className="shaft-rails" aria-hidden="true" />
       </section>

@@ -105,13 +105,15 @@ html::before {  /* day layer above the dusk layer, faded in by the lever */
 html[data-theme='day']::before { opacity: 1; }
 html[data-theme='day'] body::before { opacity: 0; }
 
-/* sun and moon drift slowly; the lever swaps them */
+/* sun and moon drift slowly; the lever swaps them.
+   vanilla celestial textures ship on opaque black — screen-blend melts
+   the black into whatever sky is behind (same trick the game uses) */
 .sky-body {
   position: fixed;
-  top: 9vh;
-  right: 11vw;
-  width: 72px;
-  height: 72px;
+  top: 13vh;
+  right: 10vw;
+  width: 120px;
+  height: 120px;
   z-index: -1;
   transition: opacity 2s ease, transform 2s ease;
   animation: sky-drift 240s linear infinite alternate;
@@ -232,10 +234,12 @@ html[data-theme='day'] .cloud { background: rgba(255,255,255,0.5); box-shadow: 3
   pointer-events: none;
 }
 
-/* bedrock footer — the bottom of the world */
+/* bedrock footer — the bottom of the world.
+   z-index above all strata layers: the bug-report modal renders inside
+   the footer, so its overlay must escape the strata stacking order */
 .footer {
   position: relative;
-  z-index: 2;
+  z-index: 60;
   margin-top: auto;
   padding: 26px 20px 22px;
   display: flex;
@@ -1510,3 +1514,74 @@ h2 { font-size: 1.6rem; }
 @media (prefers-reduced-motion: reduce) {
   .minecart, .mob, .dig-cue { display: none !important; }
 }
+
+/* ── autonomy pass: fallback avatar, xp orbs, cave vignette ─────────── */
+.mc-avatar-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #10230a;
+  background: linear-gradient(#78ca43, #4f9a31);
+}
+
+/* xp orbs drifting up through the mineshaft */
+.xp-orb {
+  position: absolute;
+  left: var(--x);
+  bottom: 24px;
+  width: 7px;
+  height: 7px;
+  background: radial-gradient(circle, #eaffb0 0%, #8fd15c 60%, #4f9a31 100%);
+  box-shadow: 0 0 9px 2px rgba(143, 209, 92, 0.55);
+  opacity: 0;
+  animation: orb-rise var(--dur, 9s) ease-in var(--delay, 0s) infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+@keyframes orb-rise {
+  0%   { transform: translate(0, 0) scale(1); opacity: 0; }
+  12%  { opacity: 0.95; }
+  60%  { opacity: 0.7; transform: translate(var(--drift, 14px), -150px) scale(0.85); }
+  100% { transform: translate(calc(var(--drift, 14px) * 2), -280px) scale(0.6); opacity: 0; }
+}
+
+/* the cave darkens toward its edges — torchlight only reaches so far */
+.stratum-deep::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 75% 80% at 50% 45%, transparent 48%, rgba(0, 0, 0, 0.42) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+.stratum-deep .wrap { position: relative; z-index: 2; }
+
+@media (prefers-reduced-motion: reduce) { .xp-orb { display: none !important; } }
+
+/* a shooting star crosses the dusk sky every so often */
+.shooting-star {
+  position: absolute;
+  top: 12%;
+  left: -60px;
+  width: 46px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #fff9e8);
+  transform: rotate(14deg);
+  opacity: 0;
+  animation: star-streak 17s linear 4s infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+html[data-theme='day'] .shooting-star { display: none; }
+@keyframes star-streak {
+  0%    { transform: translate(0, 0) rotate(14deg); opacity: 0; }
+  1%    { opacity: 0.9; }
+  4%    { transform: translate(46vw, 11vw) rotate(14deg); opacity: 0; }
+  100%  { transform: translate(46vw, 11vw) rotate(14deg); opacity: 0; }
+}
+
+/* day sky is bright — give hero copy a harder shadow to hold contrast */
+html[data-theme='day'] .hero-sub,
+html[data-theme='day'] .dig-cue { text-shadow: 1px 0 0 currentColor, 2px 2px 0 rgba(0, 0, 0, 0.8); }
+
+@media (prefers-reduced-motion: reduce) { .shooting-star { display: none !important; } }

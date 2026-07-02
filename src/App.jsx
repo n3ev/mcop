@@ -11,6 +11,7 @@ import Preferences from './pages/Preferences.jsx'
 import Settings from './pages/Settings.jsx'
 import ForgotPassword from './pages/ForgotPassword.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
+import NotFound from './pages/NotFound.jsx'
 import { useEffect, useRef, useState } from 'react'
 import BugReport from './components/BugReport.jsx'
 import SoundToggle from './components/SoundToggle.jsx'
@@ -259,6 +260,7 @@ export default function App() {
           <Route path="/settings" element={<div className="page"><Settings /></div>} />
           <Route path="/forgot" element={<div className="page"><ForgotPassword /></div>} />
           <Route path="/reset-password" element={<div className="page"><ResetPassword /></div>} />
+          <Route path="*" element={<div className="page"><NotFound /></div>} />
         </Routes>
       </main>
 
