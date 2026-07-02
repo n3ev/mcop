@@ -5,6 +5,7 @@ import { shareContact, getPartnerContact } from '../lib/session.js'
 import { addFriend, blockBuddy } from '../lib/social.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import Avatar from '../components/Avatar.jsx'
+import { playError, playPop } from '../lib/sound.js'
 
 const SOCIALS = [
   { id: 'discord',   label: 'Discord',   placeholder: 'username or @user' },
@@ -35,7 +36,7 @@ export default function PostSession() {
     if (!shared || !canExchange || partnerContact || picked === 'none') return
     const t = setInterval(async () => {
       const { partner } = await getPartnerContact(session.matchId, session.role)
-      if (partner) setPartnerContact(partner)
+      if (partner) { setPartnerContact(partner); playPop() }
     }, 4000)
     return () => clearInterval(t)
   }, [shared, partnerContact, picked])
@@ -53,6 +54,7 @@ export default function PostSession() {
       if (partner) setPartnerContact(partner)
     } catch (err) {
       setError(err.message)
+      playError()
     } finally {
       setBusy(false)
     }

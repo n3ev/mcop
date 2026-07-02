@@ -406,31 +406,6 @@ body {
   overflow: hidden;
 }
 
-.hero::before {
-  content: '';
-  position: absolute;
-  top: -60px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 700px;
-  height: 420px;
-  background: radial-gradient(ellipse, rgba(34,197,94,0.08) 0%, transparent 68%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: url('https://minecraft.wiki/images/Adventure_Wallpaper.png') center center / cover no-repeat;
-  opacity: 0.18;
-  mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
-  pointer-events: none;
-  z-index: -1;
-}
-
 .hero > * { position: relative; z-index: 1; }
 
 .hero-eyebrow {
@@ -1595,72 +1570,142 @@ body::before { animation: mcop-pan 70s ease-in-out infinite alternate; transform
 .presence.on { color: var(--green-2); }
 .presence.off { color: var(--muted-dim); }
 
-/* ── wooden signs (real textures) ─────────────────────────────────────
-   Hanging sign for section labels, standing post sign for status tags.
-   Text is dropped onto the board area so nothing reads as empty.
-   Textures live in public/assets/textures/.
+/* ── wooden signs (real textures, true 9-slice) ───────────────────────
+   The uploaded sign photos are split into parts (scratch pipeline):
+     post-board.png  192×97   standing-sign board only
+     post-pole.png    17×112  standing-sign pole only
+     hang-board.png  168×121  hanging-sign board only
+     hang-chains.png 192×72   dark beam + two chains
+   Boards are 9-sliced with border-image so the frame stays crisp at any
+   width; poles and chains are pseudo-elements at fixed aspect, so nothing
+   ever stretches. All sources render at or below native size (downscale
+   only) — no blur, no fat chains, no squashed poles.
    ─────────────────────────────────────────────────────────────────── */
+
+/* hanging sign labels: chains above, board is the element */
 .section-eyebrow, .panel-history-label, .hero-eyebrow {
   display: inline-flex !important;
-  align-items: flex-end;          /* board sits in the lower part of the sign */
+  align-items: center;
   justify-content: center;
   gap: 8px;
+  position: relative;
   color: #2b2118 !important;
   font-family: var(--font-pixel);
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.30) !important;
-  background: url('/assets/textures/sign-hanging.png') center / 100% 100% no-repeat !important;
-  border: none !important;
+  background: none !important;
   box-shadow: none !important;
-  min-width: 180px;
-  min-height: 96px;
-  padding: 0 30px 20px !important;
-  margin-top: 8px;
-  position: relative;
+  border: 12px solid transparent !important;
+  border-image: url('/assets/textures/hang-board.png') 16 fill / 12px stretch !important;
+  min-width: 170px;
+  min-height: 52px;
+  padding: 4px 16px !important;
+  margin-top: 42px;   /* room for the chains */
 }
-/* the texture has its own chains — kill the old CSS nails */
-.section-eyebrow::before, .section-eyebrow::after,
-.panel-history-label::before, .panel-history-label::after,
-.hero-eyebrow::before, .hero-eyebrow::after { display: none !important; }
+.section-eyebrow::before, .panel-history-label::before, .hero-eyebrow::before {
+  content: '' !important;
+  display: block !important;
+  position: absolute;
+  left: -18px;
+  right: -18px;
+  top: -46px;
+  height: 38px;
+  border: 0 solid transparent;
+  border-left-width: 27px;
+  border-right-width: 27px;
+  border-image: url('/assets/textures/hang-chains.png') 0 52 fill / 0 27px stretch;
+  pointer-events: none;
+}
+.section-eyebrow::after, .panel-history-label::after, .hero-eyebrow::after { display: none !important; }
+.section-eyebrow { margin-bottom: 24px; }
 
-/* status tags ride the standing post sign (board is the upper part) */
+/* status tags ride small standing post signs */
 .tag {
-  background: url('/assets/textures/sign-post.png') center / 100% 100% no-repeat !important;
-  border: none !important;
+  background: none !important;
   box-shadow: none !important;
+  border: 10px solid transparent !important;
+  border-image: url('/assets/textures/post-board.png') 14 fill / 10px stretch !important;
   color: #2b2118 !important;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.30) !important;
   display: inline-flex !important;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  min-width: 128px;
-  min-height: 104px;
-  padding: 16px 16px 0 !important;
+  position: relative;
+  min-width: 120px;
+  min-height: 44px;
+  padding: 2px 12px !important;
+  margin-bottom: 42px;   /* room for the pole */
+}
+.tag::after {
+  content: '';
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 13px;
+  height: 36px;
+  background: url('/assets/textures/post-pole.png') top center / 13px auto no-repeat;
 }
 .tag.good { color: #1f4d12 !important; }
 
-/* hero feature "tabs" → standing post signs */
+/* hero feature "tabs" → standing post signs, planted in a row */
 .hero-bullets li, .hero-bullets li:hover {
-  background: url('/assets/textures/sign-post.png') center / 100% 100% no-repeat !important;
-  border: none !important;
+  background: none !important;
   box-shadow: none !important;
+  border: 12px solid transparent !important;
+  border-image: url('/assets/textures/post-board.png') 14 fill / 12px stretch !important;
   color: #2b2118 !important;
   text-shadow: 0 1px 0 rgba(255,255,255,0.28) !important;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   text-align: center;
-  min-height: 128px;
-  padding: 20px 16px 0 !important;
+  position: relative;
+  min-height: 96px;
+  padding: 8px 6px !important;
+  margin-bottom: 56px;   /* pole space */
   font-weight: 700;
+  transition: transform 0.15s ease;
+}
+.hero-bullets li:hover { transform: rotate(-1.2deg); }
+.hero-bullets li::after {
+  content: '';
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 50px;
+  background: url('/assets/textures/post-pole.png') top center / 14px auto no-repeat;
 }
 
 /* the session timer hangs from a sign */
 .timer {
-  background: url('/assets/textures/sign-hanging.png') center / 100% 100% no-repeat !important;
-  border: none !important;
+  background: none !important;
   box-shadow: none !important;
-  min-height: 230px;
-  padding: 74px 22px 26px !important;
+  border: 16px solid transparent !important;
+  border-image: url('/assets/textures/hang-board.png') 18 fill / 16px stretch !important;
+  position: relative;
+  margin-top: 50px;
+  padding: 14px 8px !important;
+  animation: sign-sway 6s ease-in-out infinite;
+  transform-origin: 50% -46px;
+}
+.timer::before {
+  content: '';
+  position: absolute;
+  left: -22px;
+  right: -22px;
+  top: -58px;
+  height: 46px;
+  border: 0 solid transparent;
+  border-left-width: 33px;
+  border-right-width: 33px;
+  border-image: url('/assets/textures/hang-chains.png') 0 52 fill / 0 33px stretch;
+  pointer-events: none;
+}
+@keyframes sign-sway {
+  0%, 100% { transform: rotate(0.7deg); }
+  50%      { transform: rotate(-0.7deg); }
 }
 .timer-label { color: #5a3d22 !important; }
 .timer-clock {
@@ -1670,20 +1715,36 @@ body::before { animation: mcop-pan 70s ease-in-out infinite alternate; transform
   filter: none !important;
   text-shadow: 0 1px 0 rgba(255,255,255,0.3) !important;
 }
+.timer .muted { color: #4a3a26; }
 
 /* stat blocks → small post signs (drop the bar + dividers) */
 .stats-bar, .panel-stats {
   background: none !important;
   border: none !important;
   box-shadow: none !important;
-  gap: 10px !important;
+  gap: 14px !important;
+  align-items: flex-start;
 }
 .stat-divider { display: none !important; }
 .stat {
-  background: url('/assets/textures/sign-post.png') center / 100% 100% no-repeat !important;
-  min-height: 112px;
-  padding: 18px 6px 0 !important;
-  justify-content: flex-start;
+  background: none !important;
+  border: 10px solid transparent !important;
+  border-image: url('/assets/textures/post-board.png') 14 fill / 10px stretch !important;
+  position: relative;
+  min-height: 64px;
+  padding: 4px 2px !important;
+  justify-content: center;
+  margin-bottom: 46px;
+}
+.stat::after {
+  content: '';
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 13px;
+  height: 40px;
+  background: url('/assets/textures/post-pole.png') top center / 13px auto no-repeat;
 }
 .stat-num {
   color: #2b2118 !important;
@@ -1693,3 +1754,269 @@ body::before { animation: mcop-pan 70s ease-in-out infinite alternate; transform
   text-shadow: 0 1px 0 rgba(255,255,255,0.3) !important;
 }
 .stat-label { color: #5a3d22 !important; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   MCOP REDESIGN — living world layer
+   Day/night lever, real animated logo, sign modal, compass, hearts,
+   embers, fireworks, creeper, scroll reveals, themed scrollbar.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── real MCOP logo (animated webp with alpha) ────────────────────── */
+.mcop-logo-img {
+  display: block;
+  margin: 0 auto;
+  image-rendering: pixelated;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 6px 0 rgba(0, 0, 0, 0.35));
+}
+.logo-roll { animation: logo-roll 0.9s ease; }
+@keyframes logo-roll { to { transform: rotate(360deg); } }
+
+/* warm campfire glow breathing behind the logo's fire tile */
+.title-screen::before {
+  content: '';
+  position: absolute;
+  left: -12%;
+  bottom: -10%;
+  width: 65%;
+  height: 60%;
+  background: radial-gradient(ellipse, rgba(255, 157, 61, 0.30) 0%, rgba(232, 112, 42, 0.12) 45%, transparent 72%);
+  animation: glow-breathe 3.4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.75; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.12); }
+}
+
+/* ── day/night (lever in the header; night is default) ─────────────── */
+body::before { z-index: -3; transition: filter 1.4s ease; }
+body::after  { transition: opacity 1.4s ease; }
+html::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(121, 166, 210, 0.34) 0%, rgba(226, 200, 150, 0.14) 55%, rgba(20, 24, 30, 0.30) 100%);
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+html[data-theme='day']::before { opacity: 1; }
+html[data-theme='day'] body::before { filter: brightness(1.5) saturate(1.12); }
+html[data-theme='day'] body::after { opacity: 0.42; }
+html[data-theme='day'] .app { background: rgba(14, 18, 24, 0.68); }
+.topbar-lever { margin-left: auto; display: flex; align-items: center; }
+.topbar .header-auth { margin-left: 14px; }
+
+/* ── modal = a big hanging sign that swings in ─────────────────────── */
+.modal {
+  background: none !important;
+  box-shadow: none !important;
+  border: 18px solid transparent !important;
+  border-image: url('/assets/textures/hang-board.png') 20 fill / 18px stretch !important;
+  position: relative;
+  margin-top: 70px;
+  color: #2b2118;
+  animation: sign-drop 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.15);
+  transform-origin: 50% -60px;
+}
+.modal::before {
+  content: '';
+  position: absolute;
+  left: -26px;
+  right: -26px;
+  top: -70px;
+  height: 56px;
+  border: 0 solid transparent;
+  border-left-width: 40px;
+  border-right-width: 40px;
+  border-image: url('/assets/textures/hang-chains.png') 0 52 fill / 0 40px stretch;
+  pointer-events: none;
+}
+@keyframes sign-drop {
+  0%   { transform: translateY(-26px) rotate(2deg); opacity: 0; }
+  60%  { transform: translateY(4px) rotate(-1deg); opacity: 1; }
+  100% { transform: translateY(0) rotate(0); }
+}
+.modal-title { color: #2b2118; text-shadow: 0 1px 0 rgba(255,255,255,0.3); }
+.modal .muted { color: #4a3a26; }
+.bug-error { color: #8f1d10; font-weight: 700; }
+
+/* ── spinning compass while matchmaking ────────────────────────────── */
+.compass {
+  width: 58px;
+  height: 58px;
+  margin: 2px auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(#3a3f47, #2c3037);
+  border: 2px solid #0b0d10;
+  box-shadow:
+    inset 2px 2px 0 rgba(255, 255, 255, 0.14),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.5);
+}
+.compass-needle {
+  width: 5px;
+  height: 30px;
+  background: linear-gradient(#e04a35 0%, #e04a35 52%, #f3f5f2 52%, #f3f5f2 100%);
+  box-shadow: 0 0 6px rgba(224, 74, 53, 0.5);
+  animation: compass-seek 2.2s cubic-bezier(0.55, 0.06, 0.35, 0.94) infinite;
+}
+@keyframes compass-seek {
+  0%   { transform: rotate(0deg); }
+  28%  { transform: rotate(190deg); }
+  46%  { transform: rotate(150deg); }
+  72%  { transform: rotate(335deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ── pixel hearts (compatibility) ──────────────────────────────────── */
+.hearts-row { display: flex; gap: 4px; justify-content: center; margin: 8px 0 2px; }
+.px-heart {
+  width: 15px;
+  height: 13px;
+  background: #33383f;
+  clip-path: polygon(14.3% 0%, 42.9% 0%, 42.9% 16.7%, 57.1% 16.7%, 57.1% 0%, 85.7% 0%, 85.7% 16.7%, 100% 16.7%, 100% 50%, 85.7% 50%, 85.7% 66.7%, 71.4% 66.7%, 71.4% 83.3%, 57.1% 83.3%, 57.1% 100%, 42.9% 100%, 42.9% 83.3%, 28.6% 83.3%, 28.6% 66.7%, 14.3% 66.7%, 14.3% 50%, 0% 50%, 0% 16.7%, 14.3% 16.7%)
+}
+.px-heart.full { background: #e0342a; animation: heart-pop 0.3s ease backwards; }
+.px-heart.full:nth-child(2)  { animation-delay: 0.05s; }
+.px-heart.full:nth-child(3)  { animation-delay: 0.10s; }
+.px-heart.full:nth-child(4)  { animation-delay: 0.15s; }
+.px-heart.full:nth-child(5)  { animation-delay: 0.20s; }
+.px-heart.full:nth-child(6)  { animation-delay: 0.25s; }
+.px-heart.full:nth-child(7)  { animation-delay: 0.30s; }
+.px-heart.full:nth-child(8)  { animation-delay: 0.35s; }
+.px-heart.full:nth-child(9)  { animation-delay: 0.40s; }
+.px-heart.full:nth-child(10) { animation-delay: 0.45s; }
+@keyframes heart-pop {
+  0%  { transform: scale(0); }
+  70% { transform: scale(1.35); }
+}
+
+/* ── ambient embers rising through the hero ────────────────────────── */
+.embers { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0 !important; }
+.ember {
+  position: absolute;
+  left: var(--x);
+  bottom: -8px;
+  width: 5px;
+  height: 5px;
+  background: #FF9D3D;
+  box-shadow: 0 0 7px 1px rgba(255, 157, 61, 0.55);
+  opacity: 0;
+  animation: ember-rise var(--dur) linear var(--delay) infinite;
+  will-change: transform, opacity;
+}
+.ember:nth-child(3n)  { background: #FFCE42; }
+.ember:nth-child(4n)  { width: 4px; height: 4px; }
+@keyframes ember-rise {
+  0%   { transform: translate(0, 0); opacity: 0; }
+  10%  { opacity: 0.9; }
+  70%  { opacity: 0.6; }
+  100% { transform: translate(var(--drift), -560px); opacity: 0; }
+}
+
+/* ── fireworks + explosion bits ────────────────────────────────────── */
+.firework-bit {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  z-index: 9999;
+  pointer-events: none;
+  image-rendering: pixelated;
+  animation: fw-bit 0.95s cubic-bezier(0.15, 0.6, 0.4, 1) forwards;
+}
+@keyframes fw-bit {
+  55%  { opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)); opacity: 0; }
+}
+
+/* ── creeper easter egg ────────────────────────────────────────────── */
+.creeper {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  pointer-events: none;
+}
+.creeper svg {
+  width: 200px;
+  height: 200px;
+  filter: drop-shadow(0 0 34px rgba(95, 174, 59, 0.55));
+  animation: creeper-loom 1.25s ease-in forwards;
+}
+@keyframes creeper-loom {
+  0%   { transform: scale(0.3); opacity: 0; }
+  15%  { opacity: 1; }
+  80%  { transform: scale(1.35); }
+  90%  { transform: scale(1.5); filter: drop-shadow(0 0 34px rgba(255,255,255,0.9)) brightness(2.5); }
+  100% { transform: scale(1.6); opacity: 1; }
+}
+.mcop-shake { animation: mcop-shake 0.5s linear; }
+@keyframes mcop-shake {
+  0%, 100% { transform: translate(0, 0); }
+  15% { transform: translate(-7px, 4px); }
+  30% { transform: translate(6px, -5px); }
+  45% { transform: translate(-5px, -3px); }
+  60% { transform: translate(5px, 4px); }
+  75% { transform: translate(-3px, 2px); }
+  90% { transform: translate(2px, -2px); }
+}
+
+/* ── scroll reveals: the world assembles in blocky steps ───────────── */
+.rv {
+  opacity: 0;
+  transform: translateY(18px) scale(0.97);
+  transition: opacity 0.4s steps(5), transform 0.4s steps(5);
+  transition-delay: var(--rv-d, 0ms);
+}
+.rv-in { opacity: 1; transform: none; }
+
+/* ── themed scrollbar + selection ──────────────────────────────────── */
+html { scrollbar-color: #5a5f66 #0b0d10; }
+::-webkit-scrollbar { width: 14px; height: 14px; }
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.55);
+  border-left: 2px solid #0b0d10;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #6b7079, #565b63);
+  border: 2px solid #0b0d10;
+  box-shadow:
+    inset 2px 2px 0 rgba(255, 255, 255, 0.25),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.4);
+}
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(90deg, #7d838d, #666c75); }
+::selection { background: #3E7A2A; color: #ffffff; }
+
+/* ── reduced motion: no embers/reveals/sway; everything still works ── */
+@media (prefers-reduced-motion: reduce) {
+  .ember, .title-screen::before { display: none !important; }
+  .rv { opacity: 1 !important; transform: none !important; }
+  .timer { animation: none !important; }
+}
+
+/* ── self-review fixes ─────────────────────────────────────────────── */
+/* no system-monospace leaking through the pixel look */
+.timer-clock, .kv-val, .how-num, .steps code { font-family: var(--font-pixel) !important; }
+
+/* embers live in the hero's first screenful, not the whole page */
+.embers { inset: auto; top: 0; left: 0; right: 0; height: min(680px, 100%); }
+
+/* splash drapes over the logo's bottom-right corner */
+.hero-splash { right: -12px; }
+
+/* mobile topbar: drop the tagline, keep one tidy row */
+@media (max-width: 720px) {
+  .tagline { display: none; }
+  .topbar { flex-wrap: wrap; gap: 10px 12px; }
+  .header-auth { gap: 10px; }
+}

@@ -8,6 +8,8 @@ import { profileQuestions } from '../data/profileQuestions.js'
 import { variableQuestions } from '../data/variableQuestions.js'
 import { API_URL } from '../lib/api.js'
 import Avatar from '../components/Avatar.jsx'
+import { playXp } from '../lib/sound.js'
+import { fireworks } from '../lib/particles.js'
 
 const PHASE_INTERVAL_MS = 3500
 const DEMO_FALLBACK_MS = 90000
@@ -93,6 +95,8 @@ export default function Matching() {
       setScore(Math.max(s, 60))
       setServer(srv)
       if (meta) setMatchMeta(meta)
+      playXp()
+      fireworks()
     }
 
     // demo fallback if no real match shows up in time
@@ -132,6 +136,7 @@ export default function Matching() {
   if (!partner) {
     return (
       <section className="card center">
+        <div className="compass" aria-hidden="true"><span className="compass-needle" /></div>
         <h2>{phases[phase]}</h2>
         <div className="xpbar" role="progressbar" aria-label="Finding your buddy">
           <div className="xpbar-fill" />
@@ -158,6 +163,11 @@ export default function Matching() {
       <h2 className="match-name">You're paired with <span className="highlight">{partner.displayName}</span></h2>
       <div className="score">
         <span className="score-num">{score}%</span>
+        <div className="hearts-row" role="img" aria-label={`${Math.round(score / 10)} of 10 hearts`}>
+          {Array.from({ length: 10 }, (_, i) => (
+            <span key={i} className={'px-heart' + (i < Math.round(score / 10) ? ' full' : '')} />
+          ))}
+        </div>
         <span className="score-label">compatibility</span>
       </div>
 

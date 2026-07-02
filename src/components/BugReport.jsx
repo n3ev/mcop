@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { playError, playPop } from '../lib/sound.js'
 
 const WEB3FORMS_KEY = '469775ad-d571-4c52-b507-891f1df4970a'
 
@@ -23,8 +24,10 @@ export default function BugReport() {
       })
       const data = await res.json()
       setStatus(data.success ? 'sent' : 'error')
+      if (data.success) playPop(); else playError()
     } catch {
       setStatus('error')
+      playError()
     }
   }
 
@@ -34,6 +37,14 @@ export default function BugReport() {
     setStatus(null)
   }
 
+  // escape closes the sign
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e) => { if (e.key === 'Escape') close() }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [open])
+
   return (
     <>
       <button className="bug-btn" onClick={() => setOpen(true)}>
@@ -42,7 +53,7 @@ export default function BugReport() {
 
       {open && (
         <div className="modal-overlay" onClick={close}>
-          <div className="modal" onClick={e => e.stopPropagation()}>
+          <div className="modal" role="dialog" aria-modal="true" aria-label="Report a bug" onClick={e => e.stopPropagation()}>
             {status === 'sent' ? (
               <>
                 <h3 className="modal-title">Thanks!</h3>

@@ -86,6 +86,28 @@ function Reviews() {
   )
 }
 
+// drifting campfire embers rising through the hero — GPU-cheap, fixed count,
+// pure CSS loops. skipped entirely under reduced motion.
+function Embers() {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return null
+  return (
+    <div className="embers" aria-hidden="true">
+      {Array.from({ length: 9 }, (_, i) => (
+        <span
+          key={i}
+          className="ember"
+          style={{
+            '--x': (8 + (i * 83) % 88) + '%',
+            '--dur': (6 + (i * 137) % 50 / 10) + 's',
+            '--delay': -((i * 211) % 70 / 10) + 's',
+            '--drift': (((i * 53) % 40) - 20) + 'px',
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
 export default function Landing() {
   const nav = useNavigate()
   const { user, loading } = useAuth()
@@ -96,6 +118,7 @@ export default function Landing() {
 
   return (
     <section className="hero">
+      <Embers />
       <div className="title-screen">
         <Logo />
         <SplashText />

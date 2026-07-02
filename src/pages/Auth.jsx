@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
+import { playError } from '../lib/sound.js'
 
 export default function Auth({ mode }) {
   const nav = useNavigate()
@@ -27,6 +28,7 @@ export default function Auth({ mode }) {
       }
     } catch (err) {
       setError(err.message)
+      playError()
     } finally {
       setBusy(false)
     }

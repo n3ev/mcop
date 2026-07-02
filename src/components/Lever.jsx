@@ -1,3 +1,5 @@
+import { playLever } from '../lib/sound.js'
+
 // redstone lever — a real, accessible checkbox underneath.
 // keyboard toggleable, proper label, focus-visible handled by global ring.
 export default function Lever({ on, onChange, label }) {
@@ -7,7 +9,7 @@ export default function Lever({ on, onChange, label }) {
         type="checkbox"
         className="lever-input"
         checked={on}
-        onChange={e => onChange(e.target.checked)}
+        onChange={e => { playLever(); onChange(e.target.checked) }}
       />
       <span className="lever-base" aria-hidden="true"><span className="lever-handle" /></span>
       <span className="lever-label">{label}</span>
