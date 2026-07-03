@@ -115,19 +115,7 @@ function Embers() {
   )
 }
 
-// blocky clouds crossing the title sky
-function Clouds() {
-  if (reduced()) return null
-  return (
-    <div className="clouds" aria-hidden="true">
-      <span className="cloud" style={{ '--ct': '10%', '--cd': '150s', '--cdelay': '-40s' }} />
-      <span className="cloud" style={{ '--ct': '24%', '--cd': '190s', '--cdelay': '-130s' }} />
-      <span className="cloud" style={{ '--ct': '42%', '--cd': '170s', '--cdelay': '-90s' }} />
-    </div>
-  )
-}
-
-// fireflies wandering the dirt stratum at dusk
+// fireflies wandering the surface at dusk
 function Fireflies() {
   if (reduced()) return null
   return (
@@ -151,91 +139,6 @@ function Fireflies() {
   )
 }
 
-// sprites growing on the grass ridge (sourced CC0 pixel flora)
-const FLORA = [
-  ['sprite-grass', '6%'], ['sprite-dandelion', '14%'], ['sprite-grass', '23%'],
-  ['sprite-sapling', '34%'], ['sprite-daisy', '47%'], ['sprite-grass', '58%'],
-  ['sprite-fern', '69%'], ['sprite-grass', '80%'], ['sprite-daisy', '91%'],
-]
-
-// mobs that stroll the grass at dusk. drop Neev's walking GIFs into
-// public/assets/textures/mobs/ and list them here: [file, height, dur, delay]
-const MOBS = [
-  // ['sheep.gif', 52, '48s', '0s'],
-  // ['zombie.gif', 60, '64s', '-20s'],
-]
-
-function Ridge({ flora }) {
-  return (
-    <div className="ridge" aria-hidden="true">
-      {flora && FLORA.map(([name, fx], i) => (
-        <img
-          key={i}
-          className="flora"
-          src={`/assets/textures/blocks/${name}.png`}
-          alt=""
-          style={{ '--fx': fx, '--fdelay': -(i * 0.7) + 's' }}
-        />
-      ))}
-      {flora && !reduced() && MOBS.map(([file, h, dur, delay], i) => (
-        <img
-          key={'m' + i}
-          className="mob"
-          src={`/assets/textures/mobs/${file}`}
-          alt=""
-          style={{ '--mh': h + 'px', '--mdur': dur, '--mdelay': delay }}
-        />
-      ))}
-    </div>
-  )
-}
-
-// a jagged seam between two strata, built from block clusters like a real
-// 2D cross-section: a 3-wide base with 2 and 1 stacking off it, pairs,
-// staircases, the odd loner. overlay colors match each side's darkness.
-const T = (name) => `url('/assets/textures/blocks/${name}.png')`
-
-const CLUSTERS = [
-  [[0, 0], [1, 0], [2, 0], [1, 1]],                     // 3 base, 1 riding
-  [[0, 0], [1, 0], [0, 1]],                             // 2 + 1
-  [[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [0, 2]],     // staircase
-  [[0, 0]],                                             // loner
-  [[0, 0], [1, 0]],                                     // pair
-]
-
-const SEAM_UPS = [
-  { x: '3%', v: 1 }, { x: '15%', v: 0 }, { x: '33%', v: 3 },
-  { x: '52%', v: 2 }, { x: '71%', v: 4 }, { x: '87%', v: 0 },
-]
-const SEAM_DOWNS = [
-  { x: '9%', v: 4 }, { x: '25%', v: 3 }, { x: '43%', v: 1 },
-  { x: '62%', v: 0 }, { x: '79%', v: 3 }, { x: '92%', v: 4 },
-]
-
-function Seam({ upper, lower, upOv, downOv }) {
-  const blocks = (spots, dir, tex, ov) =>
-    spots.flatMap(({ x, v }, i) =>
-      CLUSTERS[v].map(([c, r], j) => (
-        <span
-          key={dir + i + '-' + j}
-          className={'seam-block ' + dir}
-          style={{ '--sx': x, '--c': c, '--r': r, '--tex': T(tex), '--ov': ov }}
-        />
-      )))
-  return (
-    <div className="seam" aria-hidden="true">
-      {blocks(SEAM_UPS, 'up', lower, upOv)}
-      {blocks(SEAM_DOWNS, 'down', upper, downOv)}
-    </div>
-  )
-}
-
-// ore veins glinting in the stone stratum
-const ORES = [
-  ['ore-diamond', '5%', '18%'], ['ore-gold', '12%', '64%'], ['ore-redstone', '88%', '30%'],
-  ['ore-diamond', '93%', '72%'], ['ore-gold', '81%', '12%'], ['ore-redstone', '8%', '84%'],
-]
-
 export default function Landing() {
   const nav = useNavigate()
   const { user, loading } = useAuth()
@@ -248,9 +151,8 @@ export default function Landing() {
     <div className="cross-section">
       <h1 className="sr-only">MCOP — get matched with a random Minecraft buddy and play together for an hour</h1>
 
-      {/* ── sky: the title screen ── */}
+      {/* ── the sky: title screen over the render's horizon ── */}
       <section className="stratum-sky hero">
-        <Clouds />
         <Embers />
         {!reduced() && <span className="shooting-star" aria-hidden="true" />}
 
@@ -288,7 +190,6 @@ export default function Landing() {
       </section>
 
       {/* ── ground level ── */}
-      <Ridge flora />
       <section className="stratum-surface">
         <Fireflies />
         <div className="wrap how-section">
@@ -314,16 +215,7 @@ export default function Landing() {
       </section>
 
       {/* ── the mine ── */}
-      <Seam upper="dirt" lower="stone" upOv="rgba(13,13,16,0.66)" downOv="rgba(24,16,10,0.78)" />
       <section className="stratum-stone">
-        {ORES.map(([name, ox, oy], i) => (
-          <span
-            key={i}
-            className="ore"
-            aria-hidden="true"
-            style={{ '--tex': T(name), '--ox': ox, '--oy': oy, '--odelay': -(i * 1.7) + 's' }}
-          />
-        ))}
         <div className="wrap stats-section">
           <p className="section-eyebrow">Mined so far</p>
           <div className="stats-bar">
@@ -336,44 +228,12 @@ export default function Landing() {
       </section>
 
       {/* ── the cave ── */}
-      <Seam upper="stone" lower="deepslate" upOv="rgba(6,7,10,0.7)" downOv="rgba(11,11,14,0.8)" />
       <section className="stratum-deep">
-        <img className="cave-torch" src="/assets/textures/blocks/torch.png" alt="" aria-hidden="true" style={{ '--tx': '12%', '--ty': '32%' }} />
-        <img className="cave-torch" src="/assets/textures/blocks/torch.png" alt="" aria-hidden="true" style={{ '--tx': '85%', '--ty': '38%' }} />
-        <img className="cave-decor" src="/assets/textures/blocks/sprite-web.png" alt="" aria-hidden="true" style={{ '--dx': '3%', '--dy': '4%' }} />
-        <img className="cave-decor" src="/assets/textures/blocks/sprite-mushroom-red.png" alt="" aria-hidden="true" style={{ '--dx': '22%', '--db': '5%' }} />
-        <img className="cave-decor" src="/assets/textures/blocks/sprite-mushroom-brown.png" alt="" aria-hidden="true" style={{ '--dx': '74%', '--db': '5%' }} />
-        <img className="cave-decor" src="/assets/textures/blocks/sprite-crystal.png" alt="" aria-hidden="true" style={{ '--dx': '91%', '--db': '8%' }} />
         <Reviews />
       </section>
 
-      {/* ── the mineshaft: a real timber colonnade, end of the line ── */}
-      <Seam upper="deepslate" lower="stone" upOv="rgba(8,6,5,0.78)" downOv="rgba(4,5,8,0.84)" />
+      {/* ── the bottom of the world: one last call to play ── */}
       <section className="stratum-mineshaft">
-        {/* repeating support frames, like an actual mineshaft corridor */}
-        {['2%', '19%', '36%', '53%', '70%', '87%'].map((fx, i) => (
-          <div key={i} aria-hidden="true">
-            <div className="shaft-post" style={{ '--px': fx }} />
-            <div className="shaft-post" style={{ '--px': `calc(${fx} + 150px)` }} />
-            <div className="shaft-lintel" style={{ '--lx': fx, '--lw': '170px' }} />
-            {i % 2 === 0 && (
-              <img className="shaft-torch" src="/assets/textures/blocks/torch.png" alt="" style={{ '--tx': `calc(${fx} + 68px)` }} />
-            )}
-            {i % 3 === 1 && (
-              <img className="shaft-web" src="/assets/textures/blocks/sprite-web.png" alt="" style={{ '--wx': `calc(${fx} + 8px)` }} />
-            )}
-          </div>
-        ))}
-
-        <div className="wrap">
-          <p className="section-eyebrow">End of the line</p>
-          <h2>Grab a pickaxe. Find your buddy.</h2>
-          <p className="muted" style={{ maxWidth: 560, margin: '0 auto 26px' }}>
-            You made it to the bottom of the world. The only thing left to do is play.
-          </p>
-          <button className="btn primary big" onClick={start}>Find my buddy ⛏</button>
-        </div>
-
         {!reduced() && Array.from({ length: 5 }, (_, i) => (
           <span
             key={'o' + i}
@@ -387,8 +247,14 @@ export default function Landing() {
             }}
           />
         ))}
-        <div className="minecart" aria-hidden="true" />
-        <div className="shaft-rails" aria-hidden="true" />
+        <div className="wrap">
+          <p className="section-eyebrow">End of the line</p>
+          <h2>Grab a pickaxe. Find your buddy.</h2>
+          <p className="muted" style={{ maxWidth: 560, margin: '0 auto 26px' }}>
+            You made it to the bottom of the world. The only thing left to do is play.
+          </p>
+          <button className="btn primary big" onClick={start}>Find my buddy ⛏</button>
+        </div>
       </section>
     </div>
   )

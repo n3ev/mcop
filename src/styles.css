@@ -161,27 +161,6 @@ html[data-theme='day'] .cloud { background: rgba(255,255,255,0.5); box-shadow: 3
   border-bottom: 3px solid var(--gui-edge);
   box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.08), 0 3px 0 rgba(0, 0, 0, 0.35);
 }
-.brand {
-  display: inline-flex;
-  align-items: center;
-  font-size: 1.3rem;
-  color: var(--grass-2);
-  text-decoration: none;
-  text-shadow: 1px 0 0 currentColor, 2px 2px 0 rgba(0, 0, 0, 0.6);
-}
-.brand::before {
-  content: '';
-  width: 54px;
-  height: 54px;
-  margin-right: 12px;
-  background: url('/assets/logo/mcop.webp') center / contain no-repeat;
-  image-rendering: pixelated;
-  filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.4));
-}
-@media (prefers-reduced-motion: reduce) {
-  .brand::before { background-image: url('/assets/logo/mcop-static.png'); }
-}
-.brand-accent { color: var(--gold); }
 .tagline { color: var(--muted); font-size: 0.8rem; text-shadow: 1px 1px 0 rgba(0,0,0,0.6); }
 .topbar-lever { margin-left: auto; display: flex; align-items: center; }
 
@@ -779,21 +758,13 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 /* dirt stratum */
 .stratum-surface {
   position: relative;
-  padding: 64px 0 72px;
-  background:
-    linear-gradient(rgba(24, 16, 10, 0.56), rgba(24, 16, 10, 0.78)),
-    url('/assets/textures/blocks/dirt.png') center top / var(--block);
-  image-rendering: pixelated;
+  padding: 80px 0 88px;
 }
 
 /* stone stratum: ores in the walls */
 .stratum-stone {
   position: relative;
-  padding: 72px 0 84px;
-  background:
-    linear-gradient(rgba(13, 13, 16, 0.66), rgba(11, 11, 14, 0.8)),
-    url('/assets/textures/blocks/stone.png') center top / var(--block);
-  image-rendering: pixelated;
+  padding: 88px 0 96px;
   overflow: hidden;
 }
 .ore {
@@ -824,11 +795,7 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 /* deepslate cave stratum: torch-lit reviews */
 .stratum-deep {
   position: relative;
-  padding: 76px 0 96px;
-  background:
-    linear-gradient(rgba(6, 7, 10, 0.72), rgba(4, 5, 8, 0.85)),
-    url('/assets/textures/blocks/deepslate.png') center top / var(--block);
-  image-rendering: pixelated;
+  padding: 92px 0 104px;
   overflow: hidden;
 }
 .cave-decor {
@@ -1008,31 +975,7 @@ html[data-theme='day'] .ember { display: none; }
 /* ── 8. matchmaking ──────────────────────────────────────────────── */
 .page {
   position: relative;
-  padding: 44px 20px 190px;
-}
-.page::before {   /* grass ridge at the bottom of every inner page */
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 96px;
-  height: var(--block);
-  background: url('/assets/textures/blocks/grass-side.png') left bottom / var(--block) repeat-x;
-  image-rendering: pixelated;
-  z-index: -1;
-}
-.page::after {    /* dirt down to the bedrock */
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 96px;
-  background:
-    linear-gradient(rgba(24, 16, 10, 0.5), rgba(24, 16, 10, 0.72)),
-    url('/assets/textures/blocks/dirt.png') left top / var(--block);
-  image-rendering: pixelated;
-  z-index: -1;
+  padding: 44px 20px 140px;
 }
 .gen-seed { margin-top: 10px; color: var(--gold); font-size: 0.76rem; letter-spacing: 1px; }
 .compass {
@@ -1405,11 +1348,7 @@ html[data-theme='day'] .ember { display: none; }
 /* ── the mineshaft: timber frames, rails, a cart that never stops ──── */
 .stratum-mineshaft {
   position: relative;
-  padding: 84px 0 96px;
-  background:
-    linear-gradient(rgba(8, 6, 5, 0.78), rgba(5, 4, 3, 0.88)),
-    url('/assets/textures/blocks/stone.png') center top / var(--block);
-  image-rendering: pixelated;
+  padding: 90px 0 130px;
   overflow: hidden;
   text-align: center;
 }
@@ -1455,30 +1394,25 @@ html[data-theme='day'] .ember { display: none; }
   animation: glow-breathe 2.8s ease-in-out infinite;
 }
 
-/* real vanilla rails running along the shaft floor */
-.shaft-rails {
+/* rails mounted on top of the bedrock footer; the cart never stops */
+.footer-rails {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: 100%;
   height: 30px;
-  background:
-    url('/assets/textures/blocks/rail.png') left bottom / 30px repeat-x,
-    linear-gradient(rgba(14, 11, 9, 0.92), rgba(14, 11, 9, 0.92));
+  background: url('/assets/textures/blocks/rail.png') left bottom / 30px repeat-x;
   image-rendering: pixelated;
-  z-index: 2;
+  pointer-events: none;
 }
-
-/* the cart rolls forever — real minecart side face from the entity atlas */
 .minecart {
   position: absolute;
-  bottom: 16px;
+  bottom: 2px;
   left: 0;
-  width: 84px;
-  height: 84px;
+  width: 78px;
+  height: 78px;
   background: url('/assets/textures/blocks/minecart.png') center / contain no-repeat;
   image-rendering: pixelated;
-  z-index: 3;
   animation: cart-roll 24s linear infinite;
   will-change: transform;
 }
@@ -1582,14 +1516,6 @@ h2 { font-size: 1.6rem; }
 }
 
 /* the cave darkens toward its edges — torchlight only reaches so far */
-.stratum-deep::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse 75% 80% at 50% 45%, transparent 48%, rgba(0, 0, 0, 0.42) 100%);
-  pointer-events: none;
-  z-index: 1;
-}
 .stratum-deep .wrap { position: relative; z-index: 2; }
 
 @media (prefers-reduced-motion: reduce) { .xp-orb { display: none !important; } }
@@ -1646,4 +1572,40 @@ html[data-theme='day'] .dig-cue { text-shadow: 1px 0 0 currentColor, 2px 2px 0 r
   background: rgba(0, 0, 0, 0.35);
   border: 2px solid var(--gui-edge);
   box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   THE WORLD ITSELF — Neev's shader renders of a real cross-section.
+   Night backs the default dusk mode; the lever crossfades to day.
+   The image spans the whole document, so scrolling still travels
+   sky → surface → stone → mineshaft → bedrock.
+   ═══════════════════════════════════════════════════════════════════ */
+.world-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+.world-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: opacity 2s ease;
+}
+.world-day { opacity: 0; }
+html[data-theme='day'] .world-day { opacity: 1; }
+html[data-theme='day'] .world-night { opacity: 0; }
+
+/* a whisper of a scrim so type stays readable over the render */
+.world-tint {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(8, 8, 13, 0.42) 0%, rgba(8, 8, 13, 0.16) 16%, rgba(8, 8, 13, 0.3) 100%);
+  transition: background 2s ease;
+}
+html[data-theme='day'] .world-tint {
+  background: linear-gradient(180deg, rgba(8, 8, 13, 0.36) 0%, rgba(8, 8, 13, 0.22) 16%, rgba(8, 8, 13, 0.34) 100%);
 }

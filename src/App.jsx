@@ -29,7 +29,8 @@ function HeaderAuth() {
   if (loading) return null
   if (user) {
     return (
-      <nav className="header-auth" aria-label="Account">
+      <nav className="header-auth" aria-label="Site">
+        <Link to="/" className="header-link">Home</Link>
         <Link to="/account" className="header-user">
           {user.displayName || user.email}
           {user.mcVerified && <span className="mc-dot" title="Minecraft linked" />}
@@ -40,7 +41,8 @@ function HeaderAuth() {
     )
   }
   return (
-    <nav className="header-auth" aria-label="Account">
+    <nav className="header-auth" aria-label="Site">
+      <Link to="/" className="header-link">Home</Link>
       <Link to="/login" className="header-link">Log in</Link>
       <Link to="/signup" className="header-link">Sign up</Link>
     </nav>
@@ -70,13 +72,27 @@ function JukeboxToggle() {
   )
 }
 
-// the sun and the moon share the sky; the lever decides who's up
-function SkyBodies() {
+// the world itself: Neev's shader renders of a real cross-section,
+// night for dusk (default), day when the lever is flipped
+function WorldBackdrop() {
   return (
-    <>
-      <img className="sky-body sun" src="/assets/textures/blocks/sun.png" alt="" aria-hidden="true" />
-      <img className="sky-body moon" src="/assets/textures/blocks/moon.png" alt="" aria-hidden="true" />
-    </>
+    <div className="world-bg" aria-hidden="true">
+      <img
+        className="world-img world-night"
+        src="/assets/world/night-1920.webp"
+        srcSet="/assets/world/night-1080.webp 1080w, /assets/world/night-1920.webp 1920w"
+        sizes="100vw"
+        alt=""
+      />
+      <img
+        className="world-img world-day"
+        src="/assets/world/day-1920.webp"
+        srcSet="/assets/world/day-1080.webp 1080w, /assets/world/day-1920.webp 1920w"
+        sizes="100vw"
+        alt=""
+      />
+      <div className="world-tint" />
+    </div>
   )
 }
 
@@ -235,11 +251,10 @@ export default function App() {
 
   return (
     <div className="app">
-      <SkyBodies />
+      <WorldBackdrop />
       <DepthMeter />
 
       <header className="topbar">
-        <Link to="/" className="brand">MC<span className="brand-accent">OP</span></Link>
         <span className="tagline">Random buddy. One hour. One world.</span>
         <div className="topbar-lever"><ThemeToggle /></div>
         <HeaderAuth />
@@ -265,6 +280,7 @@ export default function App() {
       </main>
 
       <footer className="footer" onClick={tapBedrock}>
+        <div className="footer-rails" aria-hidden="true"><div className="minecart" /></div>
         <span>© {new Date().getFullYear()} MCOP · Not affiliated with Mojang or Microsoft</span>
         <a href="https://github.com/n3ev/mcop/blob/main/CREDITS.md" target="_blank" rel="noreferrer">Credits</a>
         <div className="footer-controls">
