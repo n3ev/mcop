@@ -169,6 +169,18 @@ html[data-theme='day'] .cloud { background: rgba(255,255,255,0.5); box-shadow: 3
   text-decoration: none;
   text-shadow: 1px 0 0 currentColor, 2px 2px 0 rgba(0, 0, 0, 0.6);
 }
+.brand::before {
+  content: '';
+  width: 54px;
+  height: 54px;
+  margin-right: 12px;
+  background: url('/assets/logo/mcop.webp') center / contain no-repeat;
+  image-rendering: pixelated;
+  filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.4));
+}
+@media (prefers-reduced-motion: reduce) {
+  .brand::before { background-image: url('/assets/logo/mcop-static.png'); }
+}
 .brand-accent { color: var(--gold); }
 .tagline { color: var(--muted); font-size: 0.8rem; text-shadow: 1px 1px 0 rgba(0,0,0,0.6); }
 .topbar-lever { margin-left: auto; display: flex; align-items: center; }
@@ -291,8 +303,9 @@ html[data-theme='day'] .cloud { background: rgba(255,255,255,0.5); box-shadow: 3
 /* questionnaire options are full GUI buttons too */
 .options { display: grid; gap: 10px; margin-top: 18px; }
 .option {
+  position: relative;
   text-align: left;
-  padding: 13px 18px;
+  padding: 13px 18px 13px 38px;
   font-size: 0.85rem;
   color: var(--text);
   background: linear-gradient(var(--gui-1), var(--gui-2));
@@ -304,7 +317,16 @@ html[data-theme='day'] .cloud { background: rgba(255,255,255,0.5); box-shadow: 3
   cursor: pointer;
   transition: filter 0.08s, transform 0.05s;
 }
+.option::before {
+  content: '▸';
+  position: absolute;
+  left: 16px;
+  color: var(--gold);
+  opacity: 0;
+  transition: opacity 0.1s;
+}
 .option:hover { filter: brightness(1.15); outline: 2px solid #fff; outline-offset: -2px; }
+.option:hover::before, .option:focus-visible::before { opacity: 1; }
 .option:active { transform: translateY(2px); }
 .option.selected {
   background: linear-gradient(#4f9a31, #3a7a24);
@@ -984,7 +1006,34 @@ html[data-theme='day'] .ember { display: none; }
 }
 
 /* ── 8. matchmaking ──────────────────────────────────────────────── */
-.page { padding: 44px 20px 120px; }
+.page {
+  position: relative;
+  padding: 44px 20px 190px;
+}
+.page::before {   /* grass ridge at the bottom of every inner page */
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 96px;
+  height: var(--block);
+  background: url('/assets/textures/blocks/grass-side.png') left bottom / var(--block) repeat-x;
+  image-rendering: pixelated;
+  z-index: -1;
+}
+.page::after {    /* dirt down to the bedrock */
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 96px;
+  background:
+    linear-gradient(rgba(24, 16, 10, 0.5), rgba(24, 16, 10, 0.72)),
+    url('/assets/textures/blocks/dirt.png') left top / var(--block);
+  image-rendering: pixelated;
+  z-index: -1;
+}
 .gen-seed { margin-top: 10px; color: var(--gold); font-size: 0.76rem; letter-spacing: 1px; }
 .compass {
   width: 58px;
@@ -1585,4 +1634,16 @@ html[data-theme='day'] .dig-cue { text-shadow: 1px 0 0 currentColor, 2px 2px 0 r
   opacity: 0.85;
   pointer-events: none;
   z-index: 1;
+}
+
+/* live skin preview while typing a username */
+.skin-preview {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 2px 0 14px;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 2px solid var(--gui-edge);
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.08);
 }

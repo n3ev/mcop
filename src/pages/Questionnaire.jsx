@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { fixedQuestions, patienceQuestion } from '../data/fixedQuestions.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import { startMatch } from '../lib/play.js'
+import Avatar from '../components/Avatar.jsx'
 
 // the temporary / one-off flow: guests, or a logged-in user trying a different style for a single session.
 // nothing here is saved to the account — permanent preferences live on /preferences.
@@ -57,6 +58,7 @@ export default function Questionnaire() {
       <section className="card">
         <div className="progress"><div className="progress-bar" style={{ width: progress + '%' }} /></div>
         <div className="step">
+          <span className="tag">Step 1</span>
           <h2>What's your Minecraft username?</h2>
           <p className="muted">Must match your in-game name exactly — we use it to whitelist you on the server.</p>
           <input
@@ -67,6 +69,12 @@ export default function Questionnaire() {
             onKeyDown={e => e.key === 'Enter' && onPickName()}
             autoFocus
           />
+          {name.trim().length >= 3 && (
+            <div className="skin-preview">
+              <Avatar name={name.trim()} size={56} />
+              <span className="muted small">Found your skin — looking good.</span>
+            </div>
+          )}
           <button className="btn primary" disabled={!name.trim()} onClick={onPickName}>Continue</button>
         </div>
       </section>
@@ -122,7 +130,7 @@ export default function Questionnaire() {
     <section className="card">
       <div className="progress"><div className="progress-bar" style={{ width: progress + '%' }} /></div>
       <div className="step">
-        <span className="tag">Question {step} of {totalQ}</span>
+        <span className="tag">Question {step}/{totalQ}</span>
         <h2>{q.text}</h2>
         <div className="options">
           {q.options.map(opt => (
