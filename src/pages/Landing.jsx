@@ -190,19 +190,42 @@ function Ridge({ flora }) {
   )
 }
 
-// a jagged seam between two strata: blocks of the lower layer flow up,
-// blocks of the upper layer flow down
+// a jagged seam between two strata, built from block clusters like a real
+// 2D cross-section: a 3-wide base with 2 and 1 stacking off it, pairs,
+// staircases, the odd loner. overlay colors match each side's darkness.
 const T = (name) => `url('/assets/textures/blocks/${name}.png')`
 
-function Seam({ upper, lower, ups = ['4%', '19%', '38%', '57%', '76%', '91%'], downs = ['11%', '29%', '49%', '68%', '84%'] }) {
+const CLUSTERS = [
+  [[0, 0], [1, 0], [2, 0], [1, 1]],                     // 3 base, 1 riding
+  [[0, 0], [1, 0], [0, 1]],                             // 2 + 1
+  [[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [0, 2]],     // staircase
+  [[0, 0]],                                             // loner
+  [[0, 0], [1, 0]],                                     // pair
+]
+
+const SEAM_UPS = [
+  { x: '3%', v: 1 }, { x: '15%', v: 0 }, { x: '33%', v: 3 },
+  { x: '52%', v: 2 }, { x: '71%', v: 4 }, { x: '87%', v: 0 },
+]
+const SEAM_DOWNS = [
+  { x: '9%', v: 4 }, { x: '25%', v: 3 }, { x: '43%', v: 1 },
+  { x: '62%', v: 0 }, { x: '79%', v: 3 }, { x: '92%', v: 4 },
+]
+
+function Seam({ upper, lower, upOv, downOv }) {
+  const blocks = (spots, dir, tex, ov) =>
+    spots.flatMap(({ x, v }, i) =>
+      CLUSTERS[v].map(([c, r], j) => (
+        <span
+          key={dir + i + '-' + j}
+          className={'seam-block ' + dir}
+          style={{ '--sx': x, '--c': c, '--r': r, '--tex': T(tex), '--ov': ov }}
+        />
+      )))
   return (
     <div className="seam" aria-hidden="true">
-      {ups.map((sx, i) => (
-        <span key={'u' + i} className="seam-block up" style={{ '--sx': sx, '--tex': T(lower) }} />
-      ))}
-      {downs.map((sx, i) => (
-        <span key={'d' + i} className="seam-block down" style={{ '--sx': sx, '--tex': T(upper) }} />
-      ))}
+      {blocks(SEAM_UPS, 'up', lower, upOv)}
+      {blocks(SEAM_DOWNS, 'down', upper, downOv)}
     </div>
   )
 }
@@ -253,6 +276,7 @@ export default function Landing() {
         ) : (
           <>
             <button className="btn primary big" onClick={start}>Find my buddy ⛏</button>
+            <div className="dig-cue">▼ dig deeper ▼</div>
             <ul className="hero-bullets">
               <li>🎯 Matched by playstyle, not luck</li>
               <li>🌍 Free Minecraft server for 1 hour</li>
@@ -261,7 +285,6 @@ export default function Landing() {
             </ul>
           </>
         )}
-        <div className="dig-cue">▼ dig deeper ▼</div>
       </section>
 
       {/* ── ground level ── */}
@@ -291,16 +314,14 @@ export default function Landing() {
       </section>
 
       {/* ── the mine ── */}
-      <Seam upper="dirt" lower="stone" />
+      <Seam upper="dirt" lower="stone" upOv="rgba(13,13,16,0.66)" downOv="rgba(24,16,10,0.78)" />
       <section className="stratum-stone">
         {ORES.map(([name, ox, oy], i) => (
-          <img
+          <span
             key={i}
             className="ore"
-            src={`/assets/textures/blocks/${name}.png`}
-            alt=""
             aria-hidden="true"
-            style={{ '--ox': ox, '--oy': oy, '--odelay': -(i * 1.7) + 's' }}
+            style={{ '--tex': T(name), '--ox': ox, '--oy': oy, '--odelay': -(i * 1.7) + 's' }}
           />
         ))}
         <div className="wrap stats-section">
@@ -315,7 +336,7 @@ export default function Landing() {
       </section>
 
       {/* ── the cave ── */}
-      <Seam upper="stone" lower="deepslate" ups={['9%', '26%', '44%', '63%', '81%', '95%']} downs={['3%', '17%', '35%', '54%', '73%', '89%']} />
+      <Seam upper="stone" lower="deepslate" upOv="rgba(6,7,10,0.7)" downOv="rgba(11,11,14,0.8)" />
       <section className="stratum-deep">
         <img className="cave-torch" src="/assets/textures/blocks/torch.png" alt="" aria-hidden="true" style={{ '--tx': '12%', '--ty': '32%' }} />
         <img className="cave-torch" src="/assets/textures/blocks/torch.png" alt="" aria-hidden="true" style={{ '--tx': '85%', '--ty': '38%' }} />
@@ -326,18 +347,23 @@ export default function Landing() {
         <Reviews />
       </section>
 
-      {/* ── the mineshaft: end of the line, one last call to play ── */}
-      <Seam upper="deepslate" lower="stone" ups={['6%', '22%', '41%', '60%', '78%', '93%']} downs={['13%', '31%', '51%', '70%', '86%']} />
+      {/* ── the mineshaft: a real timber colonnade, end of the line ── */}
+      <Seam upper="deepslate" lower="stone" upOv="rgba(8,6,5,0.78)" downOv="rgba(4,5,8,0.84)" />
       <section className="stratum-mineshaft">
-        {/* timber frames */}
-        <div className="shaft-post" style={{ '--px': '9%' }} aria-hidden="true" />
-        <div className="shaft-post" style={{ '--px': 'calc(9% + 220px)' }} aria-hidden="true" />
-        <div className="shaft-lintel" style={{ '--lx': '9%', '--lw': 'calc(220px + 20px)' }} aria-hidden="true" />
-        <div className="shaft-post" style={{ '--px': '72%' }} aria-hidden="true" />
-        <div className="shaft-post" style={{ '--px': 'calc(72% + 220px)' }} aria-hidden="true" />
-        <div className="shaft-lintel" style={{ '--lx': '72%', '--lw': 'calc(220px + 20px)' }} aria-hidden="true" />
-        <img className="shaft-torch" src="/assets/textures/blocks/torch.png" alt="" aria-hidden="true" style={{ '--tx': 'calc(9% + 105px)' }} />
-        <img className="shaft-torch" src="/assets/textures/blocks/torch.png" alt="" aria-hidden="true" style={{ '--tx': 'calc(72% + 105px)' }} />
+        {/* repeating support frames, like an actual mineshaft corridor */}
+        {['2%', '19%', '36%', '53%', '70%', '87%'].map((fx, i) => (
+          <div key={i} aria-hidden="true">
+            <div className="shaft-post" style={{ '--px': fx }} />
+            <div className="shaft-post" style={{ '--px': `calc(${fx} + 150px)` }} />
+            <div className="shaft-lintel" style={{ '--lx': fx, '--lw': '170px' }} />
+            {i % 2 === 0 && (
+              <img className="shaft-torch" src="/assets/textures/blocks/torch.png" alt="" style={{ '--tx': `calc(${fx} + 68px)` }} />
+            )}
+            {i % 3 === 1 && (
+              <img className="shaft-web" src="/assets/textures/blocks/sprite-web.png" alt="" style={{ '--wx': `calc(${fx} + 8px)` }} />
+            )}
+          </div>
+        ))}
 
         <div className="wrap">
           <p className="section-eyebrow">End of the line</p>
