@@ -49,7 +49,7 @@ const ALL_PHASES = [
   'Checking biome preferences…',
   'Consulting the ancient debris…',
   'Someone in the queue keeps dying to fall damage…',
-  'Almost there — probably…',
+  'Almost there, probably…',
 ]
 
 function shuffle(arr) {
@@ -145,7 +145,7 @@ export default function Matching() {
         <div className="xpbar" role="progressbar" aria-label="Finding your buddy">
           <div className="xpbar-fill" />
         </div>
-        <p className="muted">Hang tight — this usually takes under a minute.</p>
+        <p className="muted">Hang tight, this usually takes under a minute.</p>
         <p className="gen-seed">Seed: {seed} · Biome: Friendship Plains</p>
       </section>
     )

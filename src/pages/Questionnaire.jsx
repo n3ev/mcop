@@ -60,7 +60,7 @@ export default function Questionnaire() {
         <div className="step">
           <span className="tag">Step 1</span>
           <h2>What's your Minecraft username?</h2>
-          <p className="muted">Must match your in-game name exactly — we use it to whitelist you on the server.</p>
+          <p className="muted">Must match your in-game name exactly, we use it to whitelist you on the server.</p>
           <input
             className="text-input"
             placeholder="e.g. Steve, xX_Notch_Xx"
@@ -72,7 +72,7 @@ export default function Questionnaire() {
           {name.trim().length >= 3 && (
             <div className="skin-preview">
               <Avatar name={name.trim()} size={56} />
-              <span className="muted small">Found your skin — looking good.</span>
+              <span className="muted small">Found your skin, looking good.</span>
             </div>
           )}
           <button className="btn primary" disabled={!name.trim()} onClick={onPickName}>Continue</button>

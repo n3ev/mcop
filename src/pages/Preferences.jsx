@@ -44,7 +44,7 @@ export default function Preferences() {
       <p className="muted">
         {firstTime
           ? 'Answer these once and we\'ll use them to find your best matches. You can change them anytime.'
-          : 'Update your saved style — this is what we match you on by default.'}
+          : 'Update your saved style, this is what we match you on by default.'}
       </p>
 
       <div className="prefs-list">

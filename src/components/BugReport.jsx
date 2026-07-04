@@ -63,7 +63,7 @@ export default function BugReport() {
             ) : (
               <>
                 <h3 className="modal-title">Report a bug</h3>
-                <p className="muted">We're in beta — bugs happen. Tell us what went wrong.</p>
+                <p className="muted">We're in beta, bugs happen. Tell us what went wrong.</p>
                 <textarea
                   className="bug-textarea"
                   placeholder="Describe what happened and what you expected..."
@@ -72,7 +72,7 @@ export default function BugReport() {
                   rows={5}
                   autoFocus
                 />
-                {status === 'error' && <p className="bug-error">Something went wrong — try again.</p>}
+                {status === 'error' && <p className="bug-error">Something went wrong, try again.</p>}
                 <div className="modal-actions">
                   <button className="btn ghost" onClick={close}>Cancel</button>
                   <button

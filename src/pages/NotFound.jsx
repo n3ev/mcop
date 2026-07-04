@@ -8,7 +8,7 @@ export default function NotFound() {
       <span className="tag">Y: -2147483648</span>
       <h2>You fell out of the world</h2>
       <p className="muted">
-        This page doesn't exist — or a creeper got to it. Either way,
+        This page doesn't exist, or a creeper got to it. Either way,
         there's nothing down here but the void.
       </p>
       <button className="btn primary big" style={{ marginTop: 18 }} onClick={() => nav('/')}>

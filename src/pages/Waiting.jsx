@@ -55,7 +55,7 @@ export default function Waiting() {
       </div>
       <p className="muted small">
         Keep this tab open and we'll drop you straight into the server when matched.
-        Or close it — the email has everything you need.
+        Or close it, the email has everything you need.
       </p>
       <button className="btn ghost" onClick={() => nav('/')}>Back to start</button>
     </section>

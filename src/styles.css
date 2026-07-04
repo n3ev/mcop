@@ -165,7 +165,7 @@ html[data-theme='day'] .cloud { background: rgba(255,255,255,0.5); box-shadow: 3
 .topbar-lever { margin-left: auto; display: flex; align-items: center; }
 
 /* nav links are little hanging signs dangling from the hotbar */
-.header-auth { display: flex; align-items: flex-start; gap: 16px; margin-left: 10px; }
+.header-auth { display: flex; align-items: flex-start; gap: 7px; margin-left: 10px; }
 .header-link, .header-user, .header-auth .btn {
   position: relative;
   display: inline-flex;

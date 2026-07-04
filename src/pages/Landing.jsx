@@ -48,7 +48,7 @@ const REVIEWS = [
   {
     handle: '@neevchavla',
     initial: 'N',
-    text: '"Hadn\'t opened Minecraft in months — a world by yourself gets old fast. First MCOP session we built a massive base together. Already planning a third session. This actually makes Minecraft feel alive again."',
+    text: '"Hadn\'t opened Minecraft in months. A world by yourself gets old fast. First MCOP session we built a massive base together. Already planning a third session. This actually makes Minecraft feel alive again."',
     source: 'via Instagram',
   },
   {
@@ -153,14 +153,14 @@ function WorldStatus() {
     <div className="wrap frame stats-section">
       <p className="section-eyebrow">World status</p>
       <div className="stats-bar">
-        <div className="stat"><span className="stat-num">{stats ? stats.online : '—'}</span><span className="stat-label">online now</span></div>
-        <div className="stat"><span className="stat-num">{stats ? stats.queue : '—'}</span><span className="stat-label">in the queue</span></div>
-        <div className="stat"><span className="stat-num">{stats ? stats.matchesToday : '—'}</span><span className="stat-label">matched today</span></div>
+        <div className="stat"><span className="stat-num">{stats ? stats.online : '…'}</span><span className="stat-label">online now</span></div>
+        <div className="stat"><span className="stat-num">{stats ? stats.queue : '…'}</span><span className="stat-label">in the queue</span></div>
+        <div className="stat"><span className="stat-num">{stats ? stats.matchesToday : '…'}</span><span className="stat-label">matched today</span></div>
       </div>
       <div className="kv spec-rows">
         <div className="kv-row"><span className="kv-key">Server</span><span className="kv-val">Paper 1.21.4 · Java Edition</span><span /></div>
         <div className="kv-row"><span className="kv-key">Worlds</span><span className="kv-val">private · whitelisted · fresh every session</span><span /></div>
-        <div className="kv-row"><span className="kv-key">Home</span><span className="kv-val">hosted in Sydney, AU — playable anywhere</span><span /></div>
+        <div className="kv-row"><span className="kv-key">Home</span><span className="kv-val">hosted in Sydney, AU. Playable anywhere</span><span /></div>
       </div>
     </div>
   )
@@ -176,7 +176,7 @@ export default function Landing() {
 
   return (
     <div className="cross-section">
-      <h1 className="sr-only">MCOP — get matched with a random Minecraft buddy and play together for an hour</h1>
+      <h1 className="sr-only">MCOP: get matched with a random Minecraft buddy and play together for an hour</h1>
 
       {/* ── the sky: title screen over the render's horizon ── */}
       <section className="stratum-sky hero">
@@ -225,7 +225,7 @@ export default function Landing() {
             <div className="how-card">
               <span className="how-num">STEP 01</span>
               <h3 className="how-title">Answer a few questions</h3>
-              <p className="how-desc">Playstyle, game mode, experience, vibe. Done in under 60 seconds — sign up to save it.</p>
+              <p className="how-desc">Playstyle, game mode, experience, vibe. Done in under 60 seconds. Sign up to save it.</p>
             </div>
             <div className="how-card">
               <span className="how-num">STEP 02</span>
@@ -249,7 +249,7 @@ export default function Landing() {
             <div className="hour-card">
               <span className="hour-icon" aria-hidden="true">🎯</span>
               <h3 className="hour-title">A shared quest</h3>
-              <p className="hour-desc">Every session spawns with a quest of the hour — something to build, find, or survive together.</p>
+              <p className="hour-desc">Every session spawns with a quest of the hour: something to build, find, or survive together.</p>
             </div>
             <div className="hour-card">
               <span className="hour-icon" aria-hidden="true">🧭</span>
@@ -275,9 +275,9 @@ export default function Landing() {
         <div className="wrap frame how-section" style={{ maxWidth: 860 }}>
           <p className="section-eyebrow">Why MCOP exists</p>
           <div className="story-copy">
-            <p>We're two uni students in Sydney who kept hitting the same wall: a world of your own gets old fast, and finding someone to share one with was miserable. Forum posts that died in silence. Discord servers full of strangers talking past each other. Friends who "totally would" but never log on.</p>
-            <p>So we built the thing we wanted: press one button, get a real person who plays like you do, and be punching trees together inside a minute. No small talk required — the game is the small talk.</p>
-            <p className="story-sign">— Neev &amp; Ayman, somewhere in a mineshaft</p>
+            <p>I'm a uni student in Sydney who kept hitting the same wall: a world of your own gets old fast, and finding someone to share one with was miserable. Forum posts that died in silence. Discord servers full of strangers talking past each other. Friends who "totally would" but never log on.</p>
+            <p>So I built the thing I wanted: press one button, get a real person who plays like you do, and be punching trees together inside a minute. No small talk required. The game is the small talk.</p>
+            <p className="story-sign">Neev, somewhere in a mineshaft</p>
           </div>
         </div>
       </section>
@@ -318,7 +318,7 @@ export default function Landing() {
             <div className="hour-card">
               <span className="hour-icon" aria-hidden="true">🌱</span>
               <h3 className="hour-title">Fresh worlds</h3>
-              <p className="hour-desc">Every session spawns a clean world, auto-reset after the hour — unless you save yours for 30 days, free.</p>
+              <p className="hour-desc">Every session spawns a clean world, auto-reset after the hour, unless you save yours for 30 days, free.</p>
             </div>
           </div>
         </div>
@@ -334,7 +334,7 @@ export default function Landing() {
           <div className="chip-row" style={{ justifyContent: 'center' }}>
             <span className="chip quest-chip">🌾 Build a wheat farm before the hour ends</span>
             <span className="chip quest-chip">⛏️ Full iron armour before sunset</span>
-            <span className="chip quest-chip">🏘️ Find a village and rob— trade with it</span>
+            <span className="chip quest-chip">🏘️ Find a village and rob... trade with it</span>
             <span className="chip quest-chip">🌉 Bridge a ravine, no scaffolding deaths</span>
             <span className="chip quest-chip">🔥 Light a nether portal together</span>
             <span className="chip quest-chip">🐄 Two cows, one boat. Good luck</span>
@@ -356,9 +356,9 @@ export default function Landing() {
           <p className="section-eyebrow">House rules</p>
           <ul className="rules-list">
             <li>Be cool. You're someone's hour of Minecraft today.</li>
-            <li>No griefing your buddy — you're on the same team.</li>
+            <li>No griefing your buddy. You're on the same team.</li>
             <li>Slurs or hate = instant, permanent ban. Zero appeals.</li>
-            <li>What happens on the server stays there — no doxing, no drama.</li>
+            <li>What happens on the server stays there. No doxing, no drama.</li>
             <li>One account per player, real usernames only.</li>
           </ul>
         </div>
@@ -371,11 +371,11 @@ export default function Landing() {
           <div className="faq-list">
             <details className="faq">
               <summary>What do I need to play?</summary>
-              <p className="faq-a">Minecraft Java Edition (1.21.4) and a Microsoft account. We whitelist your exact username on a private server — no mods, no launcher tricks. Bedrock isn't supported yet.</p>
+              <p className="faq-a">Minecraft Java Edition (1.21.4) and a Microsoft account. We whitelist your exact username on a private server. No mods, no launcher tricks. Bedrock isn't supported yet.</p>
             </details>
             <details className="faq">
               <summary>Is it actually free?</summary>
-              <p className="faq-a">Yes — matching, the private server, and the 30-day world save are all free while we're in beta. Long term we may charge a small fee to keep worlds alive past 30 days. Playing stays free.</p>
+              <p className="faq-a">Yes. Matching, the private server, and the 30-day world save are all free while we're in beta. Long term we may charge a small fee to keep worlds alive past 30 days. Playing stays free.</p>
             </details>
             <details className="faq">
               <summary>What if we don't vibe?</summary>
@@ -383,23 +383,23 @@ export default function Landing() {
             </details>
             <details className="faq">
               <summary>Can we keep playing after the hour?</summary>
-              <p className="faq-a">Extend the session by 30 minutes from the session page, and save the world for 30 days free — jump back in together whenever you both want.</p>
+              <p className="faq-a">Extend the session by 30 minutes from the session page, and save the world for 30 days free. Jump back in together whenever you both want.</p>
             </details>
             <details className="faq">
               <summary>Do I need an account?</summary>
-              <p className="faq-a">No — guests can jump straight into the queue. An account saves your playstyle, keeps your match history, remembers your buddies, and gets you one-click matching with a verified username.</p>
+              <p className="faq-a">No. Guests can jump straight into the queue. An account saves your playstyle, keeps your match history, remembers your buddies, and gets you one-click matching with a verified username.</p>
             </details>
             <details className="faq">
               <summary>Can I pick who I get matched with?</summary>
-              <p className="faq-a">Not yet — the random buddy is the whole point. Friends lists already exist, and "play again with a friend" is on the roadmap below.</p>
+              <p className="faq-a">Not yet. The random buddy is the whole point. Friends lists already exist, and "play again with a friend" is on the roadmap below.</p>
             </details>
             <details className="faq">
               <summary>Where are the servers?</summary>
-              <p className="faq-a">Sydney, Australia — so Oceania pings are dreamy. It's absolutely playable from elsewhere; block games are forgiving.</p>
+              <p className="faq-a">Sydney, Australia, so Oceania pings are dreamy. It's absolutely playable from elsewhere; block games are forgiving.</p>
             </details>
             <details className="faq">
               <summary>Is it safe to play with a stranger?</summary>
-              <p className="faq-a">You're on a whitelisted private server — just you two, verified usernames only. No coordinates, no personal info exchanged unless you choose to share socials at the end. Block and report tools are one click away.</p>
+              <p className="faq-a">You're on a whitelisted private server: just you two, verified usernames only. No coordinates, no personal info exchanged unless you choose to share socials at the end. Block and report tools are one click away.</p>
             </details>
           </div>
         </div>
@@ -440,9 +440,9 @@ export default function Landing() {
           <p className="section-eyebrow">Patch notes</p>
           <ul className="patch-list">
             <li><span className="patch-date">Jul 2026</span> The world got a body: full cross-section redesign, day/night lever, this very page.</li>
-            <li><span className="patch-date">Jun 2026</span> Starting loadouts — vanilla, iron kit, elytra or creative, applied as you join.</li>
+            <li><span className="patch-date">Jun 2026</span> Starting loadouts: vanilla, iron kit, elytra or creative, applied as you join.</li>
             <li><span className="patch-date">Jun 2026</span> Real social swap, friends lists, and "don't match again".</li>
-            <li><span className="patch-date">Jun 2026</span> Minecraft account linking — join, get a code in chat, verified.</li>
+            <li><span className="patch-date">Jun 2026</span> Minecraft account linking: join, get a code in chat, verified.</li>
             <li><span className="patch-date">Jun 2026</span> Accounts, saved playstyles, match history, offline email matching.</li>
           </ul>
         </div>

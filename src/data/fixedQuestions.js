@@ -19,7 +19,7 @@ export const fixedQuestions = [
   {
     id: 'voice',
     text: 'Comfortable on voice chat?',
-    options: ['Yes — Discord ready', 'Text only', 'Maybe, depends on the vibe'],
+    options: ['Yes, Discord ready', 'Text only', 'Maybe, depends on the vibe'],
   },
 ]
 
@@ -27,5 +27,5 @@ export const fixedQuestions = [
 export const patienceQuestion = {
   id: 'patience',
   text: 'When do you want to play?',
-  options: ['Right now', 'Within 1 hour', 'Within 2 hours', 'Willing to wait — email me'],
+  options: ['Right now', 'Within 1 hour', 'Within 2 hours', 'Willing to wait (email me)'],
 }

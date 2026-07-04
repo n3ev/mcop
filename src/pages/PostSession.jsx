@@ -74,7 +74,7 @@ export default function PostSession() {
 
   return (
     <section className="card">
-      <h2>Hour's up — that was fun.</h2>
+      <h2>Hour's up, that was fun.</h2>
       <div className="post-partner">
         <Avatar name={session.partner?.mcUsername || session.partner?.displayName} size={44} />
         <p className="muted">
@@ -135,7 +135,7 @@ export default function PostSession() {
               <div className="contact-box">{partnerContact}</div>
             </div>
           ) : picked === 'none' ? (
-            <p className="muted">No worries — maybe next time.</p>
+            <p className="muted">No worries, maybe next time.</p>
           ) : (
             <p className="success">Shared ✓ Waiting for {session.partner?.displayName || 'your buddy'} to share back… {canExchange ? '' : '(they\'ll get it next time they\'re on)'}</p>
           )}
@@ -147,7 +147,7 @@ export default function PostSession() {
             We can keep your world alive for one free month so you can hop back in.
           </p>
           {!saveRequested ? (
-            <button className="btn primary" onClick={() => setSaveRequested(true)}>Save world — free for 30 days</button>
+            <button className="btn primary" onClick={() => setSaveRequested(true)}>Save world, free for 30 days</button>
           ) : (
             <p className="success">Saved ✓ You'll get the connect details by email.</p>
           )}

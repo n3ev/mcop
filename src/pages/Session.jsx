@@ -132,7 +132,7 @@ export default function Session() {
           </ol>
 
           {loadout && loadout !== 'Vanilla' && (
-            <p className="muted small">Your start: <strong>{loadout}</strong> — applied automatically when you join.</p>
+            <p className="muted small">Your start: <strong>{loadout}</strong>, applied automatically when you join.</p>
           )}
 
           {live && (

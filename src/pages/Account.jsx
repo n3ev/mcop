@@ -73,7 +73,7 @@ export default function Account() {
         </div>
         <div className="account-row">
           <span className="account-key">Display name</span>
-          <span>{user.displayName || '—'}</span>
+          <span>{user.displayName || '…'}</span>
         </div>
         <div className="account-row">
           <span className="account-key">Minecraft</span>
@@ -112,7 +112,7 @@ export default function Account() {
                   Join <code>{serverHost}</code>
                   <button className="btn small" style={{ marginLeft: 8 }} onClick={copyHost}>{copied ? 'Copied ✓' : 'Copy'}</button>
                 </li>
-                <li>{codeSent ? '✅ We see you — check your in-game chat for the code' : 'Once you\'re on, we\'ll message your code in chat'}</li>
+                <li>{codeSent ? '✅ We see you, check your in-game chat for the code' : 'Once you\'re on, we\'ll message your code in chat'}</li>
               </ol>
               <input
                 className="text-input"
