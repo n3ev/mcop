@@ -287,10 +287,10 @@ export default function App() {
       <DepthMeter />
 
       <header className="topbar">
+        <TopbarLogo />
         <span className="tagline">Random buddy. One hour. One world.</span>
         <div className="topbar-lever"><ThemeToggle /></div>
         <HeaderAuth />
-        <TopbarLogo />
       </header>
 
       <main className="content">
@@ -314,7 +314,13 @@ export default function App() {
 
       <footer className="footer" onClick={tapBedrock}>
         <span>© {new Date().getFullYear()} MCOP · Not affiliated with Mojang or Microsoft</span>
-        <a href="https://github.com/n3ev/mcop/blob/main/CREDITS.md" target="_blank" rel="noreferrer">Credits</a>
+        <nav className="footer-links" aria-label="Footer">
+          <Link to="/questionnaire">Find a buddy</Link>
+          <Link to="/preferences">Playstyle</Link>
+          <Link to="/login">Log in</Link>
+          <a href="https://github.com/n3ev/mcop" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="https://github.com/n3ev/mcop/blob/main/CREDITS.md" target="_blank" rel="noreferrer">Credits</a>
+        </nav>
         <div className="footer-controls">
           <SoundToggle />
           <JukeboxToggle />
