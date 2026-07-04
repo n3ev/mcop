@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { io } from 'socket.io-client'
 import { loadSession, saveSession } from '../lib/storage.js'
 import { API_URL } from '../lib/api.js'
+import { askNotifyPermission, notifyMatchFound } from '../lib/notify.js'
 
 const PUNS = [
   "Your duo is strip-mining at y=-59. We'll drag them up.",
@@ -28,6 +29,7 @@ export default function Waiting() {
 
     if (!session.queueId) return
 
+    askNotifyPermission()
     const socket = io(API_URL, { transports: ['websocket'] })
     socket.emit('queue_identify', session.queueId)
 
@@ -35,6 +37,7 @@ export default function Waiting() {
 
     socket.on('match_found', ({ partner, score, server, matchId, role, quest, endsAt }) => {
       saveSession({ partner, score, server, matchId, role, quest, endsAt })
+      notifyMatchFound(partner?.displayName || 'your buddy')
       socket.disconnect()
       nav('/session')
     })

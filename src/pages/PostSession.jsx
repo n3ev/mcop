@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loadSession, clearSession } from '../lib/storage.js'
-import { shareContact, getPartnerContact } from '../lib/session.js'
+import { shareContact, getPartnerContact, saveWorld, rateBuddy, reportBuddy } from '../lib/session.js'
 import { addFriend, blockBuddy } from '../lib/social.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import Avatar from '../components/Avatar.jsx'
-import { playError, playPop } from '../lib/sound.js'
+import { playError, playPop, playXp } from '../lib/sound.js'
+import { toast } from '../lib/toast.js'
 
 const SOCIALS = [
   { id: 'discord',   label: 'Discord',   placeholder: 'username or @user' },
@@ -28,6 +29,12 @@ export default function PostSession() {
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
   const [saveRequested, setSaveRequested] = useState(false)
+  const [saveErr, setSaveErr] = useState('')
+  const [rated, setRated] = useState(0)
+  const [reporting, setReporting] = useState(false)
+  const [reportReason, setReportReason] = useState('')
+  const [reportDetails, setReportDetails] = useState('')
+  const [reportSent, setReportSent] = useState(false)
 
   const canExchange = !!session.matchId && !!session.role
 
@@ -72,6 +79,37 @@ export default function PostSession() {
     try { await blockBuddy(session.matchId); setBlocked(true) } catch { /* ignore */ }
   }
 
+  const onSaveWorld = async () => {
+    setSaveErr('')
+    if (!canExchange) { setSaveRequested(true); return } // demo session, nothing to snapshot
+    try {
+      await saveWorld(session.matchId, session.role)
+      setSaveRequested(true)
+      playXp()
+      toast('World snapshot saved for 30 days')
+    } catch (e) {
+      setSaveErr(e.message)
+      playError()
+    }
+  }
+
+  const onRate = async (value) => {
+    setRated(value)
+    playPop()
+    if (canExchange) rateBuddy(session.matchId, session.role, value).catch(() => {})
+  }
+
+  const submitReport = async () => {
+    try {
+      if (canExchange) await reportBuddy({ matchId: session.matchId, role: session.role, reason: reportReason, details: reportDetails })
+      setReportSent(true)
+      setReporting(false)
+    } catch (e) {
+      setSaveErr(e.message)
+      playError()
+    }
+  }
+
   return (
     <section className="card">
       <h2>Hour's up, that was fun.</h2>
@@ -82,6 +120,48 @@ export default function PostSession() {
           {session.server?.host && <> on <code>{session.server.host}</code></>}.
         </p>
       </div>
+
+      <div className="rate-row">
+        <span className="muted small">How was your buddy?</span>
+        <button
+          className={'btn small' + (rated === 1 ? ' primary' : '')}
+          onClick={() => onRate(1)}
+          aria-pressed={rated === 1}
+        >👍 Good egg</button>
+        <button
+          className={'btn small' + (rated === -1 ? ' danger' : '')}
+          onClick={() => onRate(-1)}
+          aria-pressed={rated === -1}
+        >👎 Not great</button>
+        {!reportSent ? (
+          <button className="btn small ghost" onClick={() => setReporting(r => !r)}>Report</button>
+        ) : (
+          <span className="success small">Report sent. We'll handle it.</span>
+        )}
+      </div>
+
+      {reporting && (
+        <div className="report-box">
+          <div className="chip-row">
+            {['Griefing', 'Slurs or hate', 'Harassment', 'Cheating', 'Other'].map(r => (
+              <button
+                type="button"
+                key={r}
+                className={'chip' + (reportReason === r ? ' chip-active' : '')}
+                onClick={() => setReportReason(r)}
+              >{r}</button>
+            ))}
+          </div>
+          <textarea
+            className="bug-textarea"
+            rows={3}
+            placeholder="What happened? (optional)"
+            value={reportDetails}
+            onChange={e => setReportDetails(e.target.value)}
+          />
+          <button className="btn primary small" disabled={!reportReason} onClick={submitReport}>Send report</button>
+        </div>
+      )}
 
       {user && session.matchId && (
         <div className="buddy-actions">
@@ -147,10 +227,11 @@ export default function PostSession() {
             We can keep your world alive for one free month so you can hop back in.
           </p>
           {!saveRequested ? (
-            <button className="btn primary" onClick={() => setSaveRequested(true)}>Save world, free for 30 days</button>
+            <button className="btn primary" onClick={onSaveWorld}>Save world, free for 30 days</button>
           ) : (
-            <p className="success">Saved ✓ You'll get the connect details by email.</p>
+            <p className="success">Saved ✓ Your world snapshot is safe with us for 30 days.</p>
           )}
+          {saveErr && <p className="auth-error">{saveErr}</p>}
           <p className="muted small soon">
             <em>Coming soon:</em> keep playing past 30 days for $3.99/month.
           </p>

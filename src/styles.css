@@ -1643,10 +1643,10 @@ html[data-theme='day'] .world-tint {
 
 /* the journey is longer now — each stop gets air */
 .stratum-sky { min-height: 100vh; }
-.stratum-surface { padding: 110px 0 120px; }
-.stratum-stone { padding: 110px 0 120px; }
-.stratum-deep { padding: 110px 0 130px; }
-.stratum-mineshaft { padding: 110px 0 150px; }
+.stratum-surface { padding: 72px 0 80px; }
+.stratum-stone { padding: 72px 0 80px; }
+.stratum-deep { padding: 72px 0 84px; }
+.stratum-mineshaft { padding: 72px 0 90px; }
 
 /* "in your hour" — what actually happens once you're matched */
 .hour-grid {
@@ -1864,3 +1864,55 @@ html[data-theme='day'] .world-tint {
 .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
 .footer-links a { color: var(--muted); }
 .footer-links a:hover { color: var(--text); }
+
+/* post-session rating + report */
+.rate-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.report-box {
+  margin-bottom: 16px;
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 2px solid var(--gui-edge);
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+/* ── paired panels: two frames shoulder to shoulder, less scrolling ── */
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 26px;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 22px;
+  align-items: stretch;
+  position: relative;
+  z-index: 2;
+}
+.pair > .frame {
+  padding: 30px 26px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.pair .how-grid { grid-template-columns: 1fr; gap: 12px; width: 100%; margin-top: 4px; }
+.pair .hour-grid { grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-top: 4px; }
+.pair .how-card, .pair .hour-card { padding: 16px; }
+.pair .section-eyebrow { width: 300px; height: 100px; padding: 38px 18px 5px; font-size: 0.92rem; margin-top: 0; margin-bottom: 20px; }
+.pair .review-card { max-width: 100%; }
+.pair .stats-bar { gap: 12px; }
+.pair .stat { min-width: 118px; padding: 14px 12px 10px; }
+.pair .stat::before { width: 28px; height: 28px; margin-bottom: 6px; }
+.pair .stat-num { font-size: 1.5rem; }
+.pair .spec-rows { margin-top: 20px; width: 100%; max-width: none; }
+.pair .story-copy p { font-size: 0.95rem; margin-bottom: 13px; }
+.pair .rules-list li { padding: 10px 0 10px 32px; font-size: 0.95rem; }
+.shipped-list { margin-top: 20px; border-top: 2px solid rgba(244, 239, 230, 0.1); padding-top: 8px; width: 100%; }
+.shipped-list li { font-size: 0.85rem; padding: 8px 0; }
+@media (max-width: 980px) {
+  .pair { grid-template-columns: 1fr; }
+}
+
+/* legal pages: readable long-form */
+.legal-card { max-width: 680px; text-align: left; }
+.legal-body h3 { margin: 22px 0 8px; color: var(--gold); font-size: 1rem; }
+.legal-body p { color: var(--muted); line-height: 1.75; font-size: 0.95rem; }

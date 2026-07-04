@@ -12,6 +12,7 @@ import Settings from './pages/Settings.jsx'
 import ForgotPassword from './pages/ForgotPassword.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
 import NotFound from './pages/NotFound.jsx'
+import { Terms, Privacy } from './pages/Legal.jsx'
 import { useEffect, useRef, useState } from 'react'
 import BugReport from './components/BugReport.jsx'
 import SoundToggle from './components/SoundToggle.jsx'
@@ -220,6 +221,26 @@ export default function App() {
     return () => document.removeEventListener('keydown', onKey)
   }, [])
 
+  // per-page titles
+  useEffect(() => {
+    const TITLES = {
+      '/': 'MCOP: Find a Minecraft buddy',
+      '/questionnaire': 'Find a buddy · MCOP',
+      '/matching': 'Finding your buddy… · MCOP',
+      '/waiting': 'In the queue · MCOP',
+      '/session': 'Your session · MCOP',
+      '/post-session': 'How was it? · MCOP',
+      '/login': 'Log in · MCOP',
+      '/signup': 'Sign up · MCOP',
+      '/account': 'Your account · MCOP',
+      '/preferences': 'Your playstyle · MCOP',
+      '/settings': 'Settings · MCOP',
+      '/terms': 'Terms · MCOP',
+      '/privacy': 'Privacy · MCOP',
+    }
+    document.title = TITLES[location.pathname] || 'MCOP'
+  }, [location.pathname])
+
   // the page's scroll progress pans the world render from sky to bedrock
   useEffect(() => {
     let raf = 0
@@ -308,6 +329,8 @@ export default function App() {
           <Route path="/settings" element={<div className="page"><Settings /></div>} />
           <Route path="/forgot" element={<div className="page"><ForgotPassword /></div>} />
           <Route path="/reset-password" element={<div className="page"><ResetPassword /></div>} />
+          <Route path="/terms" element={<div className="page"><Terms /></div>} />
+          <Route path="/privacy" element={<div className="page"><Privacy /></div>} />
           <Route path="*" element={<div className="page"><NotFound /></div>} />
         </Routes>
       </main>
@@ -318,6 +341,8 @@ export default function App() {
           <Link to="/questionnaire">Find a buddy</Link>
           <Link to="/preferences">Playstyle</Link>
           <Link to="/login">Log in</Link>
+          <Link to="/terms">Terms</Link>
+          <Link to="/privacy">Privacy</Link>
           <a href="https://github.com/n3ev/mcop" target="_blank" rel="noreferrer">GitHub</a>
           <a href="https://github.com/n3ev/mcop/blob/main/CREDITS.md" target="_blank" rel="noreferrer">Credits</a>
         </nav>

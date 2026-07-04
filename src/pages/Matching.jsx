@@ -11,6 +11,7 @@ import Avatar from '../components/Avatar.jsx'
 import { playXp } from '../lib/sound.js'
 import { fireworks } from '../lib/particles.js'
 import { toast } from '../lib/toast.js'
+import { askNotifyPermission, notifyMatchFound } from '../lib/notify.js'
 
 const PHASE_INTERVAL_MS = 3500
 const DEMO_FALLBACK_MS = 90000
@@ -86,6 +87,7 @@ export default function Matching() {
     if (!session.answers) { nav('/'); return }
 
     let socket = null
+    askNotifyPermission()
 
     const rotateT = setInterval(() => {
       setPhase(p => (p + 1) % phases.length)
@@ -100,6 +102,7 @@ export default function Matching() {
       playXp()
       fireworks()
       toast(`Buddy found: ${p2.displayName}`)
+      notifyMatchFound(p2.displayName)
     }
 
     // demo fallback if no real match shows up in time
