@@ -11,6 +11,18 @@ export async function fetchActivity() {
   } catch { return null }
 }
 
+// bedrock waitlist: just an email
+export async function joinWaitlist(email) {
+  const res = await fetch(`${BASE}/waitlist`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, kind: 'bedrock' }),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(data.error || 'could not join the waitlist')
+  return data
+}
+
 export async function joinQueue({ displayName, mcUsername, answers, email }) {
   // read token directly to avoid a circular import with auth.js
   const token = localStorage.getItem('mcop_token')

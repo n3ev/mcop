@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
-import { apiGetMatches } from '../lib/auth.js'
+import { apiGetMatches, apiResendVerification } from '../lib/auth.js'
 import { getFriends, respondFriend } from '../lib/social.js'
 import { startMatch } from '../lib/play.js'
 import { profileQuestions } from '../data/profileQuestions.js'
@@ -13,6 +13,23 @@ function timeAgo(iso) {
   if (d < 3600) return `${Math.floor(d / 60)}m ago`
   if (d < 86400) return `${Math.floor(d / 3600)}h ago`
   return `${Math.floor(d / 86400)}d ago`
+}
+
+// nag (gently) until the email link is clicked, with a one-tap resend
+function VerifyEmailBanner() {
+  const [sent, setSent] = useState(false)
+  const resend = () => {
+    setSent(true)
+    apiResendVerification().catch(() => {})
+  }
+  return (
+    <div className="panel-banner">
+      <span>Check your inbox and verify your email so we can reach you.</span>
+      {sent
+        ? <span className="success small">Sent ✓</span>
+        : <button className="btn small" onClick={resend}>Resend link</button>}
+    </div>
+  )
 }
 
 // personalized panel shown inside the shared landing page for logged-in users
@@ -51,6 +68,7 @@ export default function Dashboard() {
 
   return (
     <div className="user-panel">
+      {user.emailVerified === false && <VerifyEmailBanner />}
       {!user.mcVerified && (
         <div className="panel-banner">
           <span>Link your Minecraft account to play with one click.</span>
@@ -95,6 +113,8 @@ export default function Dashboard() {
           <div className="stat"><span className="stat-num">{history.stats.hours}h</span><span className="stat-label">played</span></div>
         </div>
       )}
+
+      <Link to="/worlds" className="panel-worlds-link">🗺 My saved worlds →</Link>
 
       {social.pending.length > 0 && (
         <div className="panel-history">

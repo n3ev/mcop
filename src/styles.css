@@ -1212,6 +1212,22 @@ html[data-theme='day'] .ember { display: none; }
 .match-meta { color: var(--muted-dim); font-size: 0.76rem; }
 .friend-row { display: inline-flex; align-items: center; gap: 10px; }
 .friend-actions { display: flex; gap: 6px; }
+.panel-worlds-link { color: var(--grass-2); font-size: 0.82rem; align-self: center; }
+
+/* my worlds page */
+.worlds-list { list-style: none; display: flex; flex-direction: column; margin-top: 18px; }
+.world-item { display: flex; align-items: center; gap: 14px; padding: 14px 2px; }
+.world-item + .world-item { border-top: 2px solid rgba(244, 239, 230, 0.08); }
+.world-info { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+.world-title { font-size: 0.92rem; }
+.world-days { color: var(--grass-2); font-size: 0.78rem; white-space: nowrap; }
+.world-days.low { color: #e8b055; }
+.worlds-empty { margin-top: 18px; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+
+/* bedrock waitlist (inside the roadmap card) */
+.wl-form { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; align-items: center; }
+.wl-form .wl-input { flex: 1; min-width: 150px; margin: 0; font-size: 0.8rem; padding: 9px 10px; }
+.wl-form .auth-error { width: 100%; margin: 0; }
 
 .step h2 { margin-bottom: 4px; }
 .hero { position: relative; }

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { loadSession, saveSession } from '../lib/storage.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import { getSessionState, sessionCommand, extendSession } from '../lib/session.js'
+import { toast } from '../lib/toast.js'
 
 const SESSION_MS = 60 * 60 * 1000 // 1 hour
 
@@ -32,13 +33,27 @@ export default function Session() {
     }
   }, [])
 
-  // poll live session state (presence + extended end time)
+  // poll live session state (presence + extended end time + no-shows)
   useEffect(() => {
     if (!live) return
     let on = true
     const poll = async () => {
       const s = await getSessionState(session.matchId, session.role)
-      if (!on || !s || !s.active) return
+      if (!on || !s) return
+      // buddy never joined: the backend released the server. if we're the one
+      // who showed up, it requeued us with priority — hop back to matching.
+      if (s.noShow) {
+        if (s.youAbsent) {
+          setServer({ released: true })
+          setEndsAt(null)
+        } else {
+          saveSession({ queueId: s.requeueId, matchId: null, role: null, partner: null, server: null, quest: null, endsAt: null })
+          toast('Your buddy never showed. Back at the front of the queue.')
+          nav('/matching')
+        }
+        return
+      }
+      if (!s.active) return
       setPartnerOnline(s.partnerOnline)
       setYouOnline(s.youOnline)
       if (s.endsAt && s.endsAt !== endsAt) { setEndsAt(s.endsAt); saveSession({ endsAt: s.endsAt }) }
@@ -82,6 +97,16 @@ export default function Session() {
       setEndsAt(newEnds); saveSession({ endsAt: newEnds }); setMsg('Extended +30 min ✓')
     } catch (e) { setMsg(e.message) }
     setTimeout(() => setMsg(''), 3000)
+  }
+
+  if (server?.released) {
+    return (
+      <section className="card center">
+        <h2>This session was released</h2>
+        <p className="muted">You didn't join the server in time, so we freed it up. No stress, hop back in the queue whenever.</p>
+        <button className="btn primary" onClick={() => nav('/questionnaire')}>Find a buddy</button>
+      </section>
+    )
   }
 
   if (server?.unavailable) {

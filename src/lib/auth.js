@@ -90,6 +90,21 @@ export async function apiReset(token, password) {
   return data
 }
 
+// email verification
+export async function apiVerifyEmail(token) {
+  return postJson('/auth/verify-email', { token }) // { ok, user }
+}
+export const apiResendVerification = () => authedJson('/auth/resend-verification', 'POST', {})
+
+// saved world snapshots
+export async function apiGetWorlds() {
+  const res = await fetch(`${API_URL}/auth/worlds`, {
+    headers: { Authorization: 'Bearer ' + getToken() },
+  })
+  if (!res.ok) return { worlds: [] }
+  return res.json()
+}
+
 // account management (auth)
 export const apiUpdateProfile = (displayName) => authedJson('/auth/profile', 'PUT', { displayName })
 export const apiChangePassword = (currentPassword, newPassword) => authedJson('/auth/change-password', 'POST', { currentPassword, newPassword })

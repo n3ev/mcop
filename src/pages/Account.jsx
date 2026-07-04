@@ -69,7 +69,11 @@ export default function Account() {
       <div className="account-rows">
         <div className="account-row">
           <span className="account-key">Email</span>
-          <span>{user.email}</span>
+          <span>
+            {user.email}
+            {user.emailVerified === false && <span className="muted small"> · unverified, check your inbox</span>}
+            {user.emailVerified && <span className="mc-badge">✓</span>}
+          </span>
         </div>
         <div className="account-row">
           <span className="account-key">Display name</span>
@@ -136,6 +140,7 @@ export default function Account() {
       )}
 
       <div className="cta-row" style={{ marginTop: 24 }}>
+        <button className="btn" onClick={() => nav('/worlds')}>🗺 My saved worlds</button>
         <button className="btn ghost" onClick={logout}>Log out</button>
       </div>
     </section>

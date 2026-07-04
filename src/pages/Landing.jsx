@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { clearSession } from '../lib/storage.js'
-import { fetchActivity } from '../lib/api.js'
+import { fetchActivity, joinWaitlist } from '../lib/api.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import Dashboard from './Dashboard.jsx'
 import Logo from '../components/Logo.jsx'
@@ -29,6 +29,36 @@ function ActivityTicker() {
       <span className="activity-dot" />
       {bits.join(' · ')}
     </div>
+  )
+}
+
+// bedrock players can leave an email for when (if) cross-play lands
+function BedrockWaitlist() {
+  const [email, setEmail] = useState('')
+  const [state, setState] = useState('idle') // idle | busy | done | error
+  const submit = async (e) => {
+    e.preventDefault()
+    if (!email.trim()) return
+    setState('busy')
+    try { await joinWaitlist(email.trim()); setState('done') }
+    catch { setState('error') }
+  }
+  if (state === 'done') return <p className="success small">You're on the list. I'll email you if Bedrock happens.</p>
+  return (
+    <form className="wl-form" onSubmit={submit}>
+      <input
+        className="text-input wl-input"
+        type="email"
+        placeholder="you@example.com"
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        aria-label="Email for the Bedrock waitlist"
+      />
+      <button className="btn small primary" type="submit" disabled={state === 'busy' || !email.trim()}>
+        {state === 'busy' ? '…' : 'Notify me'}
+      </button>
+      {state === 'error' && <p className="auth-error small">That didn't work, is the email right?</p>}
+    </form>
   )
 }
 
@@ -400,11 +430,13 @@ export default function Landing() {
               </div>
               <div className="hour-card">
                 <span className="mc-badge">surveyed</span>
-                <h3 className="hour-title" style={{ marginTop: 10 }}>True match scoring</h3>
-                <p className="hour-desc">Real compatibility maths once the queue is deep enough to be picky.</p>
+                <h3 className="hour-title" style={{ marginTop: 10 }}>Bedrock support</h3>
+                <p className="hour-desc">Java only for now. On Bedrock? Leave your email and you'll be first to know.</p>
+                <BedrockWaitlist />
               </div>
             </div>
             <ul className="patch-list shipped-list">
+              <li><span className="patch-date">Jul 2026</span> Smarter matchmaking, no-show requeue, saved worlds page, email verification.</li>
               <li><span className="patch-date">Jul 2026</span> World saves, buddy ratings and reports went live.</li>
               <li><span className="patch-date">Jul 2026</span> The big redesign: the world you're scrolling through.</li>
               <li><span className="patch-date">Jun 2026</span> Loadouts, social swap, friends, account linking, accounts.</li>

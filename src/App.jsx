@@ -12,6 +12,8 @@ import Settings from './pages/Settings.jsx'
 import ForgotPassword from './pages/ForgotPassword.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
 import NotFound from './pages/NotFound.jsx'
+import VerifyEmail from './pages/VerifyEmail.jsx'
+import Worlds from './pages/Worlds.jsx'
 import { Terms, Privacy } from './pages/Legal.jsx'
 import { useEffect, useRef, useState } from 'react'
 import BugReport from './components/BugReport.jsx'
@@ -235,6 +237,8 @@ export default function App() {
       '/account': 'Your account · MCOP',
       '/preferences': 'Your playstyle · MCOP',
       '/settings': 'Settings · MCOP',
+      '/worlds': 'My worlds · MCOP',
+      '/verify-email': 'Verify email · MCOP',
       '/terms': 'Terms · MCOP',
       '/privacy': 'Privacy · MCOP',
     }
@@ -329,6 +333,8 @@ export default function App() {
           <Route path="/settings" element={<div className="page"><Settings /></div>} />
           <Route path="/forgot" element={<div className="page"><ForgotPassword /></div>} />
           <Route path="/reset-password" element={<div className="page"><ResetPassword /></div>} />
+          <Route path="/verify-email" element={<div className="page"><VerifyEmail /></div>} />
+          <Route path="/worlds" element={<div className="page"><Worlds /></div>} />
           <Route path="/terms" element={<div className="page"><Terms /></div>} />
           <Route path="/privacy" element={<div className="page"><Privacy /></div>} />
           <Route path="*" element={<div className="page"><NotFound /></div>} />
