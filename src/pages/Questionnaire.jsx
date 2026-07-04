@@ -127,7 +127,7 @@ export default function Questionnaire() {
   // a core question
   const q = fixedQuestions[step - 1]
   return (
-    <section className="card">
+    <section className="card" key={step}>
       <div className="progress"><div className="progress-bar" style={{ width: progress + '%' }} /></div>
       <div className="step">
         <span className="tag">Question {step}/{totalQ}</span>

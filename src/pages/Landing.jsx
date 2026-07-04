@@ -67,7 +67,7 @@ function Reviews() {
   }, [])
   const r = REVIEWS[idx]
   return (
-    <div className="wrap reviews-section">
+    <div className="wrap frame reviews-section">
       <p className="section-eyebrow">What players say</p>
       <div className="review-card">
         <div className="review-stars" aria-label="5 out of 5">★★★★★</div>
@@ -192,7 +192,7 @@ export default function Landing() {
       {/* ── ground level ── */}
       <section className="stratum-surface">
         <Fireflies />
-        <div className="wrap how-section">
+        <div className="wrap frame how-section">
           <p className="section-eyebrow">How it works</p>
           <div className="how-grid">
             <div className="how-card">
@@ -214,9 +214,38 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ── what the hour actually holds ── */}
+      <section className="stratum-surface">
+        <div className="wrap frame how-section">
+          <p className="section-eyebrow">In your hour</p>
+          <div className="hour-grid">
+            <div className="hour-card">
+              <span className="hour-icon" aria-hidden="true">🎯</span>
+              <h3 className="hour-title">A shared quest</h3>
+              <p className="hour-desc">Every session spawns with a quest of the hour — something to build, find, or survive together.</p>
+            </div>
+            <div className="hour-card">
+              <span className="hour-icon" aria-hidden="true">🧭</span>
+              <h3 className="hour-title">In-game controls</h3>
+              <p className="hour-desc">Set the time to day, clear the weather, or teleport straight to your buddy from the session page.</p>
+            </div>
+            <div className="hour-card">
+              <span className="hour-icon" aria-hidden="true">⚔️</span>
+              <h3 className="hour-title">Starting loadouts</h3>
+              <p className="hour-desc">Vanilla purist? Iron kit? Elytra and fireworks? Creative? Pick your start in your profile.</p>
+            </div>
+            <div className="hour-card">
+              <span className="hour-icon" aria-hidden="true">⏳</span>
+              <h3 className="hour-title">+30 when you need it</h3>
+              <p className="hour-desc">Mid-build when the timer runs low? Extend the session by half an hour with one click.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── the mine ── */}
       <section className="stratum-stone">
-        <div className="wrap stats-section">
+        <div className="wrap frame stats-section">
           <p className="section-eyebrow">Mined so far</p>
           <div className="stats-bar">
             <div className="stat"><span className="stat-num">60s</span><span className="stat-label">to match</span></div>
@@ -230,6 +259,35 @@ export default function Landing() {
       {/* ── the cave ── */}
       <section className="stratum-deep">
         <Reviews />
+      </section>
+
+      {/* ── common questions, asked around the campfire ── */}
+      <section className="stratum-deep">
+        <div className="wrap frame reviews-section">
+          <p className="section-eyebrow">Common questions</p>
+          <div className="faq-list">
+            <details className="faq">
+              <summary>What do I need to play?</summary>
+              <p className="faq-a">Minecraft Java Edition (1.21.4) and a Microsoft account. We whitelist your exact username on a private server — no mods, no launcher tricks. Bedrock isn't supported yet.</p>
+            </details>
+            <details className="faq">
+              <summary>Is it actually free?</summary>
+              <p className="faq-a">Yes — matching, the private server, and the 30-day world save are all free while we're in beta. Long term we may charge a small fee to keep worlds alive past 30 days. Playing stays free.</p>
+            </details>
+            <details className="faq">
+              <summary>What if we don't vibe?</summary>
+              <p className="faq-a">It happens. Finish the hour or bail early, then hit "don't match again" and you'll never see each other in the queue again. Swapping socials afterwards is always optional, never required.</p>
+            </details>
+            <details className="faq">
+              <summary>Can we keep playing after the hour?</summary>
+              <p className="faq-a">Extend the session by 30 minutes from the session page, and save the world for 30 days free — jump back in together whenever you both want.</p>
+            </details>
+            <details className="faq">
+              <summary>Is it safe to play with a stranger?</summary>
+              <p className="faq-a">You're on a whitelisted private server — just you two, verified usernames only. No coordinates, no personal info exchanged unless you choose to share socials at the end. Block and report tools are one click away.</p>
+            </details>
+          </div>
+        </div>
       </section>
 
       {/* ── the bottom of the world: one last call to play ── */}
@@ -247,7 +305,7 @@ export default function Landing() {
             }}
           />
         ))}
-        <div className="wrap">
+        <div className="wrap frame" style={{ maxWidth: 760 }}>
           <p className="section-eyebrow">End of the line</p>
           <h2>Grab a pickaxe. Find your buddy.</h2>
           <p className="muted" style={{ maxWidth: 560, margin: '0 auto 26px' }}>

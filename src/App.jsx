@@ -79,15 +79,15 @@ function WorldBackdrop() {
     <div className="world-bg" aria-hidden="true">
       <img
         className="world-img world-night"
-        src="/assets/world/night-1920.webp"
-        srcSet="/assets/world/night-1080.webp 1080w, /assets/world/night-1920.webp 1920w"
+        src="/assets/world/night-1600.webp"
+        srcSet="/assets/world/night-1080.webp 1080w, /assets/world/night-1600.webp 1600w, /assets/world/night-2560.webp 2560w, /assets/world/night-4269.webp 4269w"
         sizes="100vw"
         alt=""
       />
       <img
         className="world-img world-day"
-        src="/assets/world/day-1920.webp"
-        srcSet="/assets/world/day-1080.webp 1080w, /assets/world/day-1920.webp 1920w"
+        src="/assets/world/day-1600.webp"
+        srcSet="/assets/world/day-1080.webp 1080w, /assets/world/day-1600.webp 1600w, /assets/world/day-2560.webp 2560w, /assets/world/day-4269.webp 4269w"
         sizes="100vw"
         alt=""
       />
@@ -174,7 +174,7 @@ export default function App() {
   // soft tick on hover (pointer devices only)
   useEffect(() => {
     const onClick = (e) => {
-      const el = e.target.closest('button, .btn, .option, a[href], .lever')
+      const el = e.target.closest('button, .btn, .option, a[href], .lever, summary')
       if (!el || el.disabled) return
       playClick()
       burst(e.clientX, e.clientY)
@@ -209,6 +209,27 @@ export default function App() {
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
   }, [])
+
+  // the page's scroll progress pans the world render from sky to bedrock
+  useEffect(() => {
+    let raf = 0
+    const update = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight
+      const px = max > 0 ? window.scrollY / max : 0
+      document.documentElement.style.setProperty('--scrollp', String(px))
+    }
+    const onScroll = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(update) }
+    update()
+    const t = setTimeout(update, 500) // after async content settles
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      clearTimeout(t)
+      cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [location.pathname])
 
   // scroll reveals: the world assembles as it enters the viewport.
   // reduced-motion users never get the classes at all.

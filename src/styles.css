@@ -179,7 +179,8 @@ html[data-theme='day'] .cloud { background: rgba(255,255,255,0.5); box-shadow: 3
   image-rendering: pixelated;
   border: none;
   box-shadow: none;
-  color: #20160c;
+  color: #ffedc0;
+  text-shadow: 1px 0 0 currentColor, 0 0 7px rgba(255, 226, 150, 0.6), 0 0 16px rgba(255, 196, 100, 0.3);
   font-size: 0.76rem;
   line-height: 1.35;
   text-align: center;
@@ -414,8 +415,10 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
   width: 100%;
   max-width: 720px;
   margin: 0 auto;
-  padding: 30px 32px;
-  background: var(--panel);
+  padding: 32px 34px;
+  background: rgba(33, 33, 39, 0.68);
+  backdrop-filter: blur(3px);
+  animation: card-in 0.3s var(--steps) backwards;
   border: 3px solid var(--gui-edge);
   box-shadow:
     inset 2px 2px 0 rgba(255, 255, 255, 0.09),
@@ -425,19 +428,28 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 .card.center { text-align: center; }
 .card h2 { margin: 6px 0 12px; }
 
-/* planks card: warm wood panel for surface-level content */
-.how-card, .panel-banner, .quest-banner {
-  background:
-    linear-gradient(rgba(255, 244, 224, 0.07), rgba(43, 33, 24, 0.18)),
-    url('/assets/textures/blocks/planks.png') center / var(--block);
-  image-rendering: pixelated;
-  border: 3px solid #3d2b1f;
+/* GUI panel cards (inventory-style, world visible through them) */
+.how-card {
+  background: rgba(40, 40, 47, 0.62);
+  border: 3px solid var(--gui-edge);
   box-shadow:
-    inset 2px 2px 0 rgba(255, 255, 255, 0.18),
-    inset -2px -2px 0 rgba(0, 0, 0, 0.3),
+    inset 2px 2px 0 rgba(255, 255, 255, 0.12),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.4),
+    0 8px 0 rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(3px);
+  color: var(--text);
+}
+.panel-banner, .quest-banner {
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.28)),
+    url('/assets/textures/blocks/topbar.png') center / var(--block);
+  image-rendering: pixelated;
+  border: 3px solid #17100b;
+  box-shadow:
+    inset 2px 2px 0 rgba(255, 255, 255, 0.1),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.32),
     0 8px 0 rgba(0, 0, 0, 0.28);
-  color: var(--ink);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.18);
+  color: #f0e4cc;
 }
 
 /* chips ride small dark slots */
@@ -479,14 +491,18 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
   padding: 8px 12px 90px;         /* text on the board (top 12/26), pole below */
   background: url('/assets/textures/post-1x.png') center / 100% 100% no-repeat;
   image-rendering: pixelated;
-  color: #20160c;
+  color: #ffedc0;
+  text-shadow: 1px 0 0 currentColor, 0 0 7px rgba(255, 226, 150, 0.6), 0 0 16px rgba(255, 196, 100, 0.3);
   font-size: 0.9rem;
   line-height: 1.3;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-.tag.good { color: #1f4d12; }
+.tag.good {
+  color: #baffae;
+  text-shadow: 1px 0 0 currentColor, 0 0 7px rgba(150, 255, 130, 0.6), 0 0 16px rgba(110, 235, 90, 0.3);
+}
 
 .section-eyebrow, .panel-history-label, .hero-eyebrow {
   position: relative;
@@ -499,7 +515,8 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
   padding: 47px 30px 6px;         /* board is the lower 10/16 */
   background: url('/assets/textures/hang-3x.png') center / 100% 100% no-repeat;
   image-rendering: pixelated;
-  color: #20160c;
+  color: #ffedc0;
+  text-shadow: 1px 0 0 currentColor, 0 0 8px rgba(255, 226, 150, 0.6), 0 0 18px rgba(255, 196, 100, 0.32);
   font-size: 1.05rem;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -525,10 +542,10 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
   padding: 20px 14px;
   text-align: center;
   background:
-    linear-gradient(rgba(255, 244, 224, 0.05), rgba(43, 33, 24, 0.14)),
-    url('/assets/textures/blocks/planks.png') center / var(--block);
+    linear-gradient(rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.3)),
+    url('/assets/textures/blocks/topbar.png') center / var(--block);
   image-rendering: pixelated;
-  border: 4px solid #3a2a1c;
+  border: 4px solid #17100b;
   box-shadow:
     inset 2px 2px 0 rgba(255, 255, 255, 0.16),
     inset -2px -2px 0 rgba(0, 0, 0, 0.28),
@@ -548,9 +565,14 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 }
 .timer::before { left: 16%; }
 .timer::after { right: 16%; }
-.timer-label { color: var(--ink-soft); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1.2px; }
-.timer-clock { font-size: 2.7rem; color: var(--ink); margin: 8px 0; text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3); }
-.timer .muted { color: var(--ink-soft); }
+.timer-label { color: #d9c9a8; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1.2px; }
+.timer-clock {
+  font-size: 2.7rem;
+  color: #ffedc0;
+  margin: 8px 0;
+  text-shadow: 1px 0 0 currentColor, 0 0 10px rgba(255, 226, 150, 0.6), 0 0 22px rgba(255, 196, 100, 0.3);
+}
+.timer .muted { color: #d9c9a8; }
 
 /* modals are big hanging signs that drop in on their chains */
 .modal-overlay {
@@ -574,15 +596,15 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
   flex-direction: column;
   gap: 14px;
   background:
-    linear-gradient(rgba(255, 244, 224, 0.05), rgba(43, 33, 24, 0.14)),
-    url('/assets/textures/blocks/planks.png') center / var(--block);
+    linear-gradient(rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.3)),
+    url('/assets/textures/blocks/topbar.png') center / var(--block);
   image-rendering: pixelated;
-  border: 4px solid #3a2a1c;
+  border: 4px solid #17100b;
   box-shadow:
-    inset 2px 2px 0 rgba(255, 255, 255, 0.16),
-    inset -2px -2px 0 rgba(0, 0, 0, 0.28),
+    inset 2px 2px 0 rgba(255, 255, 255, 0.1),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.35),
     0 10px 0 rgba(0, 0, 0, 0.35);
-  color: var(--ink);
+  color: #f0e4cc;
   animation: sign-drop 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.15);
   transform-origin: 50% -70px;
 }
@@ -603,8 +625,12 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
   60%  { transform: translateY(4px) rotate(-1deg); opacity: 1; }
   100% { transform: translateY(0) rotate(0); }
 }
-.modal-title { font-size: 1.15rem; color: var(--ink); text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3); }
-.modal .muted { color: var(--ink-soft); }
+.modal-title {
+  font-size: 1.15rem;
+  color: #ffedc0;
+  text-shadow: 1px 0 0 currentColor, 0 0 8px rgba(255, 226, 150, 0.55), 0 0 16px rgba(255, 196, 100, 0.28);
+}
+.modal .muted { color: #d9c9a8; }
 .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
 .bug-error { color: #8f1d10; font-weight: 700; }
 
@@ -716,7 +742,8 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
   padding: 3% 6% 32%;             /* text on the board (top 20/34) */
   background: url('/assets/textures/post-wide.png') center / 100% 100% no-repeat;
   image-rendering: pixelated;
-  color: #20160c;
+  color: #ffedc0;
+  text-shadow: 1px 0 0 currentColor, 0 0 7px rgba(255, 226, 150, 0.55), 0 0 15px rgba(255, 196, 100, 0.28);
   font-size: 0.98rem;
   line-height: 1.45;
   text-align: center;
@@ -843,9 +870,9 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
   text-align: left;
 }
 .how-card { padding: 24px 22px; }
-.how-num { display: block; margin-bottom: 10px; font-size: 0.68rem; color: #7a3d12; letter-spacing: 1px; }
-.how-title { margin-bottom: 8px; font-size: 1rem; color: var(--ink); }
-.how-desc { font-size: 0.85rem; line-height: 1.65; color: var(--ink-soft); }
+.how-num { display: block; margin-bottom: 10px; font-size: 0.68rem; color: var(--gold); letter-spacing: 1px; }
+.how-title { margin-bottom: 8px; font-size: 1rem; color: var(--text); }
+.how-desc { font-size: 0.85rem; line-height: 1.65; color: var(--muted); }
 
 /* stats = ore finds in inventory slots */
 .stats-bar {
@@ -1084,8 +1111,8 @@ html[data-theme='day'] .ember { display: none; }
 .presence.on { color: var(--grass-2); }
 .presence.off { color: var(--muted-dim); }
 .quest-banner { display: flex; flex-direction: column; gap: 2px; margin-bottom: 20px; padding: 12px 18px; }
-.quest-label { font-size: 0.68rem; color: #7a3d12; text-transform: uppercase; letter-spacing: 1px; }
-.quest-text { font-size: 1rem; color: var(--ink); }
+.quest-label { font-size: 0.68rem; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; }
+.quest-text { font-size: 1rem; color: #f0e4cc; }
 .ingame-controls { margin-top: 20px; padding-top: 16px; border-top: 2px solid rgba(244, 239, 230, 0.1); }
 .controls-label { font-size: 0.68rem; color: var(--muted-dim); text-transform: uppercase; letter-spacing: 1px; }
 .controls-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
@@ -1467,7 +1494,7 @@ h2 { font-size: 1.6rem; }
 .how-card { padding: 28px 26px; }
 .how-num { font-size: 0.78rem; }
 .how-title { font-size: 1.28rem; margin-bottom: 10px; }
-.how-desc { font-size: 1rem; color: #241a10; }
+.how-desc { font-size: 1rem; color: var(--muted); }
 .stat { min-width: 152px; padding: 20px 18px 14px; }
 .stat-num { font-size: 2rem; }
 .stat-label { font-size: 0.78rem; }
@@ -1581,19 +1608,25 @@ html[data-theme='day'] .dig-cue { text-shadow: 1px 0 0 currentColor, 2px 2px 0 r
    sky → surface → stone → mineshaft → bedrock.
    ═══════════════════════════════════════════════════════════════════ */
 .world-bg {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: -1;
   overflow: hidden;
 }
+/* the render is shown at its natural aspect — full width, never cropped
+   or blown up. scrolling the page pans the viewport down the full
+   composition: sky at the top of the page, bedrock at the bottom. */
 .world-img {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
+  top: 0;
+  left: 50%;
+  width: max(100vw, 89vh);   /* wide enough to always fill the viewport */
+  height: auto;
+  transform:
+    translateX(-50%)
+    translateY(calc(var(--scrollp, 0) * min(0px, 100vh - 1.1244 * max(100vw, 89vh))));
   transition: opacity 2s ease;
+  will-change: transform, opacity;
 }
 .world-day { opacity: 0; }
 html[data-theme='day'] .world-day { opacity: 1; }
@@ -1608,4 +1641,90 @@ html[data-theme='day'] .world-night { opacity: 0; }
 }
 html[data-theme='day'] .world-tint {
   background: linear-gradient(180deg, rgba(8, 8, 13, 0.36) 0%, rgba(8, 8, 13, 0.22) 16%, rgba(8, 8, 13, 0.34) 100%);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   REVISION — charm pass: framed panels, glow signs, taller journey
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* framed content containers: semi-transparent GUI panels that let the
+   world glow through while giving the middle of the site structure */
+.frame {
+  background: rgba(36, 36, 43, 0.55);
+  border: 3px solid rgba(11, 13, 16, 0.92);
+  box-shadow:
+    inset 2px 2px 0 rgba(255, 255, 255, 0.1),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.4),
+    0 10px 0 rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(3px);
+  padding: 40px 34px 46px;
+}
+
+/* blocky panel entrance (flow steps re-mount per question) */
+@keyframes card-in {
+  0%   { transform: translateY(12px) scale(0.985); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* the journey is longer now — each stop gets air */
+.stratum-sky { min-height: 100vh; }
+.stratum-surface { padding: 110px 0 120px; }
+.stratum-stone { padding: 110px 0 120px; }
+.stratum-deep { padding: 110px 0 130px; }
+.stratum-mineshaft { padding: 110px 0 150px; }
+
+/* "in your hour" — what actually happens once you're matched */
+.hour-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 8px;
+  text-align: left;
+}
+.hour-card {
+  padding: 22px 20px;
+  background: rgba(40, 40, 47, 0.62);
+  border: 3px solid var(--gui-edge);
+  box-shadow:
+    inset 2px 2px 0 rgba(255, 255, 255, 0.12),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.4),
+    0 8px 0 rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(3px);
+}
+.hour-icon { font-size: 1.6rem; display: block; margin-bottom: 10px; }
+.hour-title { font-size: 1rem; color: var(--text); margin-bottom: 6px; text-shadow: 1px 0 0 currentColor; }
+.hour-desc { font-size: 0.85rem; line-height: 1.6; color: var(--muted); }
+@media (max-width: 960px) { .hour-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .hour-grid { grid-template-columns: 1fr; } }
+
+/* FAQ — expandable GUI slots with the menu cursor */
+.faq-list { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; text-align: left; }
+.faq {
+  background: rgba(0, 0, 0, 0.42);
+  border: 2px solid var(--gui-edge);
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.08);
+}
+.faq summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 15px 18px 15px 42px;
+  position: relative;
+  font-size: 1rem;
+  color: var(--text);
+  text-shadow: 1px 0 0 currentColor;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::before {
+  content: '▸';
+  position: absolute;
+  left: 17px;
+  color: var(--gold);
+  transition: transform 0.12s;
+}
+.faq[open] summary::before { transform: rotate(90deg); }
+.faq summary:hover { background: rgba(255, 255, 255, 0.05); }
+.faq-a { padding: 2px 20px 16px 42px; color: var(--muted); font-size: 0.92rem; line-height: 1.7; }
+
+@media (prefers-reduced-motion: reduce) {
+  .card { animation: none !important; }
 }
