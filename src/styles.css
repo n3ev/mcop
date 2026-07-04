@@ -1421,32 +1421,7 @@ html[data-theme='day'] .ember { display: none; }
   animation: glow-breathe 2.8s ease-in-out infinite;
 }
 
-/* rails mounted on top of the bedrock footer; the cart never stops */
-.footer-rails {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 100%;
-  height: 30px;
-  background: url('/assets/textures/blocks/rail.png') left bottom / 30px repeat-x;
-  image-rendering: pixelated;
-  pointer-events: none;
-}
-.minecart {
-  position: absolute;
-  bottom: 2px;
-  left: 0;
-  width: 78px;
-  height: 78px;
-  background: url('/assets/textures/blocks/minecart.png') center / contain no-repeat;
-  image-rendering: pixelated;
-  animation: cart-roll 24s linear infinite;
-  will-change: transform;
-}
-@keyframes cart-roll {
-  0%   { transform: translateX(-120px); }
-  100% { transform: translateX(calc(100vw + 140px)); }
-}
+/* (the minecart retired — the render's own rails hold the floor now) */
 
 /* ── mobs stroll the grass at dusk (walking GIFs drop into
    /assets/textures/mobs/; configured in Landing.jsx) ────────────────── */
@@ -1620,11 +1595,11 @@ html[data-theme='day'] .dig-cue { text-shadow: 1px 0 0 currentColor, 2px 2px 0 r
   position: absolute;
   top: 0;
   left: 50%;
-  width: max(100vw, 89vh);   /* wide enough to always fill the viewport */
+  width: max(100vw, 91vh);   /* wide enough to always fill the viewport */
   height: auto;
   transform:
     translateX(-50%)
-    translateY(calc(var(--scrollp, 0) * min(0px, 100vh - 1.1244 * max(100vw, 89vh))));
+    translateY(calc(var(--scrollp, 0) * min(0px, 100vh - 1.1024 * max(100vw, 91vh))));
   transition: opacity 2s ease;
   will-change: transform, opacity;
 }
@@ -1727,4 +1702,123 @@ html[data-theme='day'] .world-tint {
 
 @media (prefers-reduced-motion: reduce) {
   .card { animation: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   GORGEOUS PASS — the CTA that begs to be pressed, XP scroll bar,
+   the logo on the planks, hover life everywhere
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* the MCOP logo, home on the planks, top right */
+.topbar-logo {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 18px;
+  flex-shrink: 0;
+}
+.topbar-logo img {
+  height: 60px;
+  width: auto;
+  image-rendering: pixelated;
+  filter: drop-shadow(2px 3px 0 rgba(0, 0, 0, 0.45));
+  transition: transform 0.15s ease;
+}
+.topbar-logo:hover img { transform: scale(1.07) rotate(-2deg); }
+
+/* the call to action: chunky emerald, breathing glow, passing shine */
+.btn.cta {
+  position: relative;
+  overflow: hidden;
+  font-size: 1.32rem;
+  padding: 20px 46px;
+  color: #eaffdc;
+  background: linear-gradient(#8ee05a 0%, #56a838 52%, #417f2a 100%);
+  border: 3px solid #0b0d10;
+  box-shadow:
+    inset 3px 3px 0 rgba(255, 255, 255, 0.38),
+    inset -3px -3px 0 rgba(0, 0, 0, 0.38),
+    0 6px 0 #1c3a10,
+    0 10px 24px rgba(0, 0, 0, 0.45),
+    0 0 28px rgba(126, 224, 88, 0.28);
+  text-shadow: 1px 0 0 currentColor, 2px 2px 0 rgba(10, 30, 6, 0.65);
+  animation: cta-breathe 2.8s ease-in-out infinite;
+}
+.btn.cta::after {                 /* a band of light sweeps across */
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: 0;
+  width: 46%;
+  height: 140%;
+  background: linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.30) 50%, transparent 80%);
+  transform: translateX(-160%) skewX(-12deg);
+  animation: cta-shine 4.2s ease-in-out infinite;
+  pointer-events: none;
+}
+.btn.cta:hover:not(:disabled) {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow:
+    inset 3px 3px 0 rgba(255, 255, 255, 0.38),
+    inset -3px -3px 0 rgba(0, 0, 0, 0.38),
+    0 8px 0 #1c3a10,
+    0 14px 30px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(126, 224, 88, 0.45);
+}
+.btn.cta:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow:
+    inset -3px -3px 0 rgba(255, 255, 255, 0.2),
+    inset 3px 3px 0 rgba(0, 0, 0, 0.4),
+    0 2px 0 #1c3a10,
+    0 0 22px rgba(126, 224, 88, 0.3);
+}
+@keyframes cta-breathe {
+  0%, 100% { box-shadow:
+    inset 3px 3px 0 rgba(255, 255, 255, 0.38), inset -3px -3px 0 rgba(0, 0, 0, 0.38),
+    0 6px 0 #1c3a10, 0 10px 24px rgba(0, 0, 0, 0.45), 0 0 24px rgba(126, 224, 88, 0.22); }
+  50% { box-shadow:
+    inset 3px 3px 0 rgba(255, 255, 255, 0.38), inset -3px -3px 0 rgba(0, 0, 0, 0.38),
+    0 6px 0 #1c3a10, 0 10px 24px rgba(0, 0, 0, 0.45), 0 0 42px rgba(126, 224, 88, 0.42); }
+}
+@keyframes cta-shine {
+  0%, 55%   { transform: translateX(-160%) skewX(-12deg); }
+  75%, 100% { transform: translateX(320%) skewX(-12deg); }
+}
+
+/* your scroll is an XP bar */
+.scroll-xp {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+}
+.scroll-xp-fill {
+  height: 100%;
+  width: calc(var(--scrollp, 0) * 100%);
+  background:
+    repeating-linear-gradient(90deg, transparent 0 14px, rgba(0, 0, 0, 0.3) 14px 16px),
+    linear-gradient(var(--grass-2), #4f9a31);
+  box-shadow: 0 0 8px rgba(126, 224, 88, 0.55);
+}
+
+/* panels perk up when you look at them */
+.stat, .hour-card, .how-card {
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+.stat:hover, .hour-card:hover, .how-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    inset 2px 2px 0 rgba(255, 255, 255, 0.14),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.4),
+    0 12px 0 rgba(0, 0, 0, 0.22),
+    0 0 22px rgba(255, 216, 118, 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn.cta, .btn.cta::after { animation: none !important; }
 }

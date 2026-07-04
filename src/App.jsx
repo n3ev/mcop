@@ -74,6 +74,16 @@ function JukeboxToggle() {
 
 // the world itself: Neev's shader renders of a real cross-section,
 // night for dusk (default), day when the lever is flipped
+// the MCOP logo, top right on the planks (animated; still if reduced motion)
+function TopbarLogo() {
+  const still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  return (
+    <Link to="/" className="topbar-logo" aria-label="MCOP home">
+      <img src={still ? '/assets/logo/mcop-static.png' : '/assets/logo/mcop.webp'} alt="" />
+    </Link>
+  )
+}
+
 function WorldBackdrop() {
   return (
     <div className="world-bg" aria-hidden="true">
@@ -244,7 +254,7 @@ export default function App() {
     }, { threshold: 0.12 })
     const scan = () => {
       document
-        .querySelectorAll('.how-card, .stat, .review-card, .post-card, .hero-bullets li, .panel-history')
+        .querySelectorAll('.how-card, .hour-card, .stat, .review-card, .post-card, .hero-bullets li, .panel-history, .faq, .section-eyebrow')
         .forEach((el, i) => {
           if (el.classList.contains('rv-in')) return
           el.classList.add('rv')
@@ -273,12 +283,14 @@ export default function App() {
   return (
     <div className="app">
       <WorldBackdrop />
+      <div className="scroll-xp" aria-hidden="true"><div className="scroll-xp-fill" /></div>
       <DepthMeter />
 
       <header className="topbar">
         <span className="tagline">Random buddy. One hour. One world.</span>
         <div className="topbar-lever"><ThemeToggle /></div>
         <HeaderAuth />
+        <TopbarLogo />
       </header>
 
       <main className="content">
@@ -301,7 +313,6 @@ export default function App() {
       </main>
 
       <footer className="footer" onClick={tapBedrock}>
-        <div className="footer-rails" aria-hidden="true"><div className="minecart" /></div>
         <span>© {new Date().getFullYear()} MCOP · Not affiliated with Mojang or Microsoft</span>
         <a href="https://github.com/n3ev/mcop/blob/main/CREDITS.md" target="_blank" rel="noreferrer">Credits</a>
         <div className="footer-controls">

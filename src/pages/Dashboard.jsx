@@ -69,8 +69,8 @@ export default function Dashboard() {
             </div>
 
             {user.mcVerified ? (
-              <button className="btn primary big" disabled={busy} onClick={quickPlay}>
-                {busy ? 'Finding your buddy…' : 'Play with my style ⛏'}
+              <button className="btn primary big cta" disabled={busy} onClick={quickPlay}>
+                {busy ? 'Finding your buddy…' : '⛏ Play with my style'}
               </button>
             ) : (
               <button className="btn primary big" onClick={() => nav('/account')}>Link account to play ⛏</button>

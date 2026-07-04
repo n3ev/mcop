@@ -177,7 +177,7 @@ export default function Landing() {
           <Dashboard />
         ) : (
           <>
-            <button className="btn primary big" onClick={start}>Find my buddy ⛏</button>
+            <button className="btn primary big cta" onClick={start}>⛏ Find my buddy</button>
             <div className="dig-cue">▼ dig deeper ▼</div>
             <ul className="hero-bullets">
               <li>🎯 Matched by playstyle, not luck</li>
@@ -311,7 +311,7 @@ export default function Landing() {
           <p className="muted" style={{ maxWidth: 560, margin: '0 auto 26px' }}>
             You made it to the bottom of the world. The only thing left to do is play.
           </p>
-          <button className="btn primary big" onClick={start}>Find my buddy ⛏</button>
+          <button className="btn primary big cta" onClick={start}>⛏ Find my buddy</button>
         </div>
       </section>
     </div>
