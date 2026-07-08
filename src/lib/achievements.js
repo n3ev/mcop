@@ -20,6 +20,8 @@ export const ACHIEVEMENTS = [
   { id: 'cant-break-bedrock', title: 'Nice Try',         hint: 'Some blocks simply will not break, however you hit them.', icon: 'bedrock.png',   tier: 'normal',    col: 2, row: 2, parent: 'rock-bottom' },
   { id: 'going-gold',         title: 'Going Gold',       hint: 'Let a record spin.',                                     icon: 'ore-gold.png',    tier: 'goal',      col: 1, row: 3, parent: 'first-steps' },
   { id: 'diamonds',           title: 'DIAMONDS!',        hint: 'Say the magic word out loud, one letter at a time.',     icon: 'ore-diamond.png', tier: 'goal',      col: 2, row: 3, parent: 'going-gold' },
+  { id: 'the-nether',         title: 'We Need to Go Deeper', hint: 'There is a hotter place than the deepest cave. Say its name.', icon: 'ore-redstone.png', tier: 'goal', col: 3, row: 3, parent: 'diamonds' },
+  { id: 'there-and-back',     title: 'There and Back Again', hint: 'Every trip to the fire needs a trip home.',             icon: 'torch.png',       tier: 'challenge', col: 4, row: 3, parent: 'the-nether' },
   { id: 'torchbearer',        title: 'Torchbearer',      hint: 'Bring your own light. The other button places it.',      icon: 'torch.png',       tier: 'normal',    col: 2, row: 0, parent: 'cartographer' },
   { id: 'konami',             title: "It's Gonna Blow",  hint: 'Up, up, and a very old secret.',                         icon: 'ore-redstone.png', tier: 'goal',     col: 1, row: 4, parent: 'first-steps' },
   { id: 'herobrine',          title: 'Removed the Wrong One', hint: 'Spell out the name that was never really gone.',    icon: 'herobrine.png',   tier: 'challenge', col: 2, row: 4, parent: 'konami', secret: true },

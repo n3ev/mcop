@@ -273,10 +273,12 @@ export default function EasterEggs() {
     if (leaving) {
       delete el.dataset.dimension
       say('Returning to the Overworld…', 'nether')
+      unlock('there-and-back')
     } else {
       el.dataset.dimension = 'nether'
       say('Entering the Nether…', 'nether')
       say('Type /nether again to come home', 'muted')
+      unlock('the-nether')
     }
   }
 

@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import { dragonFlyby } from '../lib/worldfx.js'
 
 // ambient life: rare shooting stars in the night sky, enderman eyes blinking
 // in the dark of the stone/mineshaft strata. subtle by design — you should
@@ -51,8 +50,7 @@ export default function Ambience() {
       const roll = Math.random()
       if (roll < 0.3) spawnStar()
       else if (roll < 0.55) spawnEyes()
-      // once in a blue moon, the dragon herself (~once per 5 minutes at night)
-      else if (roll < 0.58 && night() && overworld()) dragonFlyby()
+      // the dragon is command-only (/summon dragon) — never ambient
     }
     const iv = setInterval(tick, 9000)
     // debug/verification hook
