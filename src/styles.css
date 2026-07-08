@@ -2321,3 +2321,172 @@ html[data-theme='day'] .world-tint {
 .legal-card { max-width: 680px; text-align: left; }
 .legal-body h3 { margin: 22px 0 8px; color: var(--gold); font-size: 1rem; }
 .legal-body p { color: var(--muted); line-height: 1.75; font-size: 0.95rem; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   LIVING WORLD — weather, potion effects, ambience, minable ores,
+   the minecart tour, the ender dragon, the ambush, creative building
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── rain: two parallax layers of falling pixel streaks ── */
+.fx-rain { position: fixed; inset: 0; z-index: 900; pointer-events: none; opacity: 1; transition: opacity 0.9s ease; }
+.fx-rain.gone { opacity: 0; }
+.fx-rain::before, .fx-rain::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(90deg, transparent 0 15px, rgba(160, 196, 255, 0.34) 15px 17px, transparent 17px 23px);
+  -webkit-mask-image: repeating-linear-gradient(180deg, #000 0 26px, transparent 26px 64px);
+  mask-image: repeating-linear-gradient(180deg, #000 0 26px, transparent 26px 64px);
+  animation: fx-rain-fall 0.5s linear infinite;
+  opacity: 0.8;
+}
+.fx-rain::after {
+  background: repeating-linear-gradient(90deg, transparent 0 9px, rgba(190, 214, 255, 0.18) 9px 10px, transparent 10px 14px);
+  -webkit-mask-image: repeating-linear-gradient(180deg, #000 0 16px, transparent 16px 42px);
+  mask-image: repeating-linear-gradient(180deg, #000 0 16px, transparent 16px 42px);
+  animation-duration: 0.34s;
+}
+@keyframes fx-rain-fall {
+  to { -webkit-mask-position: 0 64px; mask-position: 0 64px; }
+}
+.fx-rain.storm { background: rgba(8, 10, 18, 0.22); }
+.fx-rain.storm::before { opacity: 1; }
+
+/* lightning: the bolt + the sky-wide double flicker */
+.fx-bolt { position: fixed; top: 0; width: 40px; height: 44vh; z-index: 901; pointer-events: none; animation: fx-bolt 0.6s steps(2) forwards; }
+.fx-bolt svg { width: 100%; height: 100%; filter: drop-shadow(0 0 7px rgba(188, 214, 255, 0.9)); }
+@keyframes fx-bolt { 0% { opacity: 1; } 55% { opacity: 0.4; } 100% { opacity: 0; } }
+.fx-flash { position: fixed; inset: 0; z-index: 899; background: #dfe9ff; pointer-events: none; animation: fx-flash 0.6s steps(1) forwards; }
+@keyframes fx-flash { 0% { opacity: 0.5; } 12% { opacity: 0.06; } 22% { opacity: 0.3; } 38% { opacity: 0; } 100% { opacity: 0; } }
+
+/* ── potion effects ── */
+html.fx-nausea .content, html.fx-nausea .topbar { animation: fx-nausea 2.6s ease-in-out infinite; }
+@keyframes fx-nausea {
+  0%, 100% { filter: hue-rotate(0deg) saturate(1); transform: none; }
+  25%      { filter: hue-rotate(16deg) saturate(1.2); transform: skewX(0.5deg) scale(1.006); }
+  75%      { filter: hue-rotate(-14deg) saturate(1.1); transform: skewX(-0.5deg); }
+}
+html.fx-nausea body::after {
+  content: ''; position: fixed; inset: 0; z-index: 800; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 42%, rgba(120, 40, 160, 0.26));
+  animation: fx-vignette 2.6s ease-in-out infinite;
+}
+@keyframes fx-vignette { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+html.fx-levitate .content { animation: fx-levitate 2.8s ease-in-out infinite; }
+@keyframes fx-levitate { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+
+/* ── xp burst ── */
+.fx-xp-orb {
+  position: fixed; z-index: 1145; width: 9px; height: 9px; border-radius: 2px; pointer-events: none;
+  background: radial-gradient(circle at 35% 35%, #eaffb0, #7fe05a 60%, #3f8f2a);
+  box-shadow: 0 0 8px rgba(127, 224, 90, 0.8);
+}
+.scroll-xp.fx-xp-flash .scroll-xp-fill { filter: brightness(1.9) saturate(1.5); }
+.fx-level {
+  position: fixed; left: calc(50% - 18px); bottom: 34px; z-index: 1146; pointer-events: none;
+  color: #7fe05a; font-family: var(--font-pixel); font-size: 1.3rem;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
+  animation: fx-level 1.6s ease forwards;
+}
+@keyframes fx-level {
+  0% { opacity: 0; transform: translateY(8px); }
+  15% { opacity: 1; }
+  70% { opacity: 1; transform: translateY(-18px); }
+  100% { opacity: 0; transform: translateY(-30px); }
+}
+
+/* ── ender pop (teleport particles) ── */
+.fx-ender-bit {
+  position: fixed; width: 6px; height: 6px; z-index: 1145; pointer-events: none;
+  background: #c76bf0; box-shadow: 0 0 6px rgba(199, 107, 240, 0.8);
+  animation: fx-ender 0.7s ease-out forwards;
+}
+@keyframes fx-ender { to { translate: var(--dx) var(--dy); opacity: 0; } }
+
+/* ── ambience: shooting stars + enderman eyes ── */
+.fx-star {
+  position: absolute; width: 130px; height: 2px; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), transparent 70%);
+  border-radius: 2px; transform: rotate(24deg); transform-origin: left center;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.55));
+  animation: fx-star 1.3s ease-out forwards;
+}
+@keyframes fx-star { 0% { opacity: 0; translate: 0 0; } 8% { opacity: 1; } 100% { opacity: 0; translate: 260px 118px; } }
+.fx-eyes { position: absolute; width: 30px; height: 7px; z-index: 1; pointer-events: none; opacity: 0; animation: fx-eyes 5s steps(1) forwards; }
+.fx-eyes::before, .fx-eyes::after {
+  content: ''; position: absolute; top: 0; width: 11px; height: 100%;
+  background: #d76bf0; box-shadow: 0 0 10px 2px rgba(199, 84, 240, 0.5);
+}
+.fx-eyes::before { left: 0; }
+.fx-eyes::after { right: 0; }
+@keyframes fx-eyes {
+  0% { opacity: 0; } 8% { opacity: 1; } 42% { opacity: 1; } 46% { opacity: 0; }
+  52% { opacity: 1; } 74% { opacity: 1; } 78% { opacity: 0; } 84% { opacity: 1; }
+  96% { opacity: 1; } 100% { opacity: 0; }
+}
+
+/* ── minable ores ── */
+.ore-mine { pointer-events: auto; cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none; transition: opacity 0.6s; }
+.ore-mine.mining { animation: fx-mine-shake 0.14s linear infinite; }
+.ore-mine.mining::before {
+  content: ''; position: absolute; inset: 0; z-index: 1;
+  background:
+    radial-gradient(circle at 30% 35%, rgba(0, 0, 0, 0.95) 1.5px, transparent 2.5px),
+    radial-gradient(circle at 66% 24%, rgba(0, 0, 0, 0.95) 1.5px, transparent 2.5px),
+    radial-gradient(circle at 50% 58%, rgba(0, 0, 0, 0.95) 2px, transparent 3px),
+    radial-gradient(circle at 24% 76%, rgba(0, 0, 0, 0.95) 1.5px, transparent 2.5px),
+    radial-gradient(circle at 79% 70%, rgba(0, 0, 0, 0.95) 1.5px, transparent 2.5px);
+  animation: fx-cracks 0.95s steps(3) forwards;
+}
+@keyframes fx-cracks { from { opacity: 0.25; } to { opacity: 1; } }
+@keyframes fx-mine-shake { 0%, 100% { translate: 0 0; } 25% { translate: 1px 0; } 75% { translate: -1px 1px; } }
+.ore-mine.mined { opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+
+/* ── the minecart tour ── */
+.fx-minecart { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 1140; pointer-events: none; transition: opacity 0.45s; }
+.fx-minecart.gone { opacity: 0; }
+.fx-minecart img { width: 54px; image-rendering: pixelated; animation: fx-cart-bob 0.5s ease-in-out infinite; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5)); }
+@keyframes fx-cart-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+
+/* ── the ender dragon flyby + boss bar ── */
+.fx-dragon { position: fixed; top: 13vh; left: -160px; width: 150px; z-index: 902; pointer-events: none; animation: fx-dragon-x 9s linear forwards; }
+.fx-dragon svg { width: 100%; overflow: visible; animation: fx-dragon-y 2.2s ease-in-out infinite; }
+.fx-dragon-wing { transform-origin: 44px 23px; animation: fx-wing 0.7s ease-in-out infinite alternate; }
+.fx-dragon-wing.down { animation-delay: 0.35s; }
+@keyframes fx-dragon-x { to { left: 110vw; } }
+@keyframes fx-dragon-y { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+@keyframes fx-wing { from { transform: rotate(-14deg); } to { transform: rotate(16deg); } }
+.fx-bossbar {
+  position: fixed; top: 74px; left: 50%; transform: translateX(-50%); z-index: 902; pointer-events: none;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  width: min(560px, 72vw); opacity: 1; transition: opacity 1s ease;
+}
+.fx-bossbar.gone { opacity: 0; }
+.fx-bossbar-label { color: #e7c4f7; font-family: var(--font-pixel); font-size: 0.78rem; text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8); }
+.fx-bossbar-track { width: 100%; height: 10px; background: rgba(0, 0, 0, 0.65); border: 2px solid #0b0d10; box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.12); }
+.fx-bossbar-fill { width: 100%; height: 100%; background: linear-gradient(#e07bff, #a12fd4 60%, #7c1ba8); }
+
+/* ── the ambush creeper ── */
+.egg-ambush {
+  position: fixed; bottom: 8vh; right: -80px; width: 74px; height: 74px; z-index: 1100; pointer-events: none;
+  animation: fx-ambush-in 0.9s ease-out forwards, fx-ambush-swell 0.55s ease-in-out 1.4s infinite alternate;
+  filter: drop-shadow(0 0 14px rgba(106, 190, 48, 0.35));
+}
+.egg-ambush svg { width: 100%; height: 100%; image-rendering: pixelated; }
+@keyframes fx-ambush-in { from { right: -80px; } to { right: 5vw; } }
+@keyframes fx-ambush-swell { from { transform: scale(1); filter: brightness(1); } to { transform: scale(1.14); filter: brightness(1.55); } }
+
+/* ── creative building ── */
+html.is-creative { cursor: crosshair; }
+.build-layer { position: absolute; top: 0; left: 0; width: 100%; height: 0; z-index: -1; pointer-events: none; }
+.build-block {
+  position: absolute; width: 36px; height: 36px;
+  background-size: cover; image-rendering: pixelated;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+  animation: fx-block-pop 0.14s ease-out;
+}
+@keyframes fx-block-pop { from { transform: scale(0.6); } to { transform: scale(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-rain, .fx-bolt, .fx-flash, .fx-star, .fx-eyes, .fx-minecart,
+  .fx-xp-orb, .fx-level, .fx-dragon, .fx-bossbar, .egg-ambush { display: none !important; }
+}

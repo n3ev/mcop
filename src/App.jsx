@@ -29,6 +29,8 @@ import { subscribeScroll, remeasureSoon } from './lib/scroll.js'
 import { unlock, isUnlocked } from './lib/achievements.js'
 import AchievementsOverlay, { AchievementsButton } from './components/Achievements.jsx'
 import EasterEggs from './components/EasterEggs.jsx'
+import Ambience from './components/Ambience.jsx'
+import BuildLayer from './components/BuildLayer.jsx'
 
 const reduced = () =>
   window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -710,6 +712,8 @@ export default function App() {
       <Toast />
       <AchievementsOverlay />
       <EasterEggs />
+      <Ambience />
+      <BuildLayer />
       <CreeperEgg show={creeper} />
     </div>
   )

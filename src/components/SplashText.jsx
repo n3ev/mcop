@@ -36,6 +36,11 @@ export const SPLASHES = [
   'Some words summon things...',
   'Herobrine was never removed!',
   'Check the sky. Click it maybe.',
+  'Try /weather thunder!',
+  'The minecart is never late!',
+  'The ores in the walls? Minable.',
+  'Creative mode changed. Click around.',
+  'Don\'t stand still in the caves...',
 ]
 
 // deterministic pick for the day so the splash is stable across a session's
