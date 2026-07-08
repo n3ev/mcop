@@ -69,6 +69,11 @@
 
   /* motion */
   --steps: steps(5);
+
+  /* the backdrop pans its full sky→bedrock travel across the page. smoothness
+     comes from giving it enough page length to travel over (tall, airy sections),
+     not from shortening the pan. */
+  --parallax: 1;
 }
 
 @media (max-width: 720px) {

@@ -1,7 +1,8 @@
 import { playLever } from '../lib/sound.js'
 
-// redstone lever — a real, accessible checkbox underneath.
-// keyboard toggleable, proper label, focus-visible handled by global ring.
+// a real cobblestone lever (Neev's render). two actual positions from the same
+// sheet — handle up when on, down when off — cropped so the block stays put and
+// only the handle throws. accessible checkbox under it.
 export default function Lever({ on, onChange, label }) {
   return (
     <label className={'lever' + (on ? ' lever-on' : '')}>
@@ -11,7 +12,13 @@ export default function Lever({ on, onChange, label }) {
         checked={on}
         onChange={e => { playLever(); onChange(e.target.checked) }}
       />
-      <span className="lever-base" aria-hidden="true"><span className="lever-handle" /></span>
+      <img
+        className="lever-img"
+        src={on ? '/assets/textures/lever-on.png' : '/assets/textures/lever-off.png'}
+        alt=""
+        aria-hidden="true"
+        draggable="false"
+      />
       <span className="lever-label">{label}</span>
     </label>
   )

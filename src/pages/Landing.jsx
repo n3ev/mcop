@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { clearSession } from '../lib/storage.js'
-import { fetchActivity, joinWaitlist } from '../lib/api.js'
+import { fetchActivity } from '../lib/api.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import Dashboard from './Dashboard.jsx'
 import Logo from '../components/Logo.jsx'
 import SplashText from '../components/SplashText.jsx'
+import Reviews from '../components/Reviews.jsx'
 
 const reduced = () =>
   window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -28,98 +29,6 @@ function ActivityTicker() {
     <div className="activity-ticker">
       <span className="activity-dot" />
       {bits.join(' · ')}
-    </div>
-  )
-}
-
-// bedrock players can leave an email for when (if) cross-play lands
-function BedrockWaitlist() {
-  const [email, setEmail] = useState('')
-  const [state, setState] = useState('idle') // idle | busy | done | error
-  const submit = async (e) => {
-    e.preventDefault()
-    if (!email.trim()) return
-    setState('busy')
-    try { await joinWaitlist(email.trim()); setState('done') }
-    catch { setState('error') }
-  }
-  if (state === 'done') return <p className="success small">You're on the list. I'll email you if Bedrock happens.</p>
-  return (
-    <form className="wl-form" onSubmit={submit}>
-      <input
-        className="text-input wl-input"
-        type="email"
-        placeholder="you@example.com"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        aria-label="Email for the Bedrock waitlist"
-      />
-      <button className="btn small primary" type="submit" disabled={state === 'busy' || !email.trim()}>
-        {state === 'busy' ? '…' : 'Notify me'}
-      </button>
-      {state === 'error' && <p className="auth-error small">That didn't work, is the email right?</p>}
-    </form>
-  )
-}
-
-const REVIEWS = [
-  {
-    handle: '@neevchavla',
-    initial: 'N',
-    text: '"Tried r/minecraftbuddies for weeks. Two replies, nothing came of either. Set up MCOP in 60 seconds, matched in under a minute, and played for two hours straight. Actually made a proper friend."',
-    source: 'via Instagram',
-  },
-  {
-    handle: '@ayman_alam1',
-    initial: 'A',
-    text: '"r/minecraftbuddies took 3 days to get one low-effort reply. MCOP matched me in 40 seconds with someone who had the exact same playstyle. We swapped Discords at the end. Still playing together."',
-    source: 'via Instagram',
-  },
-  {
-    handle: '@neevchavla',
-    initial: 'N',
-    text: '"Hadn\'t opened Minecraft in months. A world by yourself gets old fast. First MCOP session we built a massive base together. Already planning a third session. This actually makes Minecraft feel alive again."',
-    source: 'via Instagram',
-  },
-  {
-    handle: '@ayman_alam1',
-    initial: 'A',
-    text: '"Didn\'t think a random matchmaking site would work but here we are. Got matched with someone also into Redstone and we spent the whole hour planning an automatic farm. Rare W, genuinely."',
-    source: 'via Instagram',
-  },
-]
-
-function Reviews() {
-  const [idx, setIdx] = useState(0)
-  useEffect(() => {
-    const t = setInterval(() => setIdx(i => (i + 1) % REVIEWS.length), 6000)
-    return () => clearInterval(t)
-  }, [])
-  const r = REVIEWS[idx]
-  return (
-    <div className="frame reviews-section">
-      <p className="section-eyebrow">What players say</p>
-      <div className="review-card">
-        <div className="review-stars" aria-label="5 out of 5">★★★★★</div>
-        <p className="review-text">{r.text}</p>
-        <div className="review-author">
-          <div className="review-avatar" aria-hidden="true">{r.initial}</div>
-          <div>
-            <div className="review-handle">{r.handle}</div>
-            <div className="review-source">{r.source}</div>
-          </div>
-        </div>
-      </div>
-      <div className="review-dots">
-        {REVIEWS.map((_, i) => (
-          <button
-            key={i}
-            className={`review-dot${i === idx ? ' active' : ''}`}
-            aria-label={`Review ${i + 1}`}
-            onClick={() => setIdx(i)}
-          />
-        ))}
-      </div>
     </div>
   )
 }
@@ -147,6 +56,14 @@ function WorldStatus() {
         <div className="kv-row"><span className="kv-key">Worlds</span><span className="kv-val">private · whitelisted · fresh every session</span><span /></div>
         <div className="kv-row"><span className="kv-key">Home</span><span className="kv-val">hosted in Sydney, AU. Playable anywhere</span><span /></div>
       </div>
+      <p className="included-label">Every match includes</p>
+      <ul className="included-list">
+        <li>A private server, just the two of you</li>
+        <li>A shared quest for the hour</li>
+        <li>Your pick of starting loadout</li>
+        <li>In-game controls: time, weather, teleport</li>
+        <li>A free 30-day save of your world</li>
+      </ul>
     </div>
   )
 }
@@ -246,7 +163,7 @@ export default function Landing() {
         )}
       </section>
 
-      {/* ── ground level: the pitch ── */}
+      {/* ── ground level: how it works + your hour ── */}
       <section className="stratum-surface">
         <Fireflies />
         <div className="pair">
@@ -299,153 +216,67 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── the story + the quest board ── */}
+      {/* ── a concrete walk-through of a real session ── */}
       <section className="stratum-surface">
-        <div className="pair">
-          <div className="frame how-section">
-            <p className="section-eyebrow">Why MCOP exists</p>
-            <div className="story-copy">
-              <p>I'm a uni student in Sydney who kept hitting the same wall: a world of your own gets old fast, and finding someone to share one with was miserable. Forum posts that died in silence. Discord servers full of strangers talking past each other. Friends who "totally would" but never log on.</p>
-              <p>So I built the thing I wanted: press one button, get a real person who plays like you do, and be punching trees together inside a minute. No small talk required. The game is the small talk.</p>
-              <p className="story-sign">Neev, somewhere in a mineshaft</p>
-            </div>
-          </div>
-
-          <div className="frame how-section">
-            <p className="section-eyebrow">Quests from the board</p>
-            <p className="muted" style={{ margin: '0 auto 18px' }}>
-              Every session rolls a shared quest. The kind of thing you'll see:
-            </p>
-            <div className="chip-row" style={{ justifyContent: 'center' }}>
-              <span className="chip quest-chip">🌾 Build a wheat farm before the hour ends</span>
-              <span className="chip quest-chip">⛏️ Full iron armour before sunset</span>
-              <span className="chip quest-chip">🏘️ Find a village and rob... trade with it</span>
-              <span className="chip quest-chip">🌉 Bridge a ravine, no scaffolding deaths</span>
-              <span className="chip quest-chip">🔥 Light a nether portal together</span>
-              <span className="chip quest-chip">🐄 Two cows, one boat. Good luck</span>
-            </div>
-          </div>
+        <div className="wrap frame timeline-frame">
+          <p className="section-eyebrow">A typical hour</p>
+          <ol className="timeline">
+            <li className="tl-step">
+              <span className="tl-time">0:00</span>
+              <div className="tl-body">
+                <h3>Answer a few questions</h3>
+                <p>How you play, what you're into, how long you've got. Under a minute, no account needed.</p>
+              </div>
+            </li>
+            <li className="tl-step">
+              <span className="tl-time">0:01</span>
+              <div className="tl-body">
+                <h3>Meet your buddy</h3>
+                <p>We pair you with someone whose answers line up with yours, and show you exactly where you match.</p>
+              </div>
+            </li>
+            <li className="tl-step">
+              <span className="tl-time">0:02</span>
+              <div className="tl-body">
+                <h3>Hop into a private world</h3>
+                <p>Both usernames get whitelisted on a fresh server. Copy the IP, paste it into Multiplayer, join.</p>
+              </div>
+            </li>
+            <li className="tl-step">
+              <span className="tl-time">0:05</span>
+              <div className="tl-body">
+                <h3>Your quest lands in chat</h3>
+                <p>Starting loadouts drop and a shared goal for the hour appears in-game. Build it, find it, survive it.</p>
+              </div>
+            </li>
+            <li className="tl-step">
+              <span className="tl-time">0:30</span>
+              <div className="tl-body">
+                <h3>Add more time if you need it</h3>
+                <p>Deep in a build and the clock's running low? One click buys another half hour, if nobody's waiting.</p>
+              </div>
+            </li>
+            <li className="tl-step">
+              <span className="tl-time">1:00</span>
+              <div className="tl-body">
+                <h3>Save it, rate it, stay in touch</h3>
+                <p>Keep the world alive for 30 days, rate your buddy, and swap Discords only if you both want to.</p>
+              </div>
+            </li>
+          </ol>
         </div>
       </section>
 
-      {/* ── the mine: mechanics + live status ── */}
+      {/* ── the mine: live status + what players say ── */}
       <section className="stratum-stone">
         <div className="pair">
-          <div className="frame how-section">
-            <p className="section-eyebrow">Under the hood</p>
-            <div className="hour-grid">
-              <div className="hour-card">
-                <span className="hour-icon" aria-hidden="true">⏱️</span>
-                <h3 className="hour-title">Patience tiers</h3>
-                <p className="hour-desc">"Right now" matches fastest. Willing to wait? We hold your spot and email you.</p>
-              </div>
-              <div className="hour-card">
-                <span className="hour-icon" aria-hidden="true">⚖️</span>
-                <h3 className="hour-title">Weighted answers</h3>
-                <p className="hour-desc">Core questions weigh double. A chatty builder won't get a silent speedrunner.</p>
-              </div>
-              <div className="hour-card">
-                <span className="hour-icon" aria-hidden="true">🔐</span>
-                <h3 className="hour-title">Whitelist, not luck</h3>
-                <p className="hour-desc">The server only admits the two exact usernames in your match.</p>
-              </div>
-              <div className="hour-card">
-                <span className="hour-icon" aria-hidden="true">🌱</span>
-                <h3 className="hour-title">Fresh worlds</h3>
-                <p className="hour-desc">Every session spawns a clean world, unless you save yours for 30 days, free.</p>
-              </div>
-            </div>
-          </div>
-
           <WorldStatus />
-        </div>
-      </section>
-
-      {/* ── the cave: players + questions ── */}
-      <section className="stratum-deep">
-        <div className="pair">
           <Reviews />
-
-          <div className="frame reviews-section">
-            <p className="section-eyebrow">Common questions</p>
-            <div className="faq-list">
-              <details className="faq">
-                <summary>What do I need to play?</summary>
-                <p className="faq-a">Minecraft Java Edition (1.21.4) and a Microsoft account. We whitelist your exact username on a private server. No mods, no launcher tricks. Bedrock isn't supported yet.</p>
-              </details>
-              <details className="faq">
-                <summary>Is it actually free?</summary>
-                <p className="faq-a">Yes. Matching, the private server, and the 30-day world save are all free while we're in beta. Long term we may charge a small fee to keep worlds alive past 30 days. Playing stays free.</p>
-              </details>
-              <details className="faq">
-                <summary>What if we don't vibe?</summary>
-                <p className="faq-a">It happens. Finish the hour or bail early, then hit "don't match again" and you'll never see each other in the queue again. Swapping socials afterwards is always optional, never required.</p>
-              </details>
-              <details className="faq">
-                <summary>Can we keep playing after the hour?</summary>
-                <p className="faq-a">Extend the session by 30 minutes from the session page, and save the world for 30 days free. Jump back in together whenever you both want.</p>
-              </details>
-              <details className="faq">
-                <summary>Do I need an account?</summary>
-                <p className="faq-a">No. Guests can jump straight into the queue. An account saves your playstyle, keeps your match history, remembers your buddies, and gets you one-click matching with a verified username.</p>
-              </details>
-              <details className="faq">
-                <summary>Can I pick who I get matched with?</summary>
-                <p className="faq-a">Not yet. The random buddy is the whole point. Friends lists already exist, and "play again with a friend" is on the roadmap.</p>
-              </details>
-              <details className="faq">
-                <summary>Where are the servers?</summary>
-                <p className="faq-a">Sydney, Australia, so Oceania pings are dreamy. It's absolutely playable from elsewhere; block games are forgiving.</p>
-              </details>
-              <details className="faq">
-                <summary>Is it safe to play with a stranger?</summary>
-                <p className="faq-a">You're on a whitelisted private server: just you two, verified usernames only. No personal info is exchanged unless you choose to share socials at the end. Block and report tools are one click away.</p>
-              </details>
-            </div>
-          </div>
         </div>
+        <Link to="/about" className="descend-link">▼ Read the story and how it really works ▼</Link>
       </section>
 
-      {/* ── the mineshaft: rules + what's coming ── */}
-      <section className="stratum-mineshaft">
-        <div className="pair">
-          <div className="frame how-section">
-            <p className="section-eyebrow">House rules</p>
-            <ul className="rules-list">
-              <li>Be cool. You're someone's hour of Minecraft today.</li>
-              <li>No griefing your buddy. You're on the same team.</li>
-              <li>Slurs or hate = instant, permanent ban. Zero appeals.</li>
-              <li>What happens on the server stays there. No doxing, no drama.</li>
-              <li>One account per player, real usernames only.</li>
-            </ul>
-          </div>
-
-          <div className="frame how-section">
-            <p className="section-eyebrow">Mining next</p>
-            <div className="hour-grid">
-              <div className="hour-card">
-                <span className="mc-badge">digging now</span>
-                <h3 className="hour-title" style={{ marginTop: 10 }}>Play again</h3>
-                <p className="hour-desc">Reconnect with a past buddy from your friends list.</p>
-              </div>
-              <div className="hour-card">
-                <span className="mc-badge">surveyed</span>
-                <h3 className="hour-title" style={{ marginTop: 10 }}>Bedrock support</h3>
-                <p className="hour-desc">Java only for now. On Bedrock? Leave your email and you'll be first to know.</p>
-                <BedrockWaitlist />
-              </div>
-            </div>
-            <ul className="patch-list shipped-list">
-              <li><span className="patch-date">Jul 2026</span> Smarter matchmaking, no-show requeue, saved worlds page, email verification.</li>
-              <li><span className="patch-date">Jul 2026</span> World saves, buddy ratings and reports went live.</li>
-              <li><span className="patch-date">Jul 2026</span> The big redesign: the world you're scrolling through.</li>
-              <li><span className="patch-date">Jun 2026</span> Loadouts, social swap, friends, account linking, accounts.</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* ── the bottom of the world ── */}
+      {/* ── the bottom of the world: the ask ── */}
       <section className="stratum-mineshaft">
         {!reduced() && Array.from({ length: 5 }, (_, i) => (
           <span
@@ -467,6 +298,13 @@ export default function Landing() {
             You made it to the bottom of the world. The only thing left to do is play.
           </p>
           <button className="btn primary big cta" onClick={start}>⛏ Find my buddy</button>
+          <div className="end-links">
+            <Link to="/about" className="inline-link">The story</Link>
+            <span className="end-sep">·</span>
+            <Link to="/help" className="inline-link">Questions</Link>
+            <span className="end-sep">·</span>
+            <Link to="/contact" className="inline-link">Say hi</Link>
+          </div>
         </div>
       </section>
     </div>

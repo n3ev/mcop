@@ -152,7 +152,8 @@ html[data-theme='day'] .cloud { background: rgba(255,255,255,0.5); box-shadow: 3
   z-index: 30;
   display: flex;
   align-items: center;
-  gap: 18px;
+  flex-wrap: wrap;
+  gap: 6px 14px;
   padding: 12px 22px;
   background:
     linear-gradient(rgba(0, 0, 0, 0.30), rgba(0, 0, 0, 0.44)),
@@ -165,16 +166,18 @@ html[data-theme='day'] .cloud { background: rgba(255,255,255,0.5); box-shadow: 3
 .topbar-lever { margin-left: auto; display: flex; align-items: center; }
 
 /* nav links are little hanging signs dangling from the hotbar */
-.header-auth { display: flex; align-items: flex-start; gap: 7px; margin-left: 10px; }
+.header-nav { display: flex; align-items: flex-start; gap: 7px; margin-left: 14px; }
+.header-auth { display: flex; align-items: flex-start; gap: 7px; }
 .header-link, .header-user, .header-auth .btn {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
-  width: 94px;
-  height: 94px;                   /* the whole vanilla hanging sign, uniform 1:1 */
-  padding: 36px 8px 7px;          /* text sits on the board (lower 10/16) */
+  flex-shrink: 0;
+  width: 90px;
+  height: 90px;                   /* the whole vanilla hanging sign, uniform 1:1 */
+  padding: 34px 8px 7px;          /* text sits on the board (lower 10/16) */
   background: url('/assets/textures/hang-1x.png') center / 100% 100% no-repeat;
   image-rendering: pixelated;
   border: none;
@@ -188,14 +191,62 @@ html[data-theme='day'] .cloud { background: rgba(255,255,255,0.5); box-shadow: 3
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.18s ease, filter 0.15s;
-  transform-origin: 50% 0;
+  transform-origin: 50% 2px;
 }
 .header-link:hover, .header-user:hover, .header-auth .btn:hover:not(:disabled) {
   transform: rotate(2deg);
   filter: brightness(1.1);
 }
-.header-auth .btn.primary { color: #1f4d12; }
+/* the sign for the page you're on hangs a touch lower and glows warmer */
+.header-nav .header-link.active {
+  filter: brightness(1.16) saturate(1.1);
+  transform: translateY(3px);
+  color: #fff3d0;
+  text-shadow: 1px 0 0 currentColor, 0 0 9px rgba(255, 226, 150, 0.85), 0 0 20px rgba(255, 196, 100, 0.5);
+}
+.header-nav .header-link.active::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  width: 5px;
+  height: 5px;
+  transform: translateX(-50%) rotate(45deg);
+  background: var(--leaf);
+  box-shadow: 0 0 6px rgba(106, 190, 48, 0.9);
+}
+.header-link.primary { color: #cdebbf; }
 .header-user { color: var(--ink); font-weight: 700; }
+
+/* inline text links inside body copy — glowing, underlined on hover */
+.inline-link {
+  color: var(--grass-2);
+  text-decoration: none;
+  border-bottom: 1px dotted rgba(140, 209, 92, 0.5);
+  transition: color 0.15s, border-color 0.15s;
+}
+.inline-link:hover { color: #b6f08a; border-bottom-color: #b6f08a; }
+
+/* "keep descending" links that bridge one page to the next, like a ladder down */
+.descend-link {
+  display: block;
+  margin: 40px auto 0;
+  text-align: center;
+  color: #ffedc0;
+  font-size: 0.86rem;
+  text-decoration: none;
+  text-shadow: 0 0 8px rgba(255, 226, 150, 0.5);
+  opacity: 0.85;
+  animation: descend-bob 2.4s ease-in-out infinite;
+}
+.descend-link:hover { opacity: 1; }
+@keyframes descend-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+
+/* the little link row under the final CTA */
+.end-links { margin-top: 20px; font-size: 0.85rem; display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; }
+.end-sep { color: var(--muted-dim); }
+
+.contact-waitlist { margin-top: 22px; padding-top: 18px; border-top: 2px solid rgba(244, 239, 230, 0.1); }
 .mc-dot { width: 7px; height: 7px; background: var(--leaf); box-shadow: 0 0 6px rgba(106, 190, 48, 0.8); flex-shrink: 0; }
 
 /* F3-style depth readout, riding along as you dig */
@@ -205,6 +256,9 @@ html[data-theme='day'] .cloud { background: rgba(255,255,255,0.5); box-shadow: 3
   top: 50%;
   z-index: 40;
   transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
   padding: 5px 10px;
   background: rgba(11, 13, 16, 0.72);
   border: 2px solid var(--gui-edge);
@@ -214,6 +268,7 @@ html[data-theme='day'] .cloud { background: rgba(255,255,255,0.5); box-shadow: 3
   letter-spacing: 1px;
   pointer-events: none;
 }
+.depth-layer { color: var(--muted-dim); font-size: 0.64rem; }
 
 /* bedrock footer — the bottom of the world.
    z-index above all strata layers: the bug-report modal renders inside
@@ -222,7 +277,7 @@ html[data-theme='day'] .cloud { background: rgba(255,255,255,0.5); box-shadow: 3
   position: relative;
   z-index: 60;
   margin-top: auto;
-  padding: 26px 20px 22px;
+  padding: 26px 20px 34px;   /* extra bottom room so the floating XP bar clears the controls */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -339,34 +394,20 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 .bug-textarea { resize: vertical; line-height: 1.6; }
 
 /* redstone lever (a real checkbox underneath) */
-.lever { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+.lever { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
 .lever-input { position: absolute; opacity: 0; width: 0; height: 0; }
-.lever-base {
-  position: relative;
-  width: 30px; height: 20px;
-  background:
-    linear-gradient(rgba(0,0,0,0.12), rgba(0,0,0,0.28)),
-    url('/assets/textures/blocks/stone.png') center / 20px;
-  image-rendering: pixelated;
-  border: 2px solid var(--gui-edge);
-  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.2), inset -1px -1px 0 rgba(0, 0, 0, 0.5);
+.lever-img {
+  height: 44px; width: auto;
   flex-shrink: 0;
+  image-rendering: auto;         /* smooth-downscale the render */
+  transition: filter 0.16s ease;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));
 }
-.lever-handle {
-  position: absolute;
-  left: 3px; top: -6px;
-  width: 7px; height: 16px;
-  background: linear-gradient(var(--wood-1), var(--wood-3));
-  border: 2px solid var(--gui-edge);
-  transform: rotate(-32deg);
-  transform-origin: bottom center;
-  transition: transform 0.14s ease, box-shadow 0.14s;
+.lever-on .lever-img {
+  filter: drop-shadow(0 0 6px rgba(126, 224, 88, 0.75)) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));
 }
-.lever-on .lever-handle {
-  transform: rotate(32deg);
-  left: auto; right: 3px;
-  box-shadow: 0 0 9px 1px rgba(207, 65, 54, 0.8);
-}
+.lever:hover .lever-img { filter: brightness(1.12) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5)); }
+.lever-on:hover .lever-img { filter: brightness(1.12) drop-shadow(0 0 7px rgba(126, 224, 88, 0.85)); }
 .lever-label { font-size: 0.72rem; color: var(--muted); text-shadow: 1px 1px 0 rgba(0,0,0,0.6); }
 
 /* progress = an XP bar with notches */
@@ -416,8 +457,7 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
   max-width: 720px;
   margin: 0 auto;
   padding: 32px 34px;
-  background: rgba(33, 33, 39, 0.68);
-  backdrop-filter: blur(3px);
+  background: rgba(33, 33, 39, 0.82);
   animation: card-in 0.3s var(--steps) backwards;
   border: 3px solid var(--gui-edge);
   box-shadow:
@@ -430,13 +470,12 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 
 /* GUI panel cards (inventory-style, world visible through them) */
 .how-card {
-  background: rgba(40, 40, 47, 0.62);
+  background: rgba(40, 40, 47, 0.78);
   border: 3px solid var(--gui-edge);
   box-shadow:
     inset 2px 2px 0 rgba(255, 255, 255, 0.12),
     inset -2px -2px 0 rgba(0, 0, 0, 0.4),
     0 8px 0 rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(3px);
   color: var(--text);
 }
 .panel-banner, .quest-banner {
@@ -1276,6 +1315,183 @@ html[data-theme='day'] .ember { display: none; }
 .toast-icon { width: 32px; height: 32px; image-rendering: pixelated; flex-shrink: 0; }
 .toast-title { color: var(--gold); font-size: 0.8rem; }
 .toast-text { color: var(--text); font-size: 0.88rem; line-height: 1.35; }
+.toast.toast-rare { border-color: #8a4fbf; box-shadow: inset 2px 2px 0 rgba(255,255,255,0.1), 0 0 20px rgba(150,90,220,0.55); }
+.toast.toast-rare .toast-title { color: #c99dff; text-shadow: 0 0 8px rgba(180,120,240,0.6), 1px 0 0 currentColor; }
+
+/* ── achievements overlay: a gray advancement screen with a branching tree ── */
+.ach-overlay {
+  position: fixed; inset: 0; z-index: 1200;
+  background: rgba(18, 20, 24, 0.82);
+  backdrop-filter: blur(2px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px; animation: ach-fade 0.18s ease;
+}
+@keyframes ach-fade { from { opacity: 0; } to { opacity: 1; } }
+.ach-panel {
+  position: relative; width: min(940px, 96vw); max-height: 90vh;
+  display: flex; flex-direction: column;
+  background: rgba(50, 52, 58, 0.97);
+  border: 3px solid var(--gui-edge);
+  box-shadow: inset 2px 2px 0 rgba(255,255,255,0.08), inset -2px -2px 0 rgba(0,0,0,0.5), 0 14px 0 rgba(0,0,0,0.35);
+}
+.ach-head { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border-bottom: 3px solid rgba(0,0,0,0.4); }
+.ach-title { font-size: 1.2rem; color: var(--text); text-shadow: 1px 1px 0 rgba(0,0,0,0.7); }
+.ach-progress { color: var(--grass-2); font-size: 0.9rem; text-shadow: 1px 0 0 currentColor; }
+.ach-close { margin-left: auto; width: 34px; height: 34px; background: rgba(0,0,0,0.3); border: 2px solid var(--gui-edge); color: var(--text); cursor: pointer; font-size: 1rem; }
+.ach-close:hover { background: rgba(180,50,50,0.4); }
+.ach-scroll { overflow: auto; padding: 22px; flex: 1; }
+.ach-tree { position: relative; margin: 0 auto; }
+.ach-lines { position: absolute; inset: 0; pointer-events: none; }
+.ach-line { fill: none; stroke: rgba(255,255,255,0.16); stroke-width: 3; }
+.ach-line.lit { stroke: rgba(140, 209, 92, 0.7); }
+.ach-line.rare.lit { stroke: rgba(180, 120, 240, 0.85); }
+.ach-node {
+  position: absolute; width: 68px; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  background: none; border: none; cursor: pointer; padding: 0;
+}
+.ach-frame {
+  width: 68px; height: 68px; display: grid; place-items: center;
+  background: rgba(20,20,24,0.7); border: 3px solid #6b7079;
+  box-shadow: inset 2px 2px 0 rgba(255,255,255,0.1), inset -2px -2px 0 rgba(0,0,0,0.5);
+  transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s;
+}
+.ach-icon { width: 40px; height: 40px; image-rendering: pixelated; }
+.ach-q { font-size: 1.9rem; color: #8a6bb0; text-shadow: 0 0 8px rgba(150,90,220,0.5); }
+.ach-name { font-size: 0.68rem; color: var(--muted); text-align: center; line-height: 1.2; max-width: 88px; text-shadow: 1px 1px 0 rgba(0,0,0,0.7); }
+.ach-node.tier-goal .ach-frame { border-color: #b0902f; }
+.ach-node.tier-challenge .ach-frame { border-color: #8a4fbf; }
+.ach-node.locked .ach-icon { filter: grayscale(1) brightness(0.5); }
+.ach-node.locked .ach-frame { opacity: 0.72; }
+.ach-node.locked .ach-name { color: var(--muted-dim); }
+.ach-node.earned .ach-frame { border-color: var(--grass-2); box-shadow: inset 2px 2px 0 rgba(255,255,255,0.14), 0 0 12px rgba(126,224,88,0.4); }
+.ach-node.earned.tier-goal .ach-frame { border-color: var(--gold); box-shadow: 0 0 12px rgba(207,169,64,0.45); }
+.ach-node.earned .ach-name { color: var(--text); }
+.ach-node.rare .ach-frame { border-color: #7a3fb0; }
+.ach-node.rare.earned .ach-frame { border-color: #b478f0; box-shadow: 0 0 16px rgba(180,120,240,0.7); background: rgba(40,20,60,0.85); }
+.ach-node.rare.earned .ach-name { color: #c99dff; text-shadow: 0 0 8px rgba(180,120,240,0.7), 1px 1px 0 rgba(0,0,0,0.7); }
+.ach-node.rare.locked .ach-name { color: #7a6b90; }
+.ach-node:hover .ach-frame, .ach-node.active .ach-frame { transform: translateY(-2px) scale(1.04); }
+.ach-tip { margin: 0 22px 16px; padding: 12px 16px; background: rgba(12,12,18,0.92); border: 2px solid var(--gui-edge); box-shadow: inset 1px 1px 0 rgba(255,255,255,0.08); }
+.ach-tip.rare { border-color: #8a4fbf; }
+.ach-tip-title { font-size: 0.98rem; color: var(--text); display: flex; align-items: center; gap: 10px; text-shadow: 1px 0 0 currentColor; }
+.ach-tip.rare .ach-tip-title { color: #c99dff; }
+.ach-tip-tag { font-size: 0.64rem; color: var(--muted-dim); border: 1px solid rgba(255,255,255,0.2); padding: 1px 6px; text-shadow: none; }
+.ach-tip-tag.got { color: var(--grass-2); border-color: rgba(140,209,92,0.5); }
+.ach-tip-hint { font-size: 0.86rem; color: var(--muted); margin-top: 6px; font-style: italic; }
+.ach-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px; border-top: 3px solid rgba(0,0,0,0.4); }
+.ach-reset { background: none; border: 2px solid rgba(255,255,255,0.18); color: var(--muted); font-size: 0.72rem; padding: 5px 12px; cursor: pointer; }
+.ach-reset:hover { border-color: rgba(255,120,120,0.5); color: #e79; }
+
+/* ═══ easter eggs ═══ */
+/* minecraft chat log */
+.egg-chat { position: fixed; left: 14px; bottom: 30px; z-index: 1150; display: flex; flex-direction: column; gap: 3px; max-width: 62vw; }
+.egg-chat-line { background: rgba(0,0,0,0.55); color: #fff; font-size: 0.8rem; padding: 3px 8px; text-shadow: 1px 1px 0 rgba(0,0,0,0.8); align-self: flex-start; animation: egg-chat-in 0.15s ease; transition: opacity 0.9s ease; }
+/* minecraft chat lifecycle: lines fade out in place, then collapse — but the
+   history stays. hovering the chat corner (or opening the / bar) re-reveals
+   the recent history at full opacity, exactly like holding T in-game. */
+.egg-chat-line.fading { opacity: 0; }
+.egg-chat:not(.open) .egg-chat-line.stale { display: none; }
+/* the newest stale line stays as a faint ghost — the visual hint that history
+   lives here, and the hover target that re-opens it (a fully collapsed chat
+   would leave nothing to hover) */
+.egg-chat:not(.open) .egg-chat-line.stale:last-child { display: block; opacity: 0.12; }
+.egg-chat.open .egg-chat-line { opacity: 1; display: block; }
+.egg-chat-line.good { color: #7fe05a; }
+.egg-chat-line.err { color: #ff8a8a; }
+.egg-chat-line.muted { color: #b9b3a8; }
+.egg-chat-line.herobrine { color: #d8d8ff; text-shadow: 0 0 6px rgba(180,180,255,0.7); }
+.egg-chat-line.nether { color: #ff9a5a; }
+@keyframes egg-chat-in { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; } }
+
+/* command bar */
+.egg-cmd { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1160; padding: 6px; background: rgba(0,0,0,0.55); }
+.egg-cmd-input { width: 100%; background: rgba(0,0,0,0.72); border: 2px solid rgba(255,255,255,0.25); color: #fff; font-family: var(--font-pixel); font-size: 1rem; padding: 8px 12px; outline: none; }
+/* tab-complete column above the bar, like the in-game suggestion list:
+   first entry is the Tab target, so it gets the minecraft yellow */
+.egg-cmd-suggest { position: absolute; left: 6px; bottom: 100%; margin-bottom: 4px; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
+.egg-cmd-suggest-item { background: rgba(0,0,0,0.72); border: none; color: #b9b3a8; font-family: var(--font-pixel); font-size: 0.8rem; padding: 3px 9px; cursor: pointer; text-align: left; }
+.egg-cmd-suggest-item:first-child { color: #ffe98a; }
+.egg-cmd-suggest-item:hover { color: #fff; background: rgba(0,0,0,0.88); }
+.egg-cmd-hint { position: absolute; right: 12px; bottom: 100%; margin-bottom: 6px; color: rgba(244,239,230,0.45); font-size: 0.7rem; pointer-events: none; }
+
+/* creative HUD */
+.egg-creative { position: fixed; top: 100px; left: 50%; transform: translateX(-50%); z-index: 1150; background: rgba(0,0,0,0.62); color: #b6f0ff; font-size: 0.8rem; padding: 6px 14px; border: 2px solid rgba(120,200,255,0.4); pointer-events: none; }
+
+/* nether tint */
+.egg-nether { position: fixed; inset: 0; z-index: 999; pointer-events: none; background: radial-gradient(ellipse at center, rgba(150,40,25,0.22), rgba(90,12,40,0.6)); animation: egg-fade-in 0.8s ease; }
+@keyframes egg-fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* herobrine flicker */
+.egg-herobrine { position: fixed; inset: 0; z-index: 1100; pointer-events: none; background: #000; animation: egg-flicker 4.2s steps(1) forwards; }
+@keyframes egg-flicker { 0%,100%{opacity:0;} 4%{opacity:0.88;} 6%{opacity:0.1;} 8%{opacity:0.75;} 10%{opacity:0;} 40%{opacity:0;} 42%{opacity:0.65;} 44%{opacity:0.05;} 70%{opacity:0.55;} 72%{opacity:0;} }
+/* his face, for a few frames at a time, inside the blackout flickers */
+.egg-herobrine::after {
+  content: '';
+  position: absolute; inset: 0; margin: auto;
+  width: min(34vmin, 300px); height: min(34vmin, 300px);
+  background: url('/assets/textures/blocks/herobrine.png') center / contain no-repeat;
+  image-rendering: pixelated;
+  opacity: 0;
+  animation: egg-hb-face 4.2s steps(1) forwards;
+}
+@keyframes egg-hb-face { 0%{opacity:0;} 4%{opacity:1;} 8%{opacity:0;} 42%{opacity:0.9;} 44%{opacity:0;} 70%{opacity:0.8;} 72%{opacity:0;} 100%{opacity:0;} }
+
+/* sun flare */
+.egg-flare-overlay { position: fixed; inset: 0; z-index: 998; pointer-events: none; background: radial-gradient(circle at 82% 22%, rgba(255,240,180,0.55), transparent 42%); animation: egg-flarein 0.9s ease forwards; }
+@keyframes egg-flarein { 0%{opacity:0;} 30%{opacity:1;} 100%{opacity:0;} }
+
+/* diamonds rain */
+.egg-diamond { position: fixed; top: -30px; z-index: 1050; color: #6fe0ff; pointer-events: none; text-shadow: 0 0 8px rgba(120,230,255,0.85); animation: egg-fall var(--dur,2s) linear forwards; }
+@keyframes egg-fall { to { transform: translate(var(--dx,0), 106vh) rotate(220deg); opacity: 0.35; } }
+
+/* torch */
+.egg-torch { position: fixed; z-index: 1050; transform: translate(-50%,-90%); pointer-events: none; font-size: 22px; animation: egg-torch 4.2s ease forwards; filter: drop-shadow(0 0 10px rgba(255,150,40,0.9)); }
+@keyframes egg-torch { 0%{opacity:0;transform:translate(-50%,-70%) scale(0.6);} 12%{opacity:1;transform:translate(-50%,-90%) scale(1);} 85%{opacity:1;} 100%{opacity:0;} }
+
+/* cow over the moon */
+.egg-cow { position: fixed; z-index: 1050; right: 8vw; top: 16vh; font-size: 34px; pointer-events: none; animation: egg-cow 2.6s ease-in-out forwards; }
+@keyframes egg-cow { 0%{transform:translate(80px,120px) scaleX(-1);opacity:0;} 20%{opacity:1;} 50%{transform:translate(-30px,-70px) scaleX(-1);} 100%{transform:translate(-170px,120px) scaleX(-1);opacity:0;} }
+
+/* idle phantom */
+.egg-phantom { position: fixed; z-index: 1050; top: 13vh; left: -60px; font-size: 30px; pointer-events: none; opacity: 0.75; animation: egg-phantom 7s linear forwards; }
+@keyframes egg-phantom { from { transform: translate(0,0); } to { transform: translate(calc(100vw + 120px), 46px); } }
+
+/* tnt shake + flash (on body) */
+body.egg-shake { animation: egg-shake 0.7s ease; }
+@keyframes egg-shake { 0%,100%{transform:translate(0,0);} 10%{transform:translate(-4px,3px);} 20%{transform:translate(5px,-2px);} 30%{transform:translate(-5px,-3px);} 40%{transform:translate(4px,4px);} 60%{transform:translate(-3px,2px);} 80%{transform:translate(3px,-2px);} }
+body.egg-flash::after { content:''; position: fixed; inset: 0; z-index: 1200; background: #fff; pointer-events: none; }
+
+/* death screen */
+/* the real Minecraft death screen: a translucent dark-red gradient over the
+   world, white "You Died!" high up, the death message + score, then two grey
+   widget buttons. */
+/* hide the page chrome behind the death screen — the world backdrop stays,
+   giving the clean paused-game look instead of a red tint over a busy webpage */
+html.is-dead .topbar,
+html.is-dead .content,
+html.is-dead .footer,
+html.is-dead .scroll-xp,
+html.is-dead .depth-meter { visibility: hidden; }
+.egg-death { position: fixed; inset: 0; z-index: 1300; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 6vh; background: linear-gradient(rgba(94,10,10,0.52), rgba(46,4,14,0.72)); animation: egg-fade-in 0.3s ease; }
+.egg-death-title { font-size: clamp(2.1rem, 5vw, 3.1rem); color: #fff; text-shadow: 3px 3px 0 rgba(0,0,0,0.65); letter-spacing: 1px; }
+.egg-death-msg { color: #ececec; font-size: 1rem; text-align: center; padding: 0 16px; margin-top: 14px; text-shadow: 1px 1px 0 rgba(0,0,0,0.6); }
+.egg-death-score { color: #ececec; font-size: 1rem; margin-top: 5px; text-shadow: 1px 1px 0 rgba(0,0,0,0.6); }
+.egg-death-score b { color: #ffe23a; font-weight: normal; }
+.egg-death-btns { display: flex; flex-direction: column; gap: 8px; margin-top: 16vh; width: min(320px, 78vw); }
+.egg-death-btn {
+  font-family: var(--font-pixel); font-size: 0.9rem; color: #fff;
+  padding: 11px 12px; cursor: pointer;
+  background: linear-gradient(#727272, #5c5c5c);
+  border: 2px solid #000;
+  box-shadow: inset 1px 1px 0 rgba(255,255,255,0.28), inset -1px -2px 0 rgba(0,0,0,0.45);
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.6);
+}
+.egg-death-btn:hover { background: linear-gradient(#848484, #6e6e6e); color: #ffffa0; border-color: #fff; }
+.egg-death-btn:active { box-shadow: inset 1px 1px 0 rgba(0,0,0,0.4); }
+
+@media (prefers-reduced-motion: reduce) {
+  .egg-shake, .egg-cow, .egg-phantom, .egg-diamond { animation: none !important; }
+}
 @keyframes toast-in { from { transform: translate(-50%, -120%); } to { transform: translate(-50%, 0); } }
 @keyframes toast-out { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -130%); opacity: 0; } }
 
@@ -1350,6 +1566,11 @@ html[data-theme='day'] .ember { display: none; }
   .tag { width: 128px; height: 138px; padding: 6px 10px 76px; font-size: 0.78rem; }
   .card { padding: 22px 18px; }
   .stratum-sky { min-height: auto; padding: 36px 16px 84px; }
+  /* phones don't get the multi-screen descent — that'd be an endless page on a
+     small viewport. keep the sections compact; the scrub is short here anyway. */
+  .stratum-surface, .stratum-stone, .stratum-deep, .stratum-mineshaft {
+    min-height: auto; display: block; padding: 64px 0 72px;
+  }
   .hero-bullets { gap: 12px; margin-bottom: -84px; }
   .stats-bar { gap: 12px; }
   .stat { min-width: calc(50% - 12px); }
@@ -1365,6 +1586,10 @@ html[data-theme='day'] .ember { display: none; }
   }
   .ember, .firefly, .cloud, .title-screen::before { display: none !important; }
   .rv { opacity: 1 !important; transform: none !important; }
+  /* hold the world still (the 0.001ms rule would otherwise freeze the scroll
+     animation at a random frame); show the calm sky, no parallax */
+  .world-img { animation: none !important; transform: translateX(-50%) !important; }
+  .scroll-xp-fill { animation: none !important; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -1603,6 +1828,17 @@ html[data-theme='day'] .dig-cue { text-shadow: 1px 0 0 currentColor, 2px 2px 0 r
   inset: 0;
   z-index: -1;
   overflow: hidden;
+  /* THE stretch fix. a negative-z-index fixed element is merged into the root
+     scroll layer, so it's re-rastered together with the page on every scroll —
+     and when raster starves on a fast flick, Chrome scale-fills the layer to
+     cover the area it's scrolling into (the transient vertical stretch, which
+     never touches DOM geometry so nothing in JS/CSS box terms can catch it).
+     promoting the backdrop to its OWN compositor layer lifts it out of the root
+     scroller: the compositor just holds and re-shows this layer during scroll
+     instead of re-rasterising and scaling it. */
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
 }
 /* the render is shown at its natural aspect — full width, never cropped
    or blown up. scrolling the page pans the viewport down the full
@@ -1613,15 +1849,66 @@ html[data-theme='day'] .dig-cue { text-shadow: 1px 0 0 currentColor, 2px 2px 0 r
   left: 50%;
   width: max(100vw, 91vh);   /* wide enough to always fill the viewport */
   height: auto;
+  /* fallback for browsers without scroll-driven animations: JS drives --scrollp */
   transform:
     translateX(-50%)
-    translateY(calc(var(--scrollp, 0) * min(0px, 100vh - 1.1024 * max(100vw, 91vh))));
+    translateY(calc(var(--scrollp, 0) * var(--parallax) * min(0px, 100vh - 1.1024 * max(100vw, 91vh))));
   transition: opacity 2s ease;
-  will-change: transform, opacity;
+  will-change: transform;
+}
+/* the scroll-scrubbed fly-through frames: a canvas covering the viewport,
+   crossfading day↔night. the poster paints instantly while frames stream in. */
+.world-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 1.6s ease;
+  /* pin the canvas to its own stable GPU layer. its box never changes size, so
+     forcing a dedicated layer stops the compositor from synthesising a scaled
+     snapshot of it during fast scroll — that improvised scale was the transient
+     vertical stretch. */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+.world-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .world-day { opacity: 0; }
 html[data-theme='day'] .world-day { opacity: 1; }
 html[data-theme='day'] .world-night { opacity: 0; }
+
+/* the nether dimension (/nether): the cross-section covers the whole viewport
+   (width factor 1.06 = 1/0.9457 aspect), so it simply fades in over whichever
+   theme is showing and fades away when you portal home. */
+.world-nether { width: max(100vw, 106vh); opacity: 0; }
+html[data-dimension='nether'] .world-nether { opacity: 1; }
+
+/* the smooth path: pan the render on the compositor thread, driven directly by
+   the document's scroll position. no JS, no main-thread work, no stutter. */
+@supports (animation-timeline: scroll()) {
+  .world-img {
+    transform: translateX(-50%);
+    animation-name: world-pan;
+    animation-timeline: scroll(root block);
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+  }
+  @keyframes world-pan {
+    from { transform: translateX(-50%) translateY(0); }
+    to   { transform: translateX(-50%) translateY(calc(var(--parallax) * min(0px, 100vh - 1.1024 * max(100vw, 91vh)))); }
+  }
+  /* the day + nether images ride the JS glide loop instead (inline transform
+     from WorldBackdrop): raw scroll-linking makes each wheel notch JUMP the
+     image 1:1 with the page, while the glide eases it — and as single
+     continuous images they can sit at any sub-pixel position, so eased is
+     strictly smoother */
+  .world-day, .world-nether { animation-name: none; }
+}
 
 /* a whisper of a scrim so type stays readable over the render */
 .world-tint {
@@ -1641,13 +1928,12 @@ html[data-theme='day'] .world-tint {
 /* framed content containers: semi-transparent GUI panels that let the
    world glow through while giving the middle of the site structure */
 .frame {
-  background: rgba(36, 36, 43, 0.55);
+  background: rgba(36, 36, 43, 0.72);
   border: 3px solid rgba(11, 13, 16, 0.92);
   box-shadow:
     inset 2px 2px 0 rgba(255, 255, 255, 0.1),
     inset -2px -2px 0 rgba(0, 0, 0, 0.4),
     0 10px 0 rgba(0, 0, 0, 0.22);
-  backdrop-filter: blur(3px);
   padding: 40px 34px 46px;
 }
 
@@ -1657,12 +1943,24 @@ html[data-theme='day'] .world-tint {
   100% { transform: translateY(0) scale(1); opacity: 1; }
 }
 
-/* the journey is longer now — each stop gets air */
+/* the journey is a real descent: each stratum is a tall, breathing screen you
+   scroll through, so the world backdrop pans its full sky→bedrock travel
+   gradually — a slow, smooth parallax rather than a fast lurch. */
 .stratum-sky { min-height: 100vh; }
-.stratum-surface { padding: 72px 0 80px; }
-.stratum-stone { padding: 72px 0 80px; }
-.stratum-deep { padding: 72px 0 84px; }
-.stratum-mineshaft { padding: 72px 0 90px; }
+.stratum-surface,
+.stratum-stone,
+.stratum-deep,
+.stratum-mineshaft {
+  /* near-original spacing — the frame set is now dense (569 frames), so the
+     scrub stays smooth without a tall page; each stratum is ~one screen so the
+     content isn't spaced out. content is vertically centered within it. */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 96px 0 104px;
+}
+.stratum-mineshaft { padding-bottom: 150px; }
 
 /* "in your hour" — what actually happens once you're matched */
 .hour-grid {
@@ -1674,13 +1972,12 @@ html[data-theme='day'] .world-tint {
 }
 .hour-card {
   padding: 22px 20px;
-  background: rgba(40, 40, 47, 0.62);
+  background: rgba(40, 40, 47, 0.78);
   border: 3px solid var(--gui-edge);
   box-shadow:
     inset 2px 2px 0 rgba(255, 255, 255, 0.12),
     inset -2px -2px 0 rgba(0, 0, 0, 0.4),
     0 8px 0 rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(3px);
 }
 .hour-icon { font-size: 1.6rem; display: block; margin-bottom: 10px; }
 .hour-title { font-size: 1rem; color: var(--text); margin-bottom: 6px; text-shadow: 1px 0 0 currentColor; }
@@ -1803,23 +2100,61 @@ html[data-theme='day'] .world-tint {
 }
 
 /* your scroll is an XP bar */
+/* the classic Minecraft XP bar: a small, centred bar floating just off the
+   bottom of the screen, filling left→right as you dig down the page. dark olive
+   "unfilled" track, bright lime fill, black segment notches, a faint pixel grain,
+   and stair-stepped (pixel-rounded) corners — all sitting on the whole bar. */
 .scroll-xp {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6px;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(600px, 74vw);
+  height: 12px;
   z-index: 200;
-  background: rgba(0, 0, 0, 0.55);
+  /* banded (not smooth) olive gradient reads as a low-res sprite */
+  background: linear-gradient(#61812c 0 38%, #4c6823 38% 68%, #3a5019 68% 100%);
+  image-rendering: pixelated;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.5);
   pointer-events: none;
+  clip-path: polygon(
+    4px 0, calc(100% - 4px) 0,
+    calc(100% - 4px) 2px, calc(100% - 2px) 2px, calc(100% - 2px) 4px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 2px) calc(100% - 4px), calc(100% - 2px) calc(100% - 2px), calc(100% - 4px) calc(100% - 2px), calc(100% - 4px) 100%,
+    4px 100%, 4px calc(100% - 2px), 2px calc(100% - 2px), 2px calc(100% - 4px), 0 calc(100% - 4px),
+    0 4px, 2px 4px, 2px 2px, 4px 2px
+  );
 }
 .scroll-xp-fill {
   height: 100%;
-  width: calc(var(--scrollp, 0) * 100%);
+  width: 100%;
+  transform: scaleX(var(--scrollp, 0)); /* fallback: JS-driven */
+  transform-origin: left center;
+  background: linear-gradient(#c1f062 0 38%, #9ad63e 38% 68%, #7ac02d 68% 100%);
+  box-shadow: 0 0 10px rgba(150, 240, 90, 0.6);
+}
+/* segment notches + a fine pixel grain, drawn crisp over the whole bar
+   (never scaled, so nothing distorts as the fill grows) */
+.scroll-xp::after {
+  content: '';
+  position: absolute;
+  inset: 0;
   background:
-    repeating-linear-gradient(90deg, transparent 0 14px, rgba(0, 0, 0, 0.3) 14px 16px),
-    linear-gradient(var(--grass-2), #4f9a31);
-  box-shadow: 0 0 8px rgba(126, 224, 88, 0.55);
+    repeating-linear-gradient(90deg, transparent 0 12px, rgba(0, 0, 0, 0.42) 12px 14px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.07) 0 1px, transparent 1px 2px),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.09) 0 1px, transparent 1px 2px);
+  pointer-events: none;
+}
+/* compositor-driven fill, in lockstep with scroll */
+@supports (animation-timeline: scroll()) {
+  .scroll-xp-fill {
+    transform: scaleX(0);
+    animation-name: xp-grow;
+    animation-timeline: scroll(root block);
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+  }
+  @keyframes xp-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 }
 
 /* panels perk up when you look at them */
@@ -1895,38 +2230,92 @@ html[data-theme='day'] .world-tint {
 .pair {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 26px;
+  gap: 34px;
   width: 100%;
-  max-width: 1240px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 0 22px;
+  padding: 0 26px;
   align-items: stretch;
   position: relative;
   z-index: 2;
 }
 .pair > .frame {
-  padding: 30px 26px 36px;
+  padding: 58px 48px 66px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.pair .how-grid { grid-template-columns: 1fr; gap: 12px; width: 100%; margin-top: 4px; }
-.pair .hour-grid { grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-top: 4px; }
-.pair .how-card, .pair .hour-card { padding: 16px; }
-.pair .section-eyebrow { width: 300px; height: 100px; padding: 38px 18px 5px; font-size: 0.92rem; margin-top: 0; margin-bottom: 20px; }
+.pair .how-grid { grid-template-columns: 1fr; gap: 22px; width: 100%; margin-top: 8px; }
+.pair .hour-grid { grid-template-columns: 1fr 1fr; gap: 22px; width: 100%; margin-top: 8px; }
+.pair .how-card, .pair .hour-card { padding: 30px 28px; }
+.pair .how-title, .pair .hour-title { font-size: 1.14rem; margin-bottom: 10px; }
+.pair .how-desc, .pair .hour-desc { font-size: 0.96rem; line-height: 1.75; }
+.pair .how-num { font-size: 0.74rem; margin-bottom: 12px; }
+.pair .hour-icon { font-size: 1.9rem; margin-bottom: 14px; }
+.pair .section-eyebrow { width: 340px; height: 112px; padding: 42px 18px 5px; font-size: 1rem; margin-top: 0; margin-bottom: 36px; }
 .pair .review-card { max-width: 100%; }
-.pair .stats-bar { gap: 12px; }
-.pair .stat { min-width: 118px; padding: 14px 12px 10px; }
-.pair .stat::before { width: 28px; height: 28px; margin-bottom: 6px; }
-.pair .stat-num { font-size: 1.5rem; }
-.pair .spec-rows { margin-top: 20px; width: 100%; max-width: none; }
-.pair .story-copy p { font-size: 0.95rem; margin-bottom: 13px; }
-.pair .rules-list li { padding: 10px 0 10px 32px; font-size: 0.95rem; }
+.pair .review-text { font-size: 1.04rem; line-height: 1.8; }
+.pair .faq summary { font-size: 1.02rem; padding: 16px 18px; }
+.pair .faq-a { font-size: 0.95rem; line-height: 1.75; }
+.pair .stats-bar { gap: 16px; }
+.pair .stat { min-width: 128px; padding: 18px 14px 12px; }
+.pair .stat::before { width: 30px; height: 30px; margin-bottom: 7px; }
+.pair .stat-num { font-size: 1.7rem; }
+.pair .spec-rows { margin-top: 26px; width: 100%; max-width: none; }
+.pair .spec-rows .kv-row { padding: 13px 0; }
+.pair .story-copy p { font-size: 1.02rem; line-height: 1.8; margin-bottom: 16px; }
+.pair .quest-chip { font-size: 0.96rem; }
+.pair .rules-list li { padding: 13px 0 13px 34px; font-size: 1rem; }
 .shipped-list { margin-top: 20px; border-top: 2px solid rgba(244, 239, 230, 0.1); padding-top: 8px; width: 100%; }
 .shipped-list li { font-size: 0.85rem; padding: 8px 0; }
 @media (max-width: 980px) {
   .pair { grid-template-columns: 1fr; }
 }
+
+/* "a typical hour" — a redstone-lit timeline of one session */
+.timeline-frame { max-width: 860px; }
+.timeline { list-style: none; margin: 14px auto 0; max-width: 700px; text-align: left; }
+.tl-step { display: grid; grid-template-columns: 54px 1fr; gap: 24px; padding: 18px 0 20px; position: relative; }
+.tl-step:not(:last-child)::before {
+  content: ''; position: absolute; left: 60px; top: 32px; bottom: -14px; width: 3px;
+  background: repeating-linear-gradient(rgba(140, 209, 92, 0.45) 0 6px, transparent 6px 12px);
+}
+.tl-time {
+  color: var(--grass-2); text-align: right; font-size: 1rem; padding-top: 4px;
+  text-shadow: 1px 0 0 currentColor;
+}
+.tl-body { position: relative; padding-left: 28px; }
+.tl-body::before {
+  content: ''; position: absolute; left: -22px; top: 6px; width: 13px; height: 13px;
+  background: var(--grass-2); border: 2px solid var(--gui-edge);
+  box-shadow: 0 0 9px rgba(126, 224, 88, 0.6);
+}
+.tl-body h3 { font-size: 1.14rem; color: var(--text); margin-bottom: 5px; text-shadow: 1px 0 0 currentColor; }
+.tl-body p { font-size: 0.98rem; color: var(--muted); line-height: 1.75; }
+
+/* "every match includes" checklist inside world status */
+.included-label { margin-top: 26px; color: var(--gold); font-size: 0.82rem; letter-spacing: 1px; text-align: left; width: 100%; }
+.included-list { list-style: none; margin-top: 10px; width: 100%; text-align: left; }
+.included-list li { padding: 10px 0 10px 30px; position: relative; font-size: 0.97rem; color: var(--text); }
+.included-list li::before { content: '✔'; position: absolute; left: 2px; color: var(--grass-2); text-shadow: 0 0 8px rgba(126, 224, 88, 0.5); }
+.included-list li + li { border-top: 2px solid rgba(244, 239, 230, 0.07); }
+
+/* About — "what we ask" list */
+.ask-list { list-style: none; width: 100%; text-align: left; margin-top: 6px; }
+.ask-list li { padding: 13px 0 13px 26px; position: relative; font-size: 1rem; color: var(--muted); line-height: 1.65; }
+.ask-list li strong { color: var(--text); }
+.ask-list li::before { content: '▸'; position: absolute; left: 2px; color: var(--grass-2); }
+.ask-list li + li { border-top: 2px solid rgba(244, 239, 230, 0.07); }
+
+/* About — "how the match is scored" numbered steps */
+.score-steps { width: 100%; text-align: left; margin-top: 6px; display: flex; flex-direction: column; gap: 18px; }
+.score-step { display: grid; grid-template-columns: 36px 1fr; gap: 18px; align-items: start; }
+.score-num {
+  width: 36px; height: 36px; display: grid; place-items: center;
+  background: var(--grass-2); color: #06210a; font-size: 1.15rem;
+  box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.3), inset -2px -2px 0 rgba(0, 0, 0, 0.35);
+}
+.score-step p { font-size: 1rem; color: var(--muted); line-height: 1.7; }
 
 /* legal pages: readable long-form */
 .legal-card { max-width: 680px; text-align: left; }
