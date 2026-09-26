@@ -2490,3 +2490,28 @@ html.is-creative { cursor: crosshair; }
   .fx-rain, .fx-bolt, .fx-flash, .fx-star, .fx-eyes, .fx-minecart,
   .fx-xp-orb, .fx-level, .fx-dragon, .fx-bossbar, .egg-ambush { display: none !important; }
 }
+
+/* ── phones (≤ 420px): everything fits the screen's width ────────────
+   the nav's five hanging signs and the section signs + frame padding were
+   sized for 720px and pushed phone pages out to 425–469px, so mobile
+   browsers zoomed the whole site out (and cut "Awards" off the edge) */
+@media (max-width: 420px) {
+  .topbar { padding: 8px 10px; }
+  .header-nav { margin-left: 0; gap: 4px; }
+  .header-nav .header-link {
+    --sign: min(74px, calc((100vw - 36px) / 5)); /* five signs, four gaps, topbar padding */
+    width: var(--sign);
+    height: var(--sign);                          /* still the whole 1:1 hanging sign */
+    padding: calc(var(--sign) * 0.38) 3px 4px;    /* text stays on the board */
+    font-size: 0.56rem;
+  }
+  .pair { padding: 0 12px; }
+  .frame, .pair > .frame { padding-left: 16px; padding-right: 16px; }
+  .section-eyebrow, .pair .section-eyebrow, .panel-history-label {
+    --eb: min(300px, calc(100vw - 72px));        /* the 3:1 sign scales with the phone */
+    width: var(--eb); height: calc(var(--eb) / 3); padding: calc(var(--eb) * 0.123) 16px 5px; font-size: 0.82rem;
+  }
+  /* the pair's two-column hour grid outranked the 600px one-column rule;
+     the old zoomed-out page hid it, a true phone width clips the cards */
+  .pair .hour-grid { grid-template-columns: 1fr; }
+}
