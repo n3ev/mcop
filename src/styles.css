@@ -1856,20 +1856,60 @@ html[data-theme='day'] .dig-cue { text-shadow: 1px 0 0 currentColor, 2px 2px 0 r
   transition: opacity 2s ease;
   will-change: transform;
 }
-/* the scroll-scrubbed fly-through frames: a canvas covering the viewport,
-   crossfading day↔night. the poster paints instantly while frames stream in. */
-.world-canvas {
+/* the night fly-through, as the layers tools/world/build_night_layers.py
+   rebuilt it from: placed in the recording's own 3840x2160 frame (scaled to
+   cover the viewport) and only ever moved with transforms and opacity, so the
+   GPU composites it and nothing repaints while scrolling. it fades with the
+   theme on the same 2s as the day image; once faded out it's hidden, so the
+   GPU stops compositing it. the poster shows until the first layers are in. */
+.world-layers {
   position: absolute;
   inset: 0;
+  transition: opacity 2s ease;
+}
+html[data-theme='day'] .world-layers {
+  visibility: hidden;
+  transition: opacity 2s ease, visibility 0s 2s;
+}
+.wl-frame {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.wl-frame.is-ready { opacity: 1; }
+.wl-kf {
+  display: none; /* WorldBackdrop mounts the keyframes around the current depth */
+  position: absolute;
+  inset: 0;
+  will-change: opacity;
+}
+/* each layer: a window onto its keyframe's atlas */
+.wl-layer {
+  position: absolute;
+  overflow: hidden;
+  will-change: transform;
+}
+.wl-layer > img,
+.wl-near {
+  position: absolute;
+  max-width: none;
+  image-rendering: auto; /* smooth: these are scaled and move by fractions of a pixel */
+}
+.wl-near {
+  left: 0;
   width: 100%;
-  height: 100%;
-  transition: opacity 1.6s ease;
-  /* pin the canvas to its own stable GPU layer. its box never changes size, so
-     forcing a dedicated layer stops the compositor from synthesising a scaled
-     snapshot of it during fast scroll — that improvised scale was the transient
-     vertical stretch. */
-  transform: translateZ(0);
-  backface-visibility: hidden;
+  will-change: transform;
+}
+.wl-star {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-image: var(--wl-stars);
+  background-repeat: no-repeat;
+  will-change: transform;
 }
 .world-poster {
   position: absolute;
