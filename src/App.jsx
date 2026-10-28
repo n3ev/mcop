@@ -35,6 +35,7 @@ import WorldBackdrop from './components/WorldBackdrop.jsx'
 import Toasts from './components/Toasts.jsx'
 import OreLayer from './components/OreLayer.jsx'
 import Hotbar from './components/Hotbar.jsx'
+import { PAGES } from './data/seo.js'
 
 const reduced = () =>
   window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -231,29 +232,9 @@ export default function App() {
     if (MAIN.every(p => seen.has(p))) setTimeout(() => unlock('cartographer'), 700)
   }, [location.pathname])
 
-  // per-page titles
+  // per-page titles (src/data/seo.js, which also feeds the static pages)
   useEffect(() => {
-    const TITLES = {
-      '/': 'MCOP: Find a Minecraft buddy',
-      '/about': 'About · MCOP',
-      '/help': 'Help & FAQ · MCOP',
-      '/contact': 'Contact · MCOP',
-      '/questionnaire': 'Find a buddy · MCOP',
-      '/matching': 'Finding your buddy… · MCOP',
-      '/waiting': 'In the queue · MCOP',
-      '/session': 'Your session · MCOP',
-      '/post-session': 'How was it? · MCOP',
-      '/login': 'Log in · MCOP',
-      '/signup': 'Sign up · MCOP',
-      '/account': 'Your account · MCOP',
-      '/preferences': 'Your playstyle · MCOP',
-      '/settings': 'Settings · MCOP',
-      '/worlds': 'My worlds · MCOP',
-      '/verify-email': 'Verify email · MCOP',
-      '/terms': 'Terms · MCOP',
-      '/privacy': 'Privacy · MCOP',
-    }
-    document.title = TITLES[location.pathname] || 'MCOP'
+    document.title = PAGES[location.pathname]?.title || 'MCOP'
   }, [location.pathname])
 
   // land at the top of every new page (SPA nav doesn't reset scroll on its own)

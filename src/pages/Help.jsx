@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import Ico from '../components/Ico.jsx'
+import { COMMON, TROUBLE } from '../data/faq.js'
 
 // everything a new or cautious player needs: FAQ, house rules, requirements
 export default function Help() {
@@ -39,38 +40,12 @@ export default function Help() {
           <div className="frame reviews-section">
             <p className="section-eyebrow">Common questions</p>
             <div className="faq-list">
-              <details className="faq">
-                <summary>What do I need to play?</summary>
-                <p className="faq-a">Minecraft Java Edition (1.21.4) and a Microsoft account. We whitelist your exact username on a private server. No mods, no launcher tricks. Bedrock isn't supported yet.</p>
-              </details>
-              <details className="faq">
-                <summary>Is it actually free?</summary>
-                <p className="faq-a">Yes. Matching, the private server, and the 30-day world save are all free while we're in beta. Long term we may charge a small fee to keep worlds alive past 30 days. Playing stays free.</p>
-              </details>
-              <details className="faq">
-                <summary>What if we don't vibe?</summary>
-                <p className="faq-a">It happens. Finish the hour or bail early, then hit "don't match again" and you'll never see each other in the queue again. Swapping socials afterwards is always optional, never required.</p>
-              </details>
-              <details className="faq">
-                <summary>Can we keep playing after the hour?</summary>
-                <p className="faq-a">Extend the session by 30 minutes from the session page, and save the world for 30 days free. Jump back in together whenever you both want.</p>
-              </details>
-              <details className="faq">
-                <summary>Do I need an account?</summary>
-                <p className="faq-a">No. Guests can jump straight into the queue. An account saves your playstyle, keeps your match history, remembers your buddies, and gets you one-click matching with a verified username.</p>
-              </details>
-              <details className="faq">
-                <summary>Can I pick who I get matched with?</summary>
-                <p className="faq-a">Not yet. The random buddy is the whole point. Friends lists already exist, and "play again with a friend" is on the roadmap.</p>
-              </details>
-              <details className="faq">
-                <summary>Where are the servers?</summary>
-                <p className="faq-a">Sydney, Australia, so Oceania pings are dreamy. It's absolutely playable from elsewhere; block games are forgiving.</p>
-              </details>
-              <details className="faq">
-                <summary>Is it safe to play with a stranger?</summary>
-                <p className="faq-a">You're on a whitelisted private server: just you two, verified usernames only. No personal info is exchanged unless you choose to share socials at the end. Block and report tools are one click away.</p>
-              </details>
+              {COMMON.map(f => (
+                <details className="faq" key={f.q}>
+                  <summary>{f.q}</summary>
+                  <p className="faq-a">{f.a}</p>
+                </details>
+              ))}
             </div>
           </div>
         </div>
@@ -81,30 +56,12 @@ export default function Help() {
         <div className="wrap frame" style={{ maxWidth: 900 }}>
           <p className="section-eyebrow">If something's off</p>
           <div className="faq-list">
-            <details className="faq">
-              <summary>The server says I'm not whitelisted</summary>
-              <p className="faq-a">Your Minecraft username has to match exactly, capital letters and all. If you recently changed your name, use the new one. Still stuck? Hop back to the start and requeue so we can re-add you.</p>
-            </details>
-            <details className="faq">
-              <summary>I can't connect to the server</summary>
-              <p className="faq-a">Double-check you're on Java Edition 1.21.4, not Bedrock and not an older or newer version. Paste the IP into Multiplayer exactly as shown, with no spaces. If it times out, give it a few seconds and hit refresh; a fresh world takes a moment to spin up.</p>
-            </details>
-            <details className="faq">
-              <summary>My buddy never showed up</summary>
-              <p className="faq-a">If they don't join within ten minutes, we free up the server and put you back at the front of the queue automatically, with priority. You'll get matched again fast, no penalty to you.</p>
-            </details>
-            <details className="faq">
-              <summary>The timer ran out mid-build</summary>
-              <p className="faq-a">You can add 30 minutes from the session page as long as nobody's waiting for a server. Want to come back later instead? Save the world before you leave and it's yours for 30 days.</p>
-            </details>
-            <details className="faq">
-              <summary>My loadout or quest didn't appear</summary>
-              <p className="faq-a">Both drop in the first few seconds after you join, announced in chat. If you joined before your buddy, hang tight; some of it waits until you're both in. A quick relog fixes the rest.</p>
-            </details>
-            <details className="faq">
-              <summary>Someone was a jerk</summary>
-              <p className="faq-a">Rate them down and hit report on the post-session screen. Reports come straight to me with the details, and "don't match again" makes sure you never see them in the queue again. Slurs or hate get a permanent ban, no appeals.</p>
-            </details>
+            {TROUBLE.map(f => (
+              <details className="faq" key={f.q}>
+                <summary>{f.q}</summary>
+                <p className="faq-a">{f.a}</p>
+              </details>
+            ))}
           </div>
         </div>
       </section>
