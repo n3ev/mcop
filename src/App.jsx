@@ -32,6 +32,9 @@ import EasterEggs from './components/EasterEggs.jsx'
 import Ambience from './components/Ambience.jsx'
 import BuildLayer from './components/BuildLayer.jsx'
 import WorldBackdrop from './components/WorldBackdrop.jsx'
+import Toasts from './components/Toasts.jsx'
+import OreLayer from './components/OreLayer.jsx'
+import Hotbar from './components/Hotbar.jsx'
 
 const reduced = () =>
   window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -103,8 +106,6 @@ function JukeboxToggle() {
   )
 }
 
-// the world itself: Neev's shader renders of a real cross-section,
-// night for dusk (default), day when the lever is flipped
 // the MCOP logo, top right on the planks (animated; still if reduced motion)
 function TopbarLogo() {
   const still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -131,32 +132,6 @@ function DepthMeter() {
     <div className="depth-meter" aria-hidden="true">
       <span className="depth-y">Y: {y}</span>
       <span className="depth-layer">{LAYER(y)}</span>
-    </div>
-  )
-}
-
-// achievement toasts (fired via lib/toast.js from anywhere)
-function Toast() {
-  const [t, setT] = useState(null)
-  const timer = useRef(null)
-  useEffect(() => {
-    const on = (e) => {
-      setT(null) // restart the animation even for back-to-back toasts
-      requestAnimationFrame(() => setT(e.detail))
-      clearTimeout(timer.current)
-      timer.current = setTimeout(() => setT(null), 3900)
-    }
-    window.addEventListener('mcop:toast', on)
-    return () => { window.removeEventListener('mcop:toast', on); clearTimeout(timer.current) }
-  }, [])
-  if (!t) return null
-  return (
-    <div className={'toast' + (t.rare ? ' toast-rare' : '')} role="status">
-      <img className="toast-icon" src={t.icon} alt="" />
-      <div>
-        <div className="toast-title">{t.title}</div>
-        <div className="toast-text">{t.text}</div>
-      </div>
     </div>
   )
 }
@@ -387,11 +362,13 @@ export default function App() {
         </div>
       </footer>
 
-      <Toast />
+      <Toasts />
       <AchievementsOverlay />
       <EasterEggs />
       <Ambience />
       <BuildLayer />
+      <OreLayer />
+      <Hotbar />
       <CreeperEgg show={creeper} />
     </div>
   )

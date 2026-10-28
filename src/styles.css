@@ -833,30 +833,6 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
   padding: 88px 0 96px;
   overflow: hidden;
 }
-.ore {
-  position: absolute;
-  left: var(--ox, 6%);
-  top: var(--oy, 20%);
-  width: var(--block);
-  height: var(--block);
-  background:
-    linear-gradient(rgba(13, 13, 16, 0.62), rgba(13, 13, 16, 0.62)),
-    var(--tex) center / var(--block);
-  image-rendering: pixelated;
-  pointer-events: none;
-}
-.ore::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: #fff;
-  opacity: 0;
-  animation: ore-glint 9s ease-in-out var(--odelay, 0s) infinite;
-}
-@keyframes ore-glint {
-  0%, 92%, 100% { opacity: 0; }
-  95%           { opacity: 0.18; }
-}
 
 /* deepslate cave stratum: torch-lit reviews */
 .stratum-deep {
@@ -1293,30 +1269,6 @@ html[data-theme='day'] .ember { display: none; }
 }
 @keyframes fw-bit { 55% { opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)); opacity: 0; } }
 
-/* achievement toast, straight out of the pause menu */
-.toast {
-  position: fixed;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 3000;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 280px;
-  max-width: min(92vw, 420px);
-  padding: 12px 18px;
-  background: rgba(16, 14, 10, 0.94);
-  border: 3px solid var(--gold);
-  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.15), 0 6px 0 rgba(0, 0, 0, 0.4);
-  animation: toast-in 0.35s var(--steps) backwards, toast-out 0.3s var(--steps) 3.4s forwards;
-  pointer-events: none;
-}
-.toast-icon { width: 32px; height: 32px; image-rendering: pixelated; flex-shrink: 0; }
-.toast-title { color: var(--gold); font-size: 0.8rem; }
-.toast-text { color: var(--text); font-size: 0.88rem; line-height: 1.35; }
-.toast.toast-rare { border-color: #8a4fbf; box-shadow: inset 2px 2px 0 rgba(255,255,255,0.1), 0 0 20px rgba(150,90,220,0.55); }
-.toast.toast-rare .toast-title { color: #c99dff; text-shadow: 0 0 8px rgba(180,120,240,0.6), 1px 0 0 currentColor; }
 
 /* ── achievements overlay: a gray advancement screen with a branching tree ── */
 .ach-overlay {
@@ -1492,8 +1444,6 @@ html.is-dead .depth-meter { visibility: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .egg-shake, .egg-cow, .egg-phantom, .egg-diamond { animation: none !important; }
 }
-@keyframes toast-in { from { transform: translate(-50%, -120%); } to { transform: translate(-50%, 0); } }
-@keyframes toast-out { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -130%); opacity: 0; } }
 
 /* creeper easter egg */
 .creeper {
@@ -2464,22 +2414,6 @@ html.fx-levitate .content { animation: fx-levitate 2.8s ease-in-out infinite; }
   96% { opacity: 1; } 100% { opacity: 0; }
 }
 
-/* ── minable ores ── */
-.ore-mine { pointer-events: auto; cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none; transition: opacity 0.6s; }
-.ore-mine.mining { animation: fx-mine-shake 0.14s linear infinite; }
-.ore-mine.mining::before {
-  content: ''; position: absolute; inset: 0; z-index: 1;
-  background:
-    radial-gradient(circle at 30% 35%, rgba(0, 0, 0, 0.95) 1.5px, transparent 2.5px),
-    radial-gradient(circle at 66% 24%, rgba(0, 0, 0, 0.95) 1.5px, transparent 2.5px),
-    radial-gradient(circle at 50% 58%, rgba(0, 0, 0, 0.95) 2px, transparent 3px),
-    radial-gradient(circle at 24% 76%, rgba(0, 0, 0, 0.95) 1.5px, transparent 2.5px),
-    radial-gradient(circle at 79% 70%, rgba(0, 0, 0, 0.95) 1.5px, transparent 2.5px);
-  animation: fx-cracks 0.95s steps(3) forwards;
-}
-@keyframes fx-cracks { from { opacity: 0.25; } to { opacity: 1; } }
-@keyframes fx-mine-shake { 0%, 100% { translate: 0 0; } 25% { translate: 1px 0; } 75% { translate: -1px 1px; } }
-.ore-mine.mined { opacity: 0; pointer-events: none; transition: opacity 0.25s; }
 
 /* ── the minecart tour ── */
 .fx-minecart { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 1140; pointer-events: none; transition: opacity 0.45s; }
@@ -2555,3 +2489,254 @@ html.is-creative { cursor: crosshair; }
      the old zoomed-out page hid it, a true phone width clips the cards */
   .pair .hour-grid { grid-template-columns: 1fr; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   TOASTS — the game's own slabs, sliding in at the top right
+   ═══════════════════════════════════════════════════════════════════ */
+.mc-toasts {
+  --tz: 2; /* one toast texel = 2px, like GUI scale 2 */
+  position: fixed;
+  right: 8px;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  pointer-events: none;
+}
+.mc-toast {
+  width: calc(160px * var(--tz));
+  height: calc(32px * var(--tz));
+  display: flex;
+  align-items: center;
+  gap: calc(8px * var(--tz));
+  padding: 0 calc(8px * var(--tz));
+  background: url('/assets/textures/gui/toast-advancement.png') 0 0 / 100% 100% no-repeat;
+  image-rendering: pixelated;
+  animation: mc-toast-in 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+.mc-toast.leaving { animation: mc-toast-out 0.42s cubic-bezier(0.6, 0, 0.9, 0.4) both; }
+@keyframes mc-toast-in { from { transform: translateX(calc(100% + 12px)); } to { transform: none; } }
+@keyframes mc-toast-out { from { transform: none; } to { transform: translateX(calc(100% + 12px)); } }
+.mc-toast-icon { width: calc(16px * var(--tz)); height: calc(16px * var(--tz)); image-rendering: pixelated; flex-shrink: 0; }
+.mc-toast-body { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.mc-toast-title, .mc-toast-text { font-size: 0.8rem; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mc-toast-title { color: #ffff55; text-shadow: 2px 2px 0 #3f3f15; }
+.mc-toast-text { color: #fff; text-shadow: 2px 2px 0 #3f3f3f; }
+.mc-toast.kind-challenge .mc-toast-title,
+.mc-toast.kind-rare .mc-toast-title { color: #ff88ff; text-shadow: 2px 2px 0 #3f223f; }
+.mc-toast.kind-rare { filter: drop-shadow(0 0 10px rgba(190, 110, 255, 0.65)); }
+.mc-toast.single .mc-toast-title { color: #fff; text-shadow: 2px 2px 0 #3f3f3f; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+@media (max-width: 720px) {
+  .mc-toasts { --tz: 1.5; right: 6px; }
+  .mc-toast-title, .mc-toast-text { font-size: 0.66rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mc-toast { animation: none; }
+  .mc-toast.leaving { animation: none; opacity: 0; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ADVANCEMENTS — tabs, the game's frames, a tiled background per tab
+   ═══════════════════════════════════════════════════════════════════ */
+.ach-tabs { display: flex; gap: 6px; padding: 10px 16px 0; overflow-x: auto; border-bottom: 3px solid rgba(0, 0, 0, 0.45); }
+.ach-tab {
+  display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+  padding: 8px 14px 9px; margin-bottom: -3px;
+  font: inherit; font-size: 0.82rem; color: var(--muted);
+  background: rgba(0, 0, 0, 0.32);
+  border: 2px solid var(--gui-edge); border-bottom: 3px solid rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+}
+.ach-tab img { width: 24px; height: 24px; image-rendering: pixelated; }
+.ach-tab:hover { color: var(--text); }
+.ach-tab.on { color: var(--text); background: rgba(70, 74, 82, 0.6); border-bottom-color: transparent; }
+.ach-tab-count { font-size: 0.68rem; color: var(--muted-dim); }
+.ach-tab.done .ach-tab-count { color: var(--grass-2); }
+.ach-scroll {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), var(--adv-bg) 0 0 / 64px 64px;
+  image-rendering: pixelated;
+}
+.ach-panel .ach-node { width: 64px; }
+.ach-panel .ach-node .ach-frame {
+  width: 64px; height: 64px;
+  border: 0; box-shadow: none; background-color: transparent;
+  background-position: center; background-size: 100% 100%; background-repeat: no-repeat;
+  image-rendering: pixelated;
+}
+.ach-panel .ach-node.locked .ach-frame { opacity: 1; }
+.ach-panel .ach-node.rare.earned .ach-frame { filter: drop-shadow(0 0 10px rgba(180, 120, 240, 0.85)); }
+.ach-panel .ach-node .ach-icon { width: 38px; height: 38px; }
+.ach-panel .ach-name { max-width: 110px; }
+.ach-line-edge { fill: none; stroke: #000; stroke-width: 6; }
+.ach-line-core { fill: none; stroke: rgba(255, 255, 255, 0.35); stroke-width: 2; }
+.ach-line.lit .ach-line-core { stroke: #fff; }
+.ach-line.rare.lit .ach-line-core { stroke: #d6a6ff; }
+.ach-tip.tier-challenge .ach-tip-title { color: #ff88ff; }
+.ach-tip.tier-goal .ach-tip-title { color: #ffff55; }
+.ach-tip-empty { opacity: 0.8; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   MINING — ore veins in the cave walls, the break, the drops
+   ═══════════════════════════════════════════════════════════════════ */
+.mine-layer { position: absolute; top: 0; left: 0; width: 100%; height: 0; z-index: 6; pointer-events: none; }
+.mine-ore {
+  position: absolute;
+  pointer-events: auto;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.16), 0 4px 14px rgba(0, 0, 0, 0.55);
+  cursor: url('/assets/textures/items/stone_pickaxe-cursor.png') 4 4, pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  animation: mine-in 0.5s ease-out both;
+}
+.mine-layer[data-pick='iron'] .mine-ore { cursor: url('/assets/textures/items/iron_pickaxe-cursor.png') 4 4, pointer; }
+.mine-layer[data-pick='diamond'] .mine-ore { cursor: url('/assets/textures/items/diamond_pickaxe-cursor.png') 4 4, pointer; }
+.mine-layer[data-pick='netherite'] .mine-ore { cursor: url('/assets/textures/items/netherite_pickaxe-cursor.png') 4 4, pointer; }
+.mine-ore::after { /* the odd glint, so a vein catches the eye */
+  content: ''; position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none;
+  animation: ore-glint 6s ease-in-out infinite;
+}
+@keyframes ore-glint { 0%, 90%, 100% { opacity: 0; } 94% { opacity: 0.3; } }
+.mine-ore:hover { box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.55), 0 4px 12px rgba(0, 0, 0, 0.5); }
+.mine-crack {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  background: url('/assets/textures/blocks/destroy_strip.png') 0 0 / calc(var(--size) * 10) var(--size) no-repeat;
+  image-rendering: pixelated;
+}
+.mine-ore.mining { animation: mine-shake 0.12s linear infinite; }
+.mine-ore.mining .mine-crack { opacity: 1; animation: mine-crack var(--ms) steps(10, jump-none) forwards; }
+.mine-ore.stuck { animation: mine-clunk 0.65s ease-out; }
+.mine-ore.stuck .mine-crack { opacity: 1; animation: mine-crack 1.7s steps(10, jump-none) forwards; }
+@keyframes mine-crack { from { background-position-x: 0; } to { background-position-x: calc(var(--size) * -9); } }
+@keyframes mine-shake { 0%, 100% { translate: 0 0; } 25% { translate: 1px 0; } 75% { translate: -1px 1px; } }
+@keyframes mine-clunk { 0%, 45%, 100% { translate: 0 0; } 15% { translate: 3px 0; } 30% { translate: -3px 0; } }
+@keyframes mine-in { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: none; } }
+.mine-hint {
+  position: absolute; top: 50%; translate: 0 -50%;
+  padding: 5px 9px; white-space: nowrap; pointer-events: none;
+  font-size: 0.72rem; color: #fff; text-shadow: 1px 1px 0 #000;
+  background: rgba(16, 0, 16, 0.92); border: 2px solid #2b0f63;
+  box-shadow: inset 0 0 0 1px #5a2aa8;
+  animation: mine-hint 1.3s ease-in-out infinite;
+}
+.mine-hint-left { left: calc(100% + 10px); }
+.mine-hint-right { right: calc(100% + 10px); }
+@keyframes mine-hint { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
+.mine-hint-right { animation-name: mine-hint-r; }
+@keyframes mine-hint-r { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-4px); } }
+.mine-bit { position: fixed; z-index: 1200; pointer-events: none; background-size: 56px 56px; image-rendering: pixelated; }
+.mine-drop { position: fixed; z-index: 1210; width: 28px; height: 28px; image-rendering: pixelated; pointer-events: none; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.6)); }
+.mine-orb {
+  position: fixed; z-index: 1205; width: 9px; height: 9px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle at 40% 35%, #f6ffb0, #b6f03c 45%, #5a9b10 78%);
+  box-shadow: 0 0 8px rgba(200, 255, 90, 0.85);
+}
+html.is-dead .mine-layer { display: none; }
+@media (max-width: 720px) {
+  .mine-ore::after { animation-duration: 11s; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   HOTBAR — the HUD, at the game's GUI scale 2 (1.5 on phones)
+   ═══════════════════════════════════════════════════════════════════ */
+.hotbar {
+  --hb: 2;
+  position: fixed; left: 50%; bottom: 6px; z-index: 1100;
+  display: flex; flex-direction: column; align-items: center; gap: calc(2px * var(--hb));
+  transform: translate(-50%, calc(100% + 24px));
+  opacity: 0; pointer-events: none;
+  transition: transform 0.38s cubic-bezier(0.3, 0.8, 0.3, 1), opacity 0.38s;
+}
+.hotbar.shown { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
+.hotbar::before { /* the game's hotbar is see-through; over a page of text it needs a backing */
+  content: ''; position: absolute; z-index: -1; left: -6px; right: -6px; bottom: -4px;
+  height: calc(29px * var(--hb) + 10px);
+  background: rgba(8, 8, 12, 0.82); box-shadow: 0 4px 18px rgba(0, 0, 0, 0.55);
+}
+.hotbar-slots {
+  position: relative; width: calc(182px * var(--hb)); height: calc(22px * var(--hb));
+  background: url('/assets/textures/gui/hud-hotbar.png') 0 0 / 100% 100% no-repeat;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5));
+}
+.hotbar-sel {
+  position: absolute; z-index: 1; pointer-events: none;
+  left: calc(-1px * var(--hb)); top: calc(-1px * var(--hb));
+  width: calc(24px * var(--hb)); height: calc(23px * var(--hb));
+  background: url('/assets/textures/gui/hud-hotbar_selection.png') 0 0 / 100% 100% no-repeat;
+  image-rendering: pixelated;
+}
+.hotbar-slot {
+  position: absolute; top: calc(3px * var(--hb));
+  left: calc((3px + var(--i) * 20px) * var(--hb));
+  width: calc(16px * var(--hb)); height: calc(16px * var(--hb));
+}
+.hotbar-slot img { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+.hotbar-slot.pop img { animation: hotbar-pop 0.3s ease-out; }
+@keyframes hotbar-pop { 40% { transform: scale(1.3); } }
+.hotbar-count {
+  position: absolute; right: calc(-1px * var(--hb)); bottom: calc(-2px * var(--hb));
+  font-size: calc(7.5px * var(--hb)); line-height: 1; color: #fff;
+  text-shadow: calc(1px * var(--hb)) calc(1px * var(--hb)) 0 #3f3f3f;
+}
+.hotbar-xp {
+  position: relative; width: calc(182px * var(--hb)); height: calc(5px * var(--hb));
+  background: url('/assets/textures/gui/hud-experience_bar_background.png') 0 0 / 100% 100% no-repeat;
+  image-rendering: pixelated;
+}
+.hotbar-xp-fill {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  background: url('/assets/textures/gui/hud-experience_bar_progress.png') 0 0 / calc(182px * var(--hb)) 100% no-repeat;
+  image-rendering: pixelated;
+  transition: width 0.4s ease-out;
+}
+.hotbar-level {
+  position: absolute; left: 50%; bottom: calc(100% - 3px); transform: translateX(-50%);
+  font-size: calc(8px * var(--hb)); line-height: 1; color: #80ff20;
+  text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000;
+}
+.hotbar-craft {
+  display: flex; align-items: center; gap: 8px; margin-bottom: calc(4px * var(--hb));
+  padding: 6px 12px; font: inherit; font-size: 0.8rem; color: #fff; cursor: pointer;
+  background: rgba(16, 0, 16, 0.9); border: 2px solid #2b0f63; box-shadow: inset 0 0 0 1px #5a2aa8;
+  text-shadow: 1px 1px 0 #000;
+  animation: hotbar-glow 1.4s ease-in-out infinite;
+}
+.hotbar-craft:hover { border-color: #ffd876; }
+.hotbar-craft img { width: 24px; height: 24px; image-rendering: pixelated; }
+@keyframes hotbar-glow { 50% { box-shadow: inset 0 0 0 1px #5a2aa8, 0 0 14px rgba(255, 216, 118, 0.55); } }
+.scroll-xp { transition: opacity 0.3s; }
+html.hud-on .scroll-xp { opacity: 0; }
+html.hud-on .egg-chat { bottom: 104px; }
+html.is-dead .hotbar { display: none; }
+@media (max-width: 720px) {
+  .hotbar { --hb: 1.5; }
+  html.hud-on .egg-chat { bottom: 86px; }
+}
+@media (max-width: 380px) {
+  .hotbar { --hb: 1.35; }
+}
+
+/* ── "Failed to connect to the server": the game's disconnect screen ── */
+.mc-disconnect { max-width: 620px; }
+.mc-disconnect-title { color: #fff; text-shadow: 2px 2px 0 #3f3f3f; margin-bottom: 10px; }
+.mc-disconnect-reason {
+  color: #ff5555; text-shadow: 1px 1px 0 #3f1515;
+  font-size: 0.72rem; line-height: 1.5; word-break: break-word;
+  margin: 0 auto 18px; max-width: 520px;
+}
+.mc-disconnect-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 22px 0 14px; }
+.mc-disconnect-tip { opacity: 0.8; }
+
+/* ── bring a buddy ── */
+.share-invite { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 18px; }
+.share-invite.compact { margin: 14px 0 6px; }
+.btn .btn-ico, .btn-ico { width: 20px; height: 20px; image-rendering: pixelated; vertical-align: -4px; margin-right: 8px; }
+.share-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 16px; font-size: 0.8rem; }
+.share-links a { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+.share-links a:hover { color: var(--text); }
+
+a.btn, a.btn:hover { text-decoration: none; }

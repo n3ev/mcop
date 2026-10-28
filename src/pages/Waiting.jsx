@@ -4,6 +4,10 @@ import { io } from 'socket.io-client'
 import { loadSession, saveSession } from '../lib/storage.js'
 import { API_URL } from '../lib/api.js'
 import { askNotifyPermission, notifyMatchFound } from '../lib/notify.js'
+import { joinSavedQueue } from '../lib/play.js'
+import { unlock } from '../lib/achievements.js'
+import MatchOffline from '../components/MatchOffline.jsx'
+import ShareInvite from '../components/ShareInvite.jsx'
 
 const PUNS = [
   "Your duo is strip-mining at y=-59. We'll drag them up.",
@@ -21,29 +25,43 @@ export default function Waiting() {
   const session = useMemo(() => loadSession(), [])
   const [pun] = useState(() => PUNS[Math.floor(Math.random() * PUNS.length)])
   const [position, setPosition] = useState(null)
+  const [offline, setOffline] = useState(() => !loadSession().queueId)
+  const [attempt, setAttempt] = useState(0)   // bumps after a successful retry
 
   const patience = session.answers?.patience ?? 'Within 1 hour'
 
   useEffect(() => {
     if (!session.answers) { nav('/'); return }
-
-    if (!session.queueId) return
+    const queueId = loadSession().queueId
+    if (!queueId) { setOffline(true); return }   // the server couldn't be reached
+    setOffline(false)
 
     askNotifyPermission()
-    const socket = io(API_URL, { transports: ['websocket'] })
-    socket.emit('queue_identify', session.queueId)
+    const socket = io(API_URL, { transports: ['websocket'], reconnectionAttempts: 4 })
+    let fails = 0
+    socket.on('connect_error', () => {
+      if (++fails < 4) return
+      socket.disconnect()
+      setOffline(true)
+    })
+    socket.emit('queue_identify', queueId)
 
     socket.on('queue_joined', ({ position: pos }) => setPosition(pos))
 
     socket.on('match_found', ({ partner, score, server, matchId, role, quest, endsAt }) => {
       saveSession({ partner, score, server, matchId, role, quest, endsAt })
       notifyMatchFound(partner?.displayName || 'your buddy')
+      unlock('player-two')
       socket.disconnect()
       nav('/session')
     })
 
     return () => socket.disconnect()
-  }, [])
+  }, [attempt])
+
+  if (offline) {
+    return <MatchOffline onRetry={async () => { const ok = await joinSavedQueue(); if (ok) setAttempt(a => a + 1); return ok }} />
+  }
 
   return (
     <section className="card center">
@@ -60,6 +78,7 @@ export default function Waiting() {
         Keep this tab open and we'll drop you straight into the server when matched.
         Or close it, the email has everything you need.
       </p>
+      <ShareInvite compact label="Bring a buddy faster" />
       <button className="btn ghost" onClick={() => nav('/')}>Back to start</button>
     </section>
   )

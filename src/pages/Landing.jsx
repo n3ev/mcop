@@ -6,7 +6,6 @@ import { useAuth } from '../context/AuthContext.jsx'
 import Dashboard from './Dashboard.jsx'
 import Logo from '../components/Logo.jsx'
 import SplashText from '../components/SplashText.jsx'
-import Ores from '../components/Ores.jsx'
 import Reviews from '../components/Reviews.jsx'
 
 const reduced = () =>
@@ -270,7 +269,6 @@ export default function Landing() {
 
       {/* ── the mine: live status + what players say ── */}
       <section className="stratum-stone">
-        <Ores variant="stone" />
         <div className="pair">
           <WorldStatus />
           <Reviews />
@@ -280,7 +278,6 @@ export default function Landing() {
 
       {/* ── the bottom of the world: the ask ── */}
       <section className="stratum-mineshaft">
-        <Ores variant="mineshaft" />
         {!reduced() && Array.from({ length: 5 }, (_, i) => (
           <span
             key={'o' + i}

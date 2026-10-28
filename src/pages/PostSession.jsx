@@ -86,7 +86,7 @@ export default function PostSession() {
       await saveWorld(session.matchId, session.role)
       setSaveRequested(true)
       playXp()
-      toast('World snapshot saved for 30 days')
+      toast('World snapshot saved for 30 days', '/assets/textures/items/filled_map.png')
     } catch (e) {
       setSaveErr(e.message)
       playError()

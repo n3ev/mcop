@@ -2,7 +2,6 @@ import { useEffect, useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { io } from 'socket.io-client'
 import { loadSession, saveSession } from '../lib/storage.js'
-import { compatibilityScore, generateFakePartner } from '../lib/matching.js'
 import { fixedQuestions, patienceQuestion } from '../data/fixedQuestions.js'
 import { profileQuestions } from '../data/profileQuestions.js'
 import { variableQuestions } from '../data/variableQuestions.js'
@@ -12,9 +11,13 @@ import { playXp } from '../lib/sound.js'
 import { fireworks } from '../lib/particles.js'
 import { toast } from '../lib/toast.js'
 import { askNotifyPermission, notifyMatchFound } from '../lib/notify.js'
+import { joinSavedQueue } from '../lib/play.js'
+import { unlock } from '../lib/achievements.js'
+import MatchOffline from '../components/MatchOffline.jsx'
+import ShareInvite from '../components/ShareInvite.jsx'
 
 const PHASE_INTERVAL_MS = 3500
-const DEMO_FALLBACK_MS = 90000
+const QUIET_MS = 75000 // this long with no match and the queue's just quiet: say so
 
 const ALL_PHASES = [
   'Scouting the End cities…',
@@ -72,6 +75,9 @@ export default function Matching() {
   const [score, setScore] = useState(0)
   const [server, setServer] = useState(null)
   const [matchMeta, setMatchMeta] = useState({ matchId: null, role: null, quest: null, endsAt: null })
+  const [offline, setOffline] = useState(() => !loadSession().queueId)
+  const [quiet, setQuiet] = useState(false)
+  const [attempt, setAttempt] = useState(0)   // bumps after a successful retry
 
   const questionsById = useMemo(() => {
     const all = [
@@ -85,8 +91,10 @@ export default function Matching() {
 
   useEffect(() => {
     if (!session.answers) { nav('/'); return }
-
-    let socket = null
+    const queueId = loadSession().queueId
+    if (!queueId) { setOffline(true); return }   // the server couldn't be reached at all
+    setOffline(false)
+    setQuiet(false)
     askNotifyPermission()
 
     const rotateT = setInterval(() => {
@@ -101,34 +109,34 @@ export default function Matching() {
       if (meta) setMatchMeta(meta)
       playXp()
       fireworks()
-      toast(`Buddy found: ${p2.displayName}`)
+      toast(`Buddy found: ${p2.displayName}`, '/assets/textures/items/totem_of_undying.png')
+      unlock('player-two')
       notifyMatchFound(p2.displayName)
     }
 
-    // demo fallback if no real match shows up in time
-    const demoT = setTimeout(() => {
-      socket?.disconnect()
-      const p2 = generateFakePartner(session.answers, questionsById)
-      const s = compatibilityScore(session.answers, p2.answers)
-      showMatch(p2, s, { host: 'videos-treating.gl.joinmc.link', port: 25565, world: 'mcop-world', note: 'Your private MCOP session' }, null)
-    }, DEMO_FALLBACK_MS)
+    // no match for a while: nobody suitable is in the queue yet. keep waiting,
+    // honestly — the socket stays open and the match lands whenever it lands
+    const quietT = setTimeout(() => setQuiet(true), QUIET_MS)
 
-    // real socket match
-    if (session.queueId) {
-      socket = io(API_URL, { transports: ['websocket'] })
-      socket.emit('queue_identify', session.queueId)
-      socket.on('match_found', ({ partner: p2, score: s, server: srv, matchId, role, quest, endsAt }) => {
-        clearTimeout(demoT)
-        showMatch(p2, s, srv, { matchId, role, quest, endsAt })
-      })
-    }
+    const socket = io(API_URL, { transports: ['websocket'], reconnectionAttempts: 4 })
+    let fails = 0
+    socket.on('connect_error', () => {
+      if (++fails < 4) return
+      socket.disconnect()
+      setOffline(true)
+    })
+    socket.emit('queue_identify', queueId)
+    socket.on('match_found', ({ partner: p2, score: s, server: srv, matchId, role, quest, endsAt }) => {
+      clearTimeout(quietT)
+      showMatch(p2, s, srv, { matchId, role, quest, endsAt })
+    })
 
     return () => {
       clearInterval(rotateT)
-      clearTimeout(demoT)
-      socket?.disconnect()
+      clearTimeout(quietT)
+      socket.disconnect()
     }
-  }, [])
+  }, [attempt])
 
   const goPlay = () => {
     saveSession({
@@ -137,6 +145,10 @@ export default function Matching() {
       quest: matchMeta.quest, endsAt: matchMeta.endsAt,
     })
     nav('/session')
+  }
+
+  if (offline) {
+    return <MatchOffline onRetry={async () => { const ok = await joinSavedQueue(); if (ok) setAttempt(a => a + 1); return ok }} />
   }
 
   if (!partner) {
@@ -148,7 +160,17 @@ export default function Matching() {
         <div className="xpbar" role="progressbar" aria-label="Finding your buddy">
           <div className="xpbar-fill" />
         </div>
-        <p className="muted">Hang tight, this usually takes under a minute.</p>
+        {quiet ? (
+          <>
+            <p className="muted">
+              The queue's quiet right now: nobody who fits you has joined yet. Keep this tab
+              open and you're in the moment someone does.
+            </p>
+            <ShareInvite compact label="Bring a buddy faster" />
+          </>
+        ) : (
+          <p className="muted">Hang tight: you'll be paired with the first good fit that joins.</p>
+        )}
         <p className="gen-seed">Seed: {seed} · Biome: Friendship Plains</p>
       </section>
     )

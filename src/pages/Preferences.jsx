@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import { apiSavePreferences } from '../lib/auth.js'
+import { unlock } from '../lib/achievements.js'
 import { profileQuestions } from '../data/profileQuestions.js'
 
 export default function Preferences() {
@@ -34,6 +35,7 @@ export default function Preferences() {
     try {
       const { user: updated } = await apiSavePreferences(answers)
       setUser(updated)
+      unlock('know-thyself')
       nav('/')
     } catch (e) { setError(e.message) } finally { setBusy(false) }
   }

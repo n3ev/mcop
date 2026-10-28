@@ -48,7 +48,7 @@ export default function Session() {
           setEndsAt(null)
         } else {
           saveSession({ queueId: s.requeueId, matchId: null, role: null, partner: null, server: null, quest: null, endsAt: null })
-          toast('Your buddy never showed. Back at the front of the queue.')
+          toast('Your buddy never showed. Back at the front of the queue.', '/assets/textures/items/clock_00.png')
           nav('/matching')
         }
         return

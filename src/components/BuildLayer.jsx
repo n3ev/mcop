@@ -25,7 +25,7 @@ export default function BuildLayer() {
     const onClick = (e) => {
       if (!document.documentElement.classList.contains('is-creative')) return
       // only the open world is buildable — never UI, text or panels
-      if (e.target.closest('a, button, input, textarea, select, summary, label, .frame, .card, .egg-cmd, .ach-overlay, .egg-death, .topbar, .footer, img, svg, h1, h2, h3, p, li, .lever')) return
+      if (e.target.closest('a, button, input, textarea, select, summary, label, .frame, .card, .egg-cmd, .ach-overlay, .egg-death, .topbar, .footer, .mine-ore, .hotbar, img, svg, h1, h2, h3, p, li, .lever')) return
       const x = Math.floor(e.pageX / SIZE) * SIZE
       const y = Math.floor(e.pageY / SIZE) * SIZE
       setBlocks(bs => {

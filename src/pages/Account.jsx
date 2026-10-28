@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import { linkStart, linkVerify, linkStatus } from '../lib/mc.js'
 import { toast } from '../lib/toast.js'
+import { unlock } from '../lib/achievements.js'
 import { playXp } from '../lib/sound.js'
 
 export default function Account() {
@@ -53,7 +54,8 @@ export default function Account() {
       setUser(updated)
       setPhase('done')
       playXp()
-      toast('Minecraft account linked')
+      toast('Minecraft account linked', '/assets/textures/items/compass_00.png')
+      unlock('verified')
     } catch (e) { setError(e.message) } finally { setBusy(false) }
   }
 
