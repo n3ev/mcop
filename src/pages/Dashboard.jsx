@@ -6,6 +6,7 @@ import { getFriends, respondFriend } from '../lib/social.js'
 import { startMatch } from '../lib/play.js'
 import { profileQuestions } from '../data/profileQuestions.js'
 import Avatar from '../components/Avatar.jsx'
+import Ico from '../components/Ico.jsx'
 
 function timeAgo(iso) {
   const d = (Date.now() - new Date(iso).getTime()) / 1000
@@ -114,7 +115,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      <Link to="/worlds" className="panel-worlds-link">🗺 My saved worlds →</Link>
+      <Link to="/worlds" className="panel-worlds-link"><Ico name="filled_map" className="btn-ico" />My saved worlds →</Link>
 
       {social.pending.length > 0 && (
         <div className="panel-history">

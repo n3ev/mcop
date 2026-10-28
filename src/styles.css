@@ -2740,3 +2740,114 @@ html.is-dead .hotbar { display: none; }
 .share-links a:hover { color: var(--text); }
 
 a.btn, a.btn:hover { text-decoration: none; }
+
+/* ── item icons (components/Ico.jsx): whole multiples of the 16px texture ── */
+.ico { display: inline-block; width: 1.25em; height: 1.25em; image-rendering: pixelated; vertical-align: -0.28em; }
+.hour-icon .ico { width: 32px; height: 32px; vertical-align: 0; filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.45)); }
+.pair .hour-icon .ico { width: 40px; height: 40px; }
+.hero-bullets li .ico { width: 24px; height: 24px; margin-right: 6px; vertical-align: -6px; }
+.quest-chip .ico { width: 24px; height: 24px; margin-right: 6px; vertical-align: -7px; }
+.quest-label .btn-ico { vertical-align: -5px; }
+
+/* ── the server, as a row of the game's Multiplayer list (components/ServerStatus.jsx) ── */
+.srv-entry {
+  display: flex; align-items: flex-start; gap: 12px; text-align: left;
+  padding: 6px 8px 6px 6px; margin: 4px 0 26px;
+  background: rgba(0, 0, 0, 0.5); border: 2px solid transparent;
+}
+.srv-entry:hover { border-color: #808080; }
+.srv-icon { width: 64px; height: 64px; flex-shrink: 0; image-rendering: auto; }
+.srv-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; padding-top: 2px; }
+.srv-top { display: flex; align-items: center; gap: 10px; }
+.srv-name { color: #fff; font-size: 0.95rem; text-shadow: 2px 2px 0 #3f3f3f; }
+.srv-right { margin-left: auto; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.srv-count { color: #aaa; font-size: 0.8rem; text-shadow: 2px 2px 0 #2a2a2a; }
+.srv-ping { width: 20px; height: 16px; image-rendering: pixelated; }
+.srv-pinging {
+  display: inline-block;
+  background: url('/assets/textures/gui/srv-pinging-strip.png') 0 0 / 100px 16px no-repeat;
+  image-rendering: pixelated;
+  animation: srv-pinging 0.8s steps(5, jump-none) infinite alternate;
+}
+@keyframes srv-pinging { to { background-position-x: -80px; } }
+.srv-motd { color: #aaa; font-size: 0.8rem; line-height: 1.35; text-shadow: 2px 2px 0 #2a2a2a; }
+.srv-online .srv-motd:not(.srv-motd-2) { color: #55ffff; text-shadow: 2px 2px 0 #153f3f; }
+.srv-offline .srv-motd:not(.srv-motd-2) { color: #aa0000; text-shadow: 2px 2px 0 #2a0000; }
+.srv-motd-2 { color: #8f8f8f; font-size: 0.74rem; }
+@media (max-width: 720px) {
+  .srv-icon { width: 48px; height: 48px; }
+  .srv-name { font-size: 0.85rem; }
+  .srv-motd { font-size: 0.72rem; }
+}
+
+/* ── a typical hour: the timeline beside a session replayed in game chat ── */
+.timeline-frame.has-chat { max-width: 1180px; }
+.hour-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: center; }
+.hour-split .timeline { margin-top: 6px; }
+.hour-chat { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.hour-chat figcaption { text-align: center; }
+@media (max-width: 960px) {
+  .hour-split { grid-template-columns: 1fr; gap: 24px; }
+  .hour-chat { order: -1; }
+}
+.chat-replay {
+  position: relative; aspect-ratio: 16 / 11; display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 10px; text-align: left; overflow: hidden;
+  background: linear-gradient(rgba(10, 10, 16, 0.25), rgba(10, 10, 16, 0.55)), url('/assets/world/night-poster.webp') center 62% / cover;
+  border: 3px solid #000; box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.12), 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+.cr-log { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
+.cr-line {
+  max-width: 100%; padding: 2px 6px; background: rgba(0, 0, 0, 0.5);
+  color: #fff; font-size: 0.74rem; line-height: 1.45; text-shadow: 2px 2px 0 #3f3f3f;
+  animation: cr-in 0.18s ease-out;
+}
+@keyframes cr-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.cr-name { color: #fff; }
+.cr-yellow { color: #ffff55; text-shadow: 2px 2px 0 #3f3f15; }
+.cr-aqua { color: #55ffff; text-shadow: 2px 2px 0 #153f3f; }
+.cr-green { color: #55ff55; text-shadow: 2px 2px 0 #153f15; }
+.cr-purple { color: #ff55ff; text-shadow: 2px 2px 0 #3f153f; }
+.cr-gold { color: #ffaa00; text-shadow: 2px 2px 0 #2a2a00; }
+.cr-input { margin-top: 6px; height: 22px; padding: 2px 6px; background: rgba(0, 0, 0, 0.5); color: #fff; font-size: 0.74rem; }
+.cr-caret { animation: cr-blink 1s steps(1) infinite; }
+@keyframes cr-blink { 50% { opacity: 0; } }
+@media (max-width: 720px) {
+  .chat-replay { aspect-ratio: 4 / 3.6; padding: 7px; }
+  .cr-line { font-size: 0.64rem; }
+}
+@media (prefers-reduced-motion: reduce) { .cr-line { animation: none; } .cr-caret { animation: none; } }
+
+/* ── phones: one compact row (logo, lever, a "Menu" sign); the nav and the
+   account signs fold into a menu of the game's own buttons ── */
+.menu-toggle { display: none; }
+@media (max-width: 720px) {
+  .topbar { flex-wrap: wrap; align-items: center; gap: 8px 10px; padding: 6px 10px; }
+  .topbar .header-nav, .topbar .header-auth { display: none; }
+  .topbar-lever { margin-left: auto; order: 1; }
+  .menu-toggle { display: block; order: 2; }
+  .topbar .header-nav { order: 3; }
+  .topbar .header-auth { order: 4; }
+  .topbar.menu-open .header-nav,
+  .topbar.menu-open .header-auth {
+    display: flex; flex-direction: column; align-items: stretch; gap: 6px;
+    width: 100%; margin: 4px 0 6px;
+  }
+  .topbar.menu-open .header-auth { margin-top: 0; padding-top: 10px; border-top: 2px solid rgba(0, 0, 0, 0.45); }
+  .topbar.menu-open .header-nav .header-link,
+  .topbar.menu-open .header-auth .header-link,
+  .topbar.menu-open .header-auth .header-user {
+    /* the game's menu button: grey slab, light top edge, dark bottom */
+    width: auto; height: 42px; padding: 0 14px; margin: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.86rem; color: #fff; text-shadow: 2px 2px 0 #3f3f3f;
+    background: linear-gradient(#6f6f6f, #5a5a5a); background-image: linear-gradient(#6f6f6f, #5a5a5a);
+    border: 2px solid #000; box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.28), inset -2px -2px 0 rgba(0, 0, 0, 0.35);
+    transform: none; animation: none;
+  }
+  .topbar.menu-open .header-link::before, .topbar.menu-open .header-link::after,
+  .topbar.menu-open .header-user::before, .topbar.menu-open .header-user::after { display: none; }
+  .topbar.menu-open .header-nav .header-link.active { color: #ffff55; }
+  .title-screen .mcop-logo-img { height: 172px !important; }
+  .stratum-sky { padding-top: 22px; }
+}

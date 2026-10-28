@@ -2,6 +2,7 @@ import { useState } from 'react'
 import BedrockWaitlist from '../components/BedrockWaitlist.jsx'
 import { playXp, playError } from '../lib/sound.js'
 import { toast } from '../lib/toast.js'
+import Ico from '../components/Ico.jsx'
 
 const WEB3FORMS_KEY = '469775ad-d571-4c52-b507-891f1df4970a'
 
@@ -128,22 +129,22 @@ export default function Contact() {
           <p className="section-eyebrow">Good things to send</p>
           <div className="hour-grid">
             <div className="hour-card">
-              <span className="hour-icon" aria-hidden="true">🐛</span>
+              <span className="hour-icon"><Ico name="spider_eye" /></span>
               <h3 className="hour-title">A bug</h3>
               <p className="hour-desc">Something broke or looked wrong? Tell me what you did and what you expected. Screenshots help. It goes to the top of my list.</p>
             </div>
             <div className="hour-card">
-              <span className="hour-icon" aria-hidden="true">💡</span>
+              <span className="hour-icon"><Ico name="glowstone_dust" /></span>
               <h3 className="hour-title">An idea</h3>
               <p className="hour-desc">A feature you wish existed, a question we should ask, a loadout you want. The roadmap is shaped by what people ask for.</p>
             </div>
             <div className="hour-card">
-              <span className="hour-icon" aria-hidden="true">🚩</span>
+              <span className="hour-icon"><Ico name="bell" /></span>
               <h3 className="hour-title">A report</h3>
               <p className="hour-desc">If a buddy was a problem, the fastest route is the report button after a session, but you can reach me here too. I read every one.</p>
             </div>
             <div className="hour-card">
-              <span className="hour-icon" aria-hidden="true">👋</span>
+              <span className="hour-icon"><Ico name="block:poppy" /></span>
               <h3 className="hour-title">Just hi</h3>
               <p className="hour-desc">Made a friend on here? Built something great? I genuinely love hearing it. It's the reason the whole thing exists.</p>
             </div>

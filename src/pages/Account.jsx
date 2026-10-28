@@ -5,6 +5,7 @@ import { linkStart, linkVerify, linkStatus } from '../lib/mc.js'
 import { toast } from '../lib/toast.js'
 import { unlock } from '../lib/achievements.js'
 import { playXp } from '../lib/sound.js'
+import Ico from '../components/Ico.jsx'
 
 export default function Account() {
   const nav = useNavigate()
@@ -142,7 +143,7 @@ export default function Account() {
       )}
 
       <div className="cta-row" style={{ marginTop: 24 }}>
-        <button className="btn" onClick={() => nav('/worlds')}>🗺 My saved worlds</button>
+        <button className="btn" onClick={() => nav('/worlds')}><Ico name="filled_map" className="btn-ico" />My saved worlds</button>
         <button className="btn ghost" onClick={logout}>Log out</button>
       </div>
     </section>

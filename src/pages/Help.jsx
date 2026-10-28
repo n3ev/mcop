@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import Ico from '../components/Ico.jsx'
 
 // everything a new or cautious player needs: FAQ, house rules, requirements
 export default function Help() {
@@ -13,22 +14,22 @@ export default function Help() {
             <p className="section-eyebrow">Before you play</p>
             <div className="hour-grid">
               <div className="hour-card">
-                <span className="hour-icon" aria-hidden="true">☕</span>
+                <span className="hour-icon"><Ico name="block:grass-side" /></span>
                 <h3 className="hour-title">Java 1.21.4</h3>
                 <p className="hour-desc">Minecraft Java Edition on version 1.21.4, plus the Microsoft account you already log in with. Bedrock isn't supported yet.</p>
               </div>
               <div className="hour-card">
-                <span className="hour-icon" aria-hidden="true">🪪</span>
+                <span className="hour-icon"><Ico name="name_tag" /></span>
                 <h3 className="hour-title">Your exact username</h3>
                 <p className="hour-desc">We whitelist the precise in-game name you give us. No mods, no launcher tricks, nothing to install.</p>
               </div>
               <div className="hour-card">
-                <span className="hour-icon" aria-hidden="true">🕐</span>
+                <span className="hour-icon"><Ico name="clock_00" /></span>
                 <h3 className="hour-title">A spare hour</h3>
                 <p className="hour-desc">Sessions run 60 minutes, extendable by 30. Save the world for 30 days if you want to come back.</p>
               </div>
               <div className="hour-card">
-                <span className="hour-icon" aria-hidden="true">🎧</span>
+                <span className="hour-icon"><Ico name="music_disc_cat" /></span>
                 <h3 className="hour-title">Optional: a mic</h3>
                 <p className="hour-desc">Plenty of pairs play in silence and just build. Swap Discords at the end only if you both want to.</p>
               </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { playError, playPop } from '../lib/sound.js'
+import Ico from './Ico.jsx'
 
 const WEB3FORMS_KEY = '469775ad-d571-4c52-b507-891f1df4970a'
 
@@ -48,7 +49,7 @@ export default function BugReport() {
   return (
     <>
       <button className="bug-btn" onClick={() => setOpen(true)}>
-        🐛 Report a bug
+        <Ico name="spider_eye" className="btn-ico" />Report a bug
       </button>
 
       {open && (

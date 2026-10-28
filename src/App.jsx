@@ -162,6 +162,8 @@ function CreeperEgg({ show }) {
 export default function App() {
   const location = useLocation()
   const [creeper, setCreeper] = useState(false)
+  const [menu, setMenu] = useState(false)   // phones: the nav + account signs fold into a menu
+  useEffect(() => setMenu(false), [location.pathname])
   const bedrockTaps = useRef(0)
 
   // minecraft click sound + block-break particles on any button/link,
@@ -309,11 +311,14 @@ export default function App() {
       <div className="scroll-xp" aria-hidden="true"><div className="scroll-xp-fill" /></div>
       <DepthMeter />
 
-      <header className="topbar">
+      <header className={'topbar' + (menu ? ' menu-open' : '')}>
         <TopbarLogo />
         <PrimaryNav />
         <div className="topbar-lever"><ThemeToggle /></div>
         <HeaderAuth />
+        <button type="button" className="header-link menu-toggle" aria-expanded={menu} onClick={() => setMenu(m => !m)}>
+          {menu ? 'Close' : 'Menu'}
+        </button>
       </header>
 
       <main className="content">

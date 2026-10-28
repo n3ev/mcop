@@ -4,6 +4,7 @@ import { loadSession, saveSession } from '../lib/storage.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import { getSessionState, sessionCommand, extendSession } from '../lib/session.js'
 import { toast } from '../lib/toast.js'
+import Ico from '../components/Ico.jsx'
 
 const SESSION_MS = 60 * 60 * 1000 // 1 hour
 
@@ -125,7 +126,7 @@ export default function Session() {
     <section className="card">
       {quest && (
         <div className="quest-banner">
-          <span className="quest-label">🎯 Quest of the session</span>
+          <span className="quest-label"><Ico name="book" className="btn-ico" />Quest of the session</span>
           <span className="quest-text">{quest}</span>
         </div>
       )}
@@ -164,9 +165,9 @@ export default function Session() {
             <div className="ingame-controls">
               <span className="controls-label">In-game controls</span>
               <div className="controls-row">
-                <button className="btn small" onClick={() => runCmd('day', 'Set to day')}>☀️ Day</button>
-                <button className="btn small" onClick={() => runCmd('clear', 'Cleared weather')}>🌤️ Clear weather</button>
-                <button className="btn small" onClick={() => runCmd('tp', 'Teleported to buddy')} disabled={!partnerOnline}>🧭 Teleport to buddy</button>
+                <button className="btn small" onClick={() => runCmd('day', 'Set to day')}><Ico name="block:sun" className="btn-ico" />Day</button>
+                <button className="btn small" onClick={() => runCmd('clear', 'Cleared weather')}><Ico name="feather" className="btn-ico" />Clear weather</button>
+                <button className="btn small" onClick={() => runCmd('tp', 'Teleported to buddy')} disabled={!partnerOnline}><Ico name="ender_pearl" className="btn-ico" />Teleport to buddy</button>
               </div>
               {msg && <p className="muted small">{msg}</p>}
             </div>

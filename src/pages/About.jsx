@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import Reviews from '../components/Reviews.jsx'
 import BedrockWaitlist from '../components/BedrockWaitlist.jsx'
+import Ico from '../components/Ico.jsx'
 
 // the story layer: why this exists, how it really works, where it's going
 export default function About() {
@@ -26,12 +27,12 @@ export default function About() {
               Every session rolls a shared quest. The kind of thing you'll see:
             </p>
             <div className="chip-row" style={{ justifyContent: 'center' }}>
-              <span className="chip quest-chip">🌾 Build a wheat farm before the hour ends</span>
-              <span className="chip quest-chip">⛏️ Full iron armour before sunset</span>
-              <span className="chip quest-chip">🏘️ Find a village and rob... trade with it</span>
-              <span className="chip quest-chip">🌉 Bridge a ravine, no scaffolding deaths</span>
-              <span className="chip quest-chip">🔥 Light a nether portal together</span>
-              <span className="chip quest-chip">🐄 Two cows, one boat. Good luck</span>
+              <span className="chip quest-chip"><Ico name="wheat" /> Build a wheat farm before the hour ends</span>
+              <span className="chip quest-chip"><Ico name="iron_chestplate" /> Full iron armour before sunset</span>
+              <span className="chip quest-chip"><Ico name="emerald" /> Find a village and rob... trade with it</span>
+              <span className="chip quest-chip"><Ico name="block:planks" /> Bridge a ravine, no scaffolding deaths</span>
+              <span className="chip quest-chip"><Ico name="flint_and_steel" /> Light a nether portal together</span>
+              <span className="chip quest-chip"><Ico name="oak_boat" /> Two cows, one boat. Good luck</span>
             </div>
           </div>
         </div>
@@ -73,22 +74,22 @@ export default function About() {
             <p className="section-eyebrow">Under the hood</p>
             <div className="hour-grid">
               <div className="hour-card">
-                <span className="hour-icon" aria-hidden="true">⏱️</span>
+                <span className="hour-icon"><Ico name="clock_00" /></span>
                 <h3 className="hour-title">Patience tiers</h3>
                 <p className="hour-desc">"Right now" matches fastest. Willing to wait? We hold your spot and email you.</p>
               </div>
               <div className="hour-card">
-                <span className="hour-icon" aria-hidden="true">⚖️</span>
+                <span className="hour-icon"><Ico name="comparator" /></span>
                 <h3 className="hour-title">Weighted answers</h3>
                 <p className="hour-desc">Core questions weigh double. A chatty builder won't get a silent speedrunner.</p>
               </div>
               <div className="hour-card">
-                <span className="hour-icon" aria-hidden="true">🔐</span>
+                <span className="hour-icon"><Ico name="trial_key" /></span>
                 <h3 className="hour-title">Whitelist, not luck</h3>
                 <p className="hour-desc">The server only admits the two exact usernames in your match.</p>
               </div>
               <div className="hour-card">
-                <span className="hour-icon" aria-hidden="true">🌱</span>
+                <span className="hour-icon"><Ico name="wheat_seeds" /></span>
                 <h3 className="hour-title">Fresh worlds</h3>
                 <p className="hour-desc">Every session spawns a clean world, unless you save yours for 30 days, free.</p>
               </div>

@@ -7,6 +7,9 @@ import Dashboard from './Dashboard.jsx'
 import Logo from '../components/Logo.jsx'
 import SplashText from '../components/SplashText.jsx'
 import Reviews from '../components/Reviews.jsx'
+import ServerStatus from '../components/ServerStatus.jsx'
+import ChatReplay from '../components/ChatReplay.jsx'
+import Ico from '../components/Ico.jsx'
 
 const reduced = () =>
   window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -33,29 +36,13 @@ function ActivityTicker() {
   )
 }
 
-// live numbers from the real matchmaking server
+// live status from the real matchmaking server, shown the way the game shows
+// a server in its Multiplayer list, plus what every match comes with
 function WorldStatus() {
-  const [stats, setStats] = useState(null)
-  useEffect(() => {
-    let on = true
-    const load = () => fetchActivity().then(d => { if (on) setStats(d) })
-    load()
-    const t = setInterval(load, 15000)
-    return () => { on = false; clearInterval(t) }
-  }, [])
   return (
     <div className="frame stats-section">
-      <p className="section-eyebrow">World status</p>
-      <div className="stats-bar">
-        <div className="stat"><span className="stat-num">{stats ? stats.online : '…'}</span><span className="stat-label">online now</span></div>
-        <div className="stat"><span className="stat-num">{stats ? stats.queue : '…'}</span><span className="stat-label">in the queue</span></div>
-        <div className="stat"><span className="stat-num">{stats ? stats.matchesToday : '…'}</span><span className="stat-label">matched today</span></div>
-      </div>
-      <div className="kv spec-rows">
-        <div className="kv-row"><span className="kv-key">Server</span><span className="kv-val">Paper 1.21.4 · Java Edition</span><span /></div>
-        <div className="kv-row"><span className="kv-key">Worlds</span><span className="kv-val">private · whitelisted · fresh every session</span><span /></div>
-        <div className="kv-row"><span className="kv-key">Home</span><span className="kv-val">hosted in Sydney, AU. Playable anywhere</span><span /></div>
-      </div>
+      <p className="section-eyebrow">Server status</p>
+      <ServerStatus />
       <p className="included-label">Every match includes</p>
       <ul className="included-list">
         <li>A private server, just the two of you</li>
@@ -154,10 +141,10 @@ export default function Landing() {
             <button className="btn primary big cta" onClick={start}>⛏ Find my buddy</button>
             <div className="dig-cue">▼ dig deeper ▼</div>
             <ul className="hero-bullets">
-              <li>🎯 Matched by playstyle, not luck</li>
-              <li>🌍 Free Minecraft server for 1 hour</li>
-              <li>💬 Optional Discord swap after</li>
-              <li>💾 Save your world for 30 days, free</li>
+              <li><Ico name="name_tag" /> Matched by playstyle, not luck</li>
+              <li><Ico name="block:grass-side" /> Free Minecraft server for 1 hour</li>
+              <li><Ico name="writable_book" /> Optional Discord swap after</li>
+              <li><Ico name="filled_map" /> Save your world for 30 days, free</li>
             </ul>
           </>
         )}
@@ -192,22 +179,22 @@ export default function Landing() {
             <p className="section-eyebrow">In your hour</p>
             <div className="hour-grid">
               <div className="hour-card">
-                <span className="hour-icon" aria-hidden="true">🎯</span>
+                <span className="hour-icon"><Ico name="book" /></span>
                 <h3 className="hour-title">A shared quest</h3>
                 <p className="hour-desc">Every session spawns with a quest of the hour: something to build, find, or survive together.</p>
               </div>
               <div className="hour-card">
-                <span className="hour-icon" aria-hidden="true">🧭</span>
+                <span className="hour-icon"><Ico name="compass_00" /></span>
                 <h3 className="hour-title">In-game controls</h3>
                 <p className="hour-desc">Set the time to day, clear the weather, or teleport straight to your buddy.</p>
               </div>
               <div className="hour-card">
-                <span className="hour-icon" aria-hidden="true">⚔️</span>
+                <span className="hour-icon"><Ico name="iron_sword" /></span>
                 <h3 className="hour-title">Starting loadouts</h3>
                 <p className="hour-desc">Vanilla purist? Iron kit? Elytra? Creative? Pick your start in your profile.</p>
               </div>
               <div className="hour-card">
-                <span className="hour-icon" aria-hidden="true">⏳</span>
+                <span className="hour-icon"><Ico name="clock_00" /></span>
                 <h3 className="hour-title">+30 when you need it</h3>
                 <p className="hour-desc">Mid-build when the timer runs low? Extend the session by half an hour.</p>
               </div>
@@ -218,8 +205,9 @@ export default function Landing() {
 
       {/* ── a concrete walk-through of a real session ── */}
       <section className="stratum-surface">
-        <div className="wrap frame timeline-frame">
+        <div className="wrap frame timeline-frame has-chat">
           <p className="section-eyebrow">A typical hour</p>
+          <div className="hour-split">
           <ol className="timeline">
             <li className="tl-step">
               <span className="tl-time">0:00</span>
@@ -264,6 +252,11 @@ export default function Landing() {
               </div>
             </li>
           </ol>
+          <figure className="hour-chat">
+            <ChatReplay />
+            <figcaption className="muted small">How the hour reads in your game chat.</figcaption>
+          </figure>
+          </div>
         </div>
       </section>
 

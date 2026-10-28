@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext.jsx'
 import Avatar from '../components/Avatar.jsx'
 import { playError, playPop, playXp } from '../lib/sound.js'
 import { toast } from '../lib/toast.js'
+import Ico from '../components/Ico.jsx'
 
 const SOCIALS = [
   { id: 'discord',   label: 'Discord',   placeholder: 'username or @user' },
@@ -72,7 +73,7 @@ export default function PostSession() {
   const onAddFriend = async () => {
     try {
       const { status } = await addFriend(session.matchId)
-      setFriendMsg(status === 'accepted' ? "You're now friends! 🎉" : 'Friend request sent ✓')
+      setFriendMsg(status === 'accepted' ? "You're now friends!" : 'Friend request sent ✓')
     } catch (e) { setFriendMsg(e.message) }
   }
   const onBlock = async () => {
@@ -127,12 +128,12 @@ export default function PostSession() {
           className={'btn small' + (rated === 1 ? ' primary' : '')}
           onClick={() => onRate(1)}
           aria-pressed={rated === 1}
-        >👍 Good egg</button>
+        ><Ico name="egg" className="btn-ico" />Good egg</button>
         <button
           className={'btn small' + (rated === -1 ? ' danger' : '')}
           onClick={() => onRate(-1)}
           aria-pressed={rated === -1}
-        >👎 Not great</button>
+        ><Ico name="rotten_flesh" className="btn-ico" />Not great</button>
         {!reportSent ? (
           <button className="btn small ghost" onClick={() => setReporting(r => !r)}>Report</button>
         ) : (
@@ -210,7 +211,7 @@ export default function PostSession() {
             </form>
           ) : partnerContact ? (
             <div className="contact-reveal">
-              <p className="success">You're connected! 🎉</p>
+              <p className="success">You're connected!</p>
               <p className="muted small">{session.partner?.displayName} shared:</p>
               <div className="contact-box">{partnerContact}</div>
             </div>
