@@ -1,6 +1,6 @@
 # Asset credits
 
-MCOP is a fan-made community project, **not affiliated with Mojang or Microsoft**.
+MCOP is a fan-made community project. **Not an official Minecraft service. Not approved by or associated with Mojang or Microsoft.**
 
 ## Textures & sprites
 - **Minecraft block, item, sign, rail, minecart, sun and moon textures, and GUI sprites

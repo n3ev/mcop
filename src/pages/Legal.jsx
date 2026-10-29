@@ -4,7 +4,7 @@ export function Terms() {
   return (
     <section className="card legal-card">
       <h2>Terms of use</h2>
-      <p className="muted small">Last updated July 2026. MCOP is a fan-made community project in beta, not affiliated with Mojang or Microsoft.</p>
+      <p className="muted small">Last updated July 2026. MCOP is a fan-made community project in beta. Not an official Minecraft service. Not approved by or associated with Mojang or Microsoft.</p>
       <div className="legal-body">
         <h3>The deal</h3>
         <p>MCOP matches you with another player and gives you both access to a private Minecraft server for about an hour. It's free while in beta. We can change, pause, or stop the service at any time (it runs on real hardware that occasionally needs sleep).</p>

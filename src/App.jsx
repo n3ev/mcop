@@ -329,7 +329,7 @@ export default function App() {
       </main>
 
       <footer className="footer" onClick={tapBedrock}>
-        <span>© {new Date().getFullYear()} MCOP · Not affiliated with Mojang or Microsoft</span>
+        <span>© {new Date().getFullYear()} MCOP · Not an official Minecraft service. Not approved by or associated with Mojang or Microsoft.</span>
         <nav className="footer-links" aria-label="Footer">
           <Link to="/questionnaire">Find a buddy</Link>
           <Link to="/about">About</Link>
