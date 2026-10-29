@@ -9,26 +9,35 @@ const SITE = 'https://mcop.world'
 const PITCH = 'Find a Minecraft buddy in 60 seconds: answer a few questions, get matched by playstyle, and play on a private server for an hour. Free.'
 const enc = encodeURIComponent
 
+// share sheet, else clipboard, else a prompt to copy from. 'copied' when it
+// went to the clipboard (worth saying so on the button), else ''
+export async function shareMcop(text = PITCH) {
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'MCOP: find a Minecraft buddy', text, url: SITE })
+      unlock('spread-the-word')
+      return ''
+    } catch (e) {
+      if (e && e.name === 'AbortError') return ''   // they closed the sheet
+    }
+  }
+  try {
+    await navigator.clipboard.writeText(`${text} ${SITE}`)
+    toast('Link copied. Paste it anywhere.', '/assets/textures/items/paper.png')
+    unlock('spread-the-word')
+    return 'copied'
+  } catch {
+    window.prompt('Copy this link:', SITE)
+    return ''
+  }
+}
+
 export default function ShareInvite({ compact = false, label = 'Invite a friend' }) {
   const [copied, setCopied] = useState(false)
   const share = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: 'MCOP: find a Minecraft buddy', text: PITCH, url: SITE })
-        unlock('spread-the-word')
-        return
-      } catch (e) {
-        if (e && e.name === 'AbortError') return   // they closed the sheet
-      }
-    }
-    try {
-      await navigator.clipboard.writeText(`${PITCH} ${SITE}`)
+    if (await shareMcop() === 'copied') {
       setCopied(true)
       setTimeout(() => setCopied(false), 2400)
-      toast('Link copied. Paste it anywhere.', '/assets/textures/items/paper.png')
-      unlock('spread-the-word')
-    } catch {
-      window.prompt('Copy this link:', SITE)
     }
   }
   return (

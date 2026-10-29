@@ -1333,6 +1333,13 @@ html[data-theme='day'] .ember { display: none; }
 .ach-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px; border-top: 3px solid rgba(0,0,0,0.4); }
 .ach-reset { background: none; border: 2px solid rgba(255,255,255,0.18); color: var(--muted); font-size: 0.72rem; padding: 5px 12px; cursor: pointer; }
 .ach-reset:hover { border-color: rgba(255,120,120,0.5); color: #e79; }
+.ach-foot-btns { display: flex; gap: 8px; flex-shrink: 0; }
+.ach-share { background: none; border: 2px solid rgba(143, 209, 92, 0.45); color: #8fd15c; font-size: 0.72rem; padding: 5px 12px; cursor: pointer; }
+.ach-share:hover { border-color: #8fd15c; color: #b6f28a; }
+@media (max-width: 560px) {
+  .ach-foot > .muted { display: none; }   /* arrow keys and Esc mean nothing on a phone */
+  .ach-foot { justify-content: flex-end; }
+}
 
 /* ═══ easter eggs ═══ */
 /* minecraft chat log */

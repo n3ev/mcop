@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ACHIEVEMENTS, DEF, TABS, isUnlocked, unlockedCount, baseTotal, tabCount, resetAchievements } from '../lib/achievements.js'
+import { shareMcop } from './ShareInvite.jsx'
 
 const GUI = '/assets/textures/gui/'
 const COL = 150   // horizontal spacing between tree columns
@@ -146,7 +147,12 @@ export default function AchievementsOverlay() {
 
         <div className="ach-foot">
           <span className="muted small">← → switch tabs · Esc closes</span>
-          <button className="ach-reset" onClick={() => { if (window.confirm('Reset every advancement?')) { resetAchievements(); setActive(null) } }}>Reset progress</button>
+          <span className="ach-foot-btns">
+            {unlockedCount() > 0 && (
+              <button className="ach-share" onClick={() => shareMcop(`I've got ${unlockedCount()} of ${baseTotal()} advancements on MCOP, the Minecraft buddy finder you can mine your way through. Beat that:`)}>Share progress</button>
+            )}
+            <button className="ach-reset" onClick={() => { if (window.confirm('Reset every advancement?')) { resetAchievements(); setActive(null) } }}>Reset progress</button>
+          </span>
         </div>
       </div>
     </div>
