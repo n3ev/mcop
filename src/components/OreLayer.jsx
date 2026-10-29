@@ -72,16 +72,16 @@ function layoutVeins(path, nether) {
     if (!nether && Y > 40) continue                         // sky and topsoil: nothing to dig
     const key = pickOre(Y, rnd, nether)
     const spread = rnd()
-    // room in the margin: sit in it, clear of the panels. none: on a phone,
-    // sit whole against the screen edge over the panel's border (a block cut
-    // off by the edge is easy to miss and hard to hold); wider, poke out of it.
-    // on words either way: try a little higher or lower, else leave it out
+    // room in the margin: sit in it, clear of the panels. none: sit whole
+    // against the screen edge, over the panel's border (a block cut off by the
+    // edge is easy to miss and hard to hold). on words either way: try a
+    // little higher or lower, else leave it out
     let spot = null
     for (const d of [0, 30, -30, 60, -60, 90, -90, 120, -120]) {
       const vy = y + d
       if (vy < top || vy > bottom) continue
       const free = freeAt(vy, side)
-      const x = free >= size + 20 ? 8 + spread * Math.min(free - size - 16, 150) : phone ? 2 : -Math.round(size * 0.3)
+      const x = free >= size + 20 ? 8 + spread * Math.min(free - size - 16, 150) : 2
       if (!onWords(x, vy, side)) { spot = { x, y: vy }; break }
     }
     if (spot) veins.push({ id: `${path}#${veins.length}`, key, deep: !nether && Y < 0, y: Math.round(spot.y), x: Math.round(spot.x), side, size })
