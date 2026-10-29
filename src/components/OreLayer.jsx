@@ -45,6 +45,25 @@ function layoutVeins(path, nether) {
     }
     return free
   }
+  // and the words themselves: some lines (centred ones, on a phone) run right
+  // up to the edge, and a vein must never sit on top of text
+  const words = []
+  const main = document.querySelector('main.content')
+  if (main) {
+    const walk = document.createTreeWalker(main, NodeFilter.SHOW_TEXT)
+    const range = document.createRange()
+    for (let n = walk.nextNode(); n; n = walk.nextNode()) {
+      if (!n.nodeValue.trim()) continue
+      range.selectNodeContents(n)
+      for (const r of range.getClientRects()) {
+        if (r.width > 0) words.push({ top: r.top + sy, bottom: r.bottom + sy, left: r.left, right: r.right })
+      }
+    }
+  }
+  const onWords = (x, y, side) => {
+    const l = side === 'left' ? x : vw - x - size
+    return words.some(w => w.bottom > y - 6 && w.top < y + size + 6 && w.right > l - 6 && w.left < l + size + 6)
+  }
   const rnd = rng(hash(path + (phone ? ':p' : ':d') + (nether ? ':n' : '')))
   const veins = []
   let side = rnd() < 0.5 ? 'left' : 'right'
@@ -52,12 +71,25 @@ function layoutVeins(path, nether) {
     const Y = 64 - 128 * worldProgressAt(y + size / 2)
     if (!nether && Y > 40) continue                         // sky and topsoil: nothing to dig
     const key = pickOre(Y, rnd, nether)
-    // room in the margin: sit in it, clear of the panels; none: poke out of the edge
-    const free = freeAt(y, side)
-    const x = free >= size + 20 ? 8 + rnd() * Math.min(free - size - 16, 150) : -Math.round(size * 0.3)
-    veins.push({ id: `${path}#${veins.length}`, key, deep: !nether && Y < 0, y: Math.round(y), x: Math.round(x), side, size })
+    const spread = rnd()
+    // room in the margin: sit in it, clear of the panels. none: on a phone,
+    // sit whole against the screen edge over the panel's border (a block cut
+    // off by the edge is easy to miss and hard to hold); wider, poke out of it.
+    // on words either way: try a little higher or lower, else leave it out
+    let spot = null
+    for (const d of [0, 30, -30, 60, -60, 90, -90, 120, -120]) {
+      const vy = y + d
+      if (vy < top || vy > bottom) continue
+      const free = freeAt(vy, side)
+      const x = free >= size + 20 ? 8 + spread * Math.min(free - size - 16, 150) : phone ? 2 : -Math.round(size * 0.3)
+      if (!onWords(x, vy, side)) { spot = { x, y: vy }; break }
+    }
+    if (spot) veins.push({ id: `${path}#${veins.length}`, key, deep: !nether && Y < 0, y: Math.round(spot.y), x: Math.round(spot.x), side, size })
     side = rnd() < 0.7 ? (side === 'left' ? 'right' : 'left') : side
   }
+  // whoever digs all the way down finds diamonds: the vein nearest bedrock is always one
+  const last = veins[veins.length - 1]
+  if (!nether && last && 64 - 128 * worldProgressAt(last.y + size / 2) < -44) last.key = 'diamond'
   return veins
 }
 

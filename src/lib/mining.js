@@ -141,7 +141,7 @@ export function craft() {
   for (const [item, n] of Object.entries(up.needs)) items[item] -= n
   state = { ...state, pick: up.pick, items }
   save()
-  toast('Crafted a ' + PICK[up.pick].name, PICK[up.pick].icon)
+  toast(`Crafted ${/^[AEIOU]/.test(PICK[up.pick].name) ? 'an' : 'a'} ${PICK[up.pick].name}`, PICK[up.pick].icon)
   if (up.pick === 'iron') unlock('iron-pick')
   if (up.pick === 'diamond') unlock('diamond-pick')
   if (up.pick === 'netherite') unlock('serious-dedication')

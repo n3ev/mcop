@@ -2514,6 +2514,8 @@ html.is-creative { cursor: crosshair; }
   image-rendering: pixelated;
   animation: mc-toast-in 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) both;
 }
+button.mc-toast { border: 0; font: inherit; color: inherit; text-align: left; cursor: pointer; pointer-events: auto; }
+button.mc-toast:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 .mc-toast.leaving { animation: mc-toast-out 0.42s cubic-bezier(0.6, 0, 0.9, 0.4) both; }
 @keyframes mc-toast-in { from { transform: translateX(calc(100% + 12px)); } to { transform: none; } }
 @keyframes mc-toast-out { from { transform: none; } to { transform: translateX(calc(100% + 12px)); } }

@@ -91,7 +91,7 @@ export function unlock(id) {
 
   if (def.rare) playRare()
   window.dispatchEvent(new CustomEvent('mcop:toast', {
-    detail: { title: def.rare ? 'Rare Advancement!' : TOAST_TITLE[def.tier], text: def.title, icon: def.icon, kind: def.rare ? 'rare' : def.tier },
+    detail: { id, title: def.rare ? 'Rare Advancement!' : TOAST_TITLE[def.tier], text: def.title, icon: def.icon, kind: def.rare ? 'rare' : def.tier },
   }))
   // just earned the last one that counts? the rare one opens up.
   if (!def.rare && BASE_IDS.every(b => s.has(b))) setTimeout(() => unlock(RARE_ID), 1500)

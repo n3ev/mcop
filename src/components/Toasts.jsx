@@ -27,7 +27,7 @@ export default function Toasts() {
       // sit just under the header while it's on screen, at the very top once scrolled past
       const bar = document.querySelector('.topbar')
       setTop(Math.max(8, Math.round((bar ? bar.getBoundingClientRect().bottom : 0) + 8)))
-      setList(l => [...l, { id, ...detail }])
+      setList(l => [...l, { ...detail, adv: detail.id, id }])
       later(() => {
         active.current--
         setList(l => l.map(t => (t.id === id ? { ...t, leaving: true } : t)))
@@ -45,15 +45,22 @@ export default function Toasts() {
 
   return (
     <div className="mc-toasts" role="status" aria-live="polite" style={{ top }}>
-      {list.map(t => (
-        <div key={t.id} className={`mc-toast kind-${t.kind}${t.leaving ? ' leaving' : ''}${t.text ? '' : ' single'}`}>
-          <img className="mc-toast-icon" src={t.icon} alt="" />
-          <div className="mc-toast-body">
-            <div className="mc-toast-title">{t.title}</div>
-            {t.text && <div className="mc-toast-text">{t.text}</div>}
-          </div>
-        </div>
-      ))}
+      {list.map(t => {
+        const cls = `mc-toast kind-${t.kind}${t.leaving ? ' leaving' : ''}${t.text ? '' : ' single'}`
+        const body = (
+          <>
+            <img className="mc-toast-icon" src={t.icon} alt="" />
+            <div className="mc-toast-body">
+              <div className="mc-toast-title">{t.title}</div>
+              {t.text && <div className="mc-toast-text">{t.text}</div>}
+            </div>
+          </>
+        )
+        // an advancement toast opens the advancements screen on its own tab
+        return t.adv
+          ? <button key={t.id} type="button" className={cls} onClick={() => window.dispatchEvent(new CustomEvent('mcop:open-achievements', { detail: t.adv }))}>{body}</button>
+          : <div key={t.id} className={cls}>{body}</div>
+      })}
     </div>
   )
 }
