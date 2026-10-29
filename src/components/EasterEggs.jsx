@@ -6,6 +6,8 @@ import { loadSession } from '../lib/storage.js'
 import { setWeather, applyEffect, xpBurst, enderPop, dragonFlyby, startRide, stopRide, rideActive } from '../lib/worldfx.js'
 
 const reduced = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+// same test as the chat button's CSS: a touch screen with no mouse to fly by
+const touch = () => window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches
 
 // third-person death causes — prefixed with the player's name to read exactly
 // like a real Minecraft death message ("<name> was slain by Herobrine").
@@ -108,7 +110,7 @@ export default function EasterEggs() {
     const arg = c.split(/\s+/)
     if (c.startsWith('time set day') || c === 'day') { setTheme('day'); say('Set the time to day') }
     else if (c.startsWith('time set night') || c === 'night') { setTheme('night'); say('Set the time to night') }
-    else if (c.startsWith('gamemode creative')) { setCreative(true); say('Your game mode is now Creative — fly with your mouse') }
+    else if (c.startsWith('gamemode creative')) { setCreative(true); say('Your game mode is now Creative — ' + (touch() ? 'tap the world to build' : 'fly with your mouse')) }
     else if (c.startsWith('gamemode')) { setCreative(false); say('Your game mode is now Survival') }
     else if (c.startsWith('give') && /diamond/.test(c)) { diamondRain(); unlock('diamonds'); say('Gave 64 Diamond to you', 'good') }
     else if (c.startsWith('summon') && /tnt/.test(c)) { tnt() }
@@ -498,7 +500,7 @@ export default function EasterEggs() {
       )}
 
       {/* creative-mode HUD */}
-      {creative && <div className="egg-creative">✈ Creative Mode · mouse flies · click the world to place blocks</div>}
+      {creative && <div className="egg-creative">{touch() ? '✈ Creative Mode · tap the world to place blocks' : '✈ Creative Mode · mouse flies · click the world to place blocks'}</div>}
 
       {/* the ambush creeper — hold still and find out */}
       {ambush && (
