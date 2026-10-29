@@ -39,6 +39,9 @@ export default function PostSession() {
 
   const canExchange = !!session.matchId && !!session.role
 
+  // nothing to wrap up (opened directly, or the session was cleared): home, like /session does
+  useEffect(() => { if (!session.partner) nav('/', { replace: true }) }, [])
+
   // once we've shared, poll for the partner's handle until it arrives
   useEffect(() => {
     if (!shared || !canExchange || partnerContact || picked === 'none') return
@@ -110,6 +113,8 @@ export default function PostSession() {
       playError()
     }
   }
+
+  if (!session.partner) return null
 
   return (
     <section className="card">
