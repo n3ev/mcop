@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { flushSync } from 'react-dom'
 import { explosion, burst, fireworks } from '../lib/particles.js'
 import { unlock, unlockedCount } from '../lib/achievements.js'
 import { loadSession } from '../lib/storage.js'
@@ -378,6 +379,32 @@ export default function EasterEggs() {
     return () => { window.removeEventListener('mousemove', onMove); if (bg) bg.style.transform = '' }
   }, [creative])
 
+  // phones have no "/" key, so the chat button opens the bar. the bar has to
+  // exist and take focus inside the tap itself: iOS only raises the keyboard
+  // for a focus() made during the gesture.
+  const openCmd = () => {
+    flushSync(() => setCmd('/'))
+    cmdInput.current?.focus()
+  }
+
+  // an on-screen keyboard covers fixed things at the bottom of the screen, so
+  // the open bar rides on top of it (the visual viewport ends where it begins)
+  const barOpen = cmd !== null
+  useEffect(() => {
+    const vv = window.visualViewport
+    if (!barOpen || !vv) return
+    const root = document.documentElement
+    const fit = () => root.style.setProperty('--kb', Math.max(0, window.innerHeight - vv.height - vv.offsetTop) + 'px')
+    fit()
+    vv.addEventListener('resize', fit)
+    vv.addEventListener('scroll', fit)
+    return () => {
+      vv.removeEventListener('resize', fit)
+      vv.removeEventListener('scroll', fit)
+      root.style.removeProperty('--kb')
+    }
+  }, [barOpen])
+
   const submitCmd = (e) => {
     e.preventDefault()
     const v = cmd
@@ -453,8 +480,21 @@ export default function EasterEggs() {
             onBlur={() => setCmd(null)}
             spellCheck={false}
             autoComplete="off"
+            autoCapitalize="none"
+            autoCorrect="off"
+            enterKeyHint="send"
           />
         </form>
+      )}
+
+      {/* phones: the chat button, like the game's on mobile (CSS shows it on touch screens only) */}
+      {cmd === null && !dead && (
+        <button type="button" className="egg-chat-btn" aria-label="Open chat to type commands" onClick={openCmd}>
+          <svg viewBox="0 0 11 10" shapeRendering="crispEdges" aria-hidden="true">
+            <path d="M0 0h11v7H4v1H3v1H1V7H0z" fill="#fff" />
+            <path d="M7 1h1v1H7zM6 2h1v1H6zM5 3h1v1H5zM4 4h1v1H4zM3 5h1v1H3z" fill="#2a2a2a" />
+          </svg>
+        </button>
       )}
 
       {/* creative-mode HUD */}

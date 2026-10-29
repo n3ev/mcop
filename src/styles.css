@@ -1363,7 +1363,7 @@ html[data-theme='day'] .ember { display: none; }
 @keyframes egg-chat-in { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; } }
 
 /* command bar */
-.egg-cmd { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1160; padding: 6px; background: rgba(0,0,0,0.55); }
+.egg-cmd { position: fixed; left: 0; right: 0; bottom: var(--kb, 0px); z-index: 1160; padding: 6px; background: rgba(0,0,0,0.55); }
 .egg-cmd-input { width: 100%; background: rgba(0,0,0,0.72); border: 2px solid rgba(255,255,255,0.25); color: #fff; font-family: var(--font-pixel); font-size: 1rem; padding: 8px 12px; outline: none; }
 /* tab-complete column above the bar, like the in-game suggestion list:
    first entry is the Tab target, so it gets the minecraft yellow */
@@ -1372,6 +1372,23 @@ html[data-theme='day'] .ember { display: none; }
 .egg-cmd-suggest-item:first-child { color: #ffe98a; }
 .egg-cmd-suggest-item:hover { color: #fff; background: rgba(0,0,0,0.88); }
 .egg-cmd-hint { position: absolute; right: 12px; bottom: 100%; margin-bottom: 6px; color: rgba(244,239,230,0.45); font-size: 0.7rem; pointer-events: none; }
+/* touch screens have no "/" key: a chat button opens the bar, the way the
+   game's mobile edition does it. it sits above the XP bar, clear of the hotbar. */
+.egg-chat-btn { display: none; }
+@media (hover: none) and (pointer: coarse) {
+  .egg-chat-btn {
+    display: flex; align-items: center; justify-content: center;
+    position: fixed; left: 8px; bottom: 28px; z-index: 1150;
+    width: 44px; height: 44px; padding: 0;
+    background: rgba(0,0,0,0.55); border: 2px solid rgba(255,255,255,0.25);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .egg-chat-btn svg { width: 22px; height: 20px; }
+  .egg-chat-btn:active { background: rgba(0,0,0,0.8); }
+  html.hud-on .egg-chat-btn, html.is-dead .egg-chat-btn { display: none; }
+  .egg-chat { bottom: 80px; }
+  .egg-cmd-hint { display: none; }
+}
 
 /* creative HUD */
 .egg-creative { position: fixed; top: 100px; left: 50%; transform: translateX(-50%); z-index: 1150; background: rgba(0,0,0,0.62); color: #b6f0ff; font-size: 0.8rem; padding: 6px 14px; border: 2px solid rgba(120,200,255,0.4); pointer-events: none; }
