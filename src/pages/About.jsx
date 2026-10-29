@@ -118,6 +118,7 @@ export default function About() {
             </div>
           </div>
           <ul className="patch-list shipped-list">
+            <li><span className="patch-date">Oct 2026</span> The ores are real now: mine them, craft better pickaxes, earn 29 advancements. And a smoother world.</li>
             <li><span className="patch-date">Jul 2026</span> Smarter matchmaking, no-show requeue, saved worlds page, email verification.</li>
             <li><span className="patch-date">Jul 2026</span> World saves, buddy ratings and reports went live.</li>
             <li><span className="patch-date">Jul 2026</span> The big redesign: the world you're scrolling through.</li>

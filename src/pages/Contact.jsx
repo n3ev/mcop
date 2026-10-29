@@ -67,6 +67,17 @@ function ContactForm() {
   )
 }
 
+// public/press/, made by tools/brand/make_kit.py
+const PRESS = [
+  ['mcop-logo.png', 'Logo (transparent)'],
+  ['mcop-lockup-dark.png', 'Logo + tagline, for dark backgrounds'],
+  ['mcop-avatar-1024.png', 'Profile picture'],
+  ['mcop-banner-x-1500x500.png', 'X header'],
+  ['mcop-banner-youtube-2560x1440.png', 'YouTube banner'],
+  ['mcop-banner-discord-960x540.png', 'Discord banner'],
+  ['mcop-story-1080x1920.png', 'Story / TikTok card'],
+]
+
 export default function Contact() {
   return (
     <div className="cross-section">
@@ -149,6 +160,22 @@ export default function Contact() {
               <p className="hour-desc">Made a friend on here? Built something great? I genuinely love hearing it. It's the reason the whole thing exists.</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── for anyone making a video or post about it ── */}
+      <section className="stratum-deep">
+        <div className="wrap frame" style={{ maxWidth: 900 }}>
+          <p className="section-eyebrow">Press kit</p>
+          <p className="muted" style={{ marginBottom: 14 }}>
+            Making a video or a post about MCOP? Use any of these, no need to ask. A link back to mcop.world is all I'd love in return.
+          </p>
+          <ul className="press-links">
+            {PRESS.map(([file, label]) => (
+              <li key={file}><a className="inline-link" href={'/press/' + file} download>{label}</a></li>
+            ))}
+            <li><a className="inline-link" href="/og.png" download>Link preview card</a></li>
+          </ul>
         </div>
       </section>
     </div>

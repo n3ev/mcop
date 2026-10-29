@@ -2853,3 +2853,7 @@ a.btn, a.btn:hover { text-decoration: none; }
   .title-screen .mcop-logo-img { height: 172px !important; }
   .stratum-sky { padding-top: 22px; }
 }
+
+/* the press kit on /contact: a wrap of download links */
+.press-links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 22px; }
+.press-links li { font-size: 0.86rem; }
