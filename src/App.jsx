@@ -17,6 +17,11 @@ import ResetPassword from './pages/ResetPassword.jsx'
 import NotFound from './pages/NotFound.jsx'
 import VerifyEmail from './pages/VerifyEmail.jsx'
 import Worlds from './pages/Worlds.jsx'
+import Invite from './pages/Invite.jsx'
+import JoinInvite from './pages/JoinInvite.jsx'
+import Campfire from './pages/Campfire.jsx'
+import Games from './pages/Games.jsx'
+import Admin from './pages/Admin.jsx'
 import { Terms, Privacy } from './pages/Legal.jsx'
 import { useEffect, useRef, useState } from 'react'
 import BugReport from './components/BugReport.jsx'
@@ -61,6 +66,7 @@ function HeaderAuth() {
     return (
       <nav className="header-auth" aria-label="Account">
         <Link to="/account" className="header-user">
+          {user.campfire && <span className="campfire-mark" title="Campfire member">✦</span>}
           {user.displayName || user.email}
           {user.mcVerified && <span className="mc-dot" title="Minecraft linked" />}
         </Link>
@@ -234,7 +240,7 @@ export default function App() {
 
   // per-page titles (src/data/seo.js, which also feeds the static pages)
   useEffect(() => {
-    document.title = PAGES[location.pathname]?.title || 'MCOP'
+    document.title = PAGES[location.pathname]?.title || (location.pathname.startsWith('/p/') ? PAGES['/p'].title : 'MCOP')
   }, [location.pathname])
 
   // land at the top of every new page (SPA nav doesn't reset scroll on its own)
@@ -322,6 +328,11 @@ export default function App() {
           <Route path="/reset-password" element={<div className="page"><ResetPassword /></div>} />
           <Route path="/verify-email" element={<div className="page"><VerifyEmail /></div>} />
           <Route path="/worlds" element={<div className="page"><Worlds /></div>} />
+          <Route path="/invite" element={<div className="page"><Invite /></div>} />
+          <Route path="/p/:code" element={<div className="page"><JoinInvite /></div>} />
+          <Route path="/campfire" element={<div className="page"><Campfire /></div>} />
+          <Route path="/games" element={<div className="page"><Games /></div>} />
+          <Route path="/admin" element={<div className="page"><Admin /></div>} />
           <Route path="/terms" element={<div className="page"><Terms /></div>} />
           <Route path="/privacy" element={<div className="page"><Privacy /></div>} />
           <Route path="*" element={<div className="page"><NotFound /></div>} />
@@ -332,6 +343,9 @@ export default function App() {
         <span>© {new Date().getFullYear()} MCOP · Not an official Minecraft service. Not approved by or associated with Mojang or Microsoft.</span>
         <nav className="footer-links" aria-label="Footer">
           <Link to="/questionnaire">Find a buddy</Link>
+          <Link to="/invite">Play with a friend</Link>
+          <Link to="/campfire">The Campfire</Link>
+          <Link to="/games">What's next</Link>
           <Link to="/about">About</Link>
           <Link to="/help">Help</Link>
           <Link to="/contact">Contact</Link>

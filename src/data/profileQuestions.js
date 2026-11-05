@@ -1,4 +1,4 @@
-import { fixedQuestions } from './fixedQuestions.js'
+import { fixedQuestions, ageQuestion, AGE_UNDER_13 } from './fixedQuestions.js'
 
 // extra questions only asked on the permanent profile (set at signup, editable on /preferences).
 // these build a richer picture for better matches and, later, friends.
@@ -41,5 +41,10 @@ const extraProfileQuestions = [
   },
 ]
 
-// permanent profile = the core questions plus the extras
-export const profileQuestions = [...fixedQuestions, ...extraProfileQuestions]
+// accounts are 13+ (the sign-up tick box), so the profile only asks which side of 18
+const profileAgeQuestion = { ...ageQuestion, options: ageQuestion.options.filter(o => o !== AGE_UNDER_13) }
+
+// permanent profile = age group, the core questions, then the extras
+export const profileQuestions = [profileAgeQuestion, ...fixedQuestions, ...extraProfileQuestions]
+// the ones that describe how you play (age is a filter, not a style)
+export const styleQuestions = profileQuestions.filter(q => q.id !== 'age')

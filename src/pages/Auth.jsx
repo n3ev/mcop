@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import { playError } from '../lib/sound.js'
 
@@ -7,10 +7,14 @@ export default function Auth({ mode }) {
   const nav = useNavigate()
   const { login, signup } = useAuth()
   const isSignup = mode === 'signup'
+  // ?next=/campfire etc: where to go after. same-site paths only
+  const [params] = useSearchParams()
+  const next = /^\/(?!\/)[\w\-/?=&.]*$/.test(params.get('next') || '') ? params.get('next') : null
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [displayName, setDisplayName] = useState('')
+  const [over13, setOver13] = useState(false)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
@@ -20,11 +24,11 @@ export default function Auth({ mode }) {
     setBusy(true)
     try {
       if (isSignup) {
-        await signup({ email, password, displayName })
-        nav('/preferences') // first thing: set up your profile
+        await signup({ email, password, displayName, over13 })
+        nav(next || '/preferences') // first thing: set up your profile
       } else {
         await login({ email, password })
-        nav('/')
+        nav(next || '/')
       }
     } catch (err) {
       setError(err.message)
@@ -70,18 +74,25 @@ export default function Auth({ mode }) {
           required
         />
 
+        {isSignup && (
+          <label className="check-row">
+            <input type="checkbox" checked={over13} onChange={e => setOver13(e.target.checked)} required />
+            <span>I'm 13 or older, and I agree to the <Link to="/terms" className="inline-link">terms</Link></span>
+          </label>
+        )}
+
         {error && <p className="auth-error">{error}</p>}
 
-        <button className="btn primary big" type="submit" disabled={busy}>
+        <button className="btn primary big" type="submit" disabled={busy || (isSignup && !over13)}>
           {busy ? 'One sec…' : isSignup ? 'Sign up' : 'Log in'}
         </button>
       </form>
 
       <p className="auth-switch muted">
         {isSignup ? (
-          <>Already have an account? <Link to="/login">Log in</Link></>
+          <>Already have an account? <Link to={'/login' + (next ? '?next=' + encodeURIComponent(next) : '')}>Log in</Link></>
         ) : (
-          <>New here? <Link to="/signup">Create an account</Link></>
+          <>New here? <Link to={'/signup' + (next ? '?next=' + encodeURIComponent(next) : '')}>Create an account</Link></>
         )}
       </p>
       {!isSignup && (

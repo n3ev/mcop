@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link as RouterLink } from 'react-router-dom'
+import { openBillingPortal } from '../lib/billing.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import { linkStart, linkVerify, linkStatus } from '../lib/mc.js'
 import { toast } from '../lib/toast.js'
@@ -81,6 +82,26 @@ export default function Account() {
         <div className="account-row">
           <span className="account-key">Display name</span>
           <span>{user.displayName || '…'}</span>
+        </div>
+        {user.admin && (
+          <div className="account-row">
+            <span className="account-key">Admin</span>
+            <RouterLink to="/admin" className="inline-link">Open the scoreboard</RouterLink>
+          </div>
+        )}
+        <div className="account-row">
+          <span className="account-key">Campfire</span>
+          <span>
+            {user.campfirePaid ? (
+              <>✦ member, {user.planRenews ? 'renews' : 'ends'} {new Date(user.planUntil).toLocaleDateString()} <button className="btn small" onClick={() => openBillingPortal().then(r => window.location.assign(r.url)).catch(e => toast(e.message))}>Manage</button></>
+            ) : user.bonusUntil ? (
+              <>✦ free week until {new Date(user.bonusUntil).toLocaleDateString()} <RouterLink to="/campfire" className="inline-link">Keep it going</RouterLink></>
+            ) : user.billing ? (
+              <><span className="muted">membership ended</span> <RouterLink to="/campfire" className="inline-link">Rejoin</RouterLink></>
+            ) : (
+              <RouterLink to="/campfire" className="inline-link">Not a member yet. What's that?</RouterLink>
+            )}
+          </span>
         </div>
         <div className="account-row">
           <span className="account-key">Minecraft</span>

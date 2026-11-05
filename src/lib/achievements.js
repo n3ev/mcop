@@ -34,6 +34,7 @@ export const ACHIEVEMENTS = [
   { id: 'spread-the-word',    tab: 'site', title: 'Spread the Word',  hint: 'Every world is better with one more player in it.',      icon: ITEM + 'writable_book.png', tier: 'goal',     col: 2, row: 3, parent: 'going-gold' },
   { id: 'know-thyself',       tab: 'site', title: 'Know Thyself',     hint: 'Tell the matchmaker how you like to play. Keep it.',     icon: ITEM + 'name_tag.png',     tier: 'task',      col: 1, row: 4, parent: 'first-steps', extra: true },
   { id: 'verified',           tab: 'site', title: 'Who Goes There',   hint: 'Prove the name on your profile is really yours.',        icon: ITEM + 'compass_00.png',   tier: 'task',      col: 2, row: 4, parent: 'know-thyself', extra: true },
+  { id: 'plus-one',           tab: 'site', title: 'Plus One',         hint: 'Bring someone you already know to the fire.',            icon: ITEM + 'lead.png',         tier: 'goal',      col: 3, row: 3, parent: 'spread-the-word', extra: true },
   { id: 'player-two',         tab: 'site', title: 'Player Two',       hint: 'It is dangerous to go alone. So don\'t.',                icon: ITEM + 'totem_of_undying.png', tier: 'challenge', col: 3, row: 4, parent: 'verified', extra: true },
 
   // ── Mining: the ores in the cave walls ──

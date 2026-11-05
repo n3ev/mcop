@@ -10,6 +10,7 @@ import Reviews from '../components/Reviews.jsx'
 import ServerStatus from '../components/ServerStatus.jsx'
 import ChatReplay from '../components/ChatReplay.jsx'
 import Ico from '../components/Ico.jsx'
+import MatchNight from '../components/MatchNight.jsx'
 
 const reduced = () =>
   window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -46,10 +47,10 @@ function WorldStatus() {
       <p className="included-label">Every match includes</p>
       <ul className="included-list">
         <li>A private server, just the two of you</li>
-        <li>A shared quest for the hour</li>
+        <li>Quests, a build battle, a redstone lab, One Block or Copycat: you pick</li>
         <li>Your pick of starting loadout</li>
         <li>In-game controls: time, weather, teleport</li>
-        <li>A free 30-day save of your world</li>
+        <li>A free save of your world, to download and keep</li>
       </ul>
     </div>
   )
@@ -135,16 +136,23 @@ export default function Landing() {
         <ActivityTicker />
 
         {loading ? null : user ? (
-          <Dashboard />
+          <>
+            <Dashboard />
+            <MatchNight className="hero-night" />
+          </>
         ) : (
           <>
-            <button className="btn primary big cta" onClick={start}>⛏ Find my buddy</button>
+            <div className="hero-ctas">
+              <button className="btn primary big cta" onClick={start}>⛏ Find my buddy</button>
+              <Link to="/invite" className="btn big"><Ico name="lead" className="btn-ico" />Play with a friend</Link>
+            </div>
+            <MatchNight className="hero-night" />
             <div className="dig-cue">▼ dig deeper ▼</div>
             <ul className="hero-bullets">
               <li><Ico name="name_tag" /> Matched by playstyle, not luck</li>
               <li><Ico name="block:grass-side" /> Free Minecraft server for 1 hour</li>
               <li><Ico name="writable_book" /> Optional Discord swap after</li>
-              <li><Ico name="filled_map" /> Save your world for 30 days, free</li>
+              <li><Ico name="filled_map" /> Save your world and download it, free</li>
             </ul>
           </>
         )}
@@ -170,7 +178,7 @@ export default function Landing() {
               <div className="how-card">
                 <span className="how-num">STEP 03</span>
                 <h3 className="how-title">Jump in together</h3>
-                <p className="how-desc">You both get a private server for one hour. Keep the world for 30 days, completely free.</p>
+                <p className="how-desc">You both get a private server for one hour. Save the world and download it, completely free.</p>
               </div>
             </div>
           </div>
@@ -180,8 +188,8 @@ export default function Landing() {
             <div className="hour-grid">
               <div className="hour-card">
                 <span className="hour-icon"><Ico name="book" /></span>
-                <h3 className="hour-title">A shared quest</h3>
-                <p className="hour-desc">Every session spawns with a quest of the hour: something to build, find, or survive together.</p>
+                <h3 className="hour-title">Pick your hour</h3>
+                <p className="hour-desc">Survival quests the server tracks, a 1v1 build battle, 12 redstone puzzle rooms, One Block or Copycat. You choose together in-game.</p>
               </div>
               <div className="hour-card">
                 <span className="hour-icon"><Ico name="compass_00" /></span>
@@ -233,8 +241,8 @@ export default function Landing() {
             <li className="tl-step">
               <span className="tl-time">0:05</span>
               <div className="tl-body">
-                <h3>Your quest lands in chat</h3>
-                <p>Starting loadouts drop and a shared goal for the hour appears in-game. Build it, find it, survive it.</p>
+                <h3>Pick what to play</h3>
+                <p>Your starting kit drops in, and once you're both there a menu opens: quests, a build battle, the redstone lab, One Block or Copycat.</p>
               </div>
             </li>
             <li className="tl-step">
@@ -248,7 +256,7 @@ export default function Landing() {
               <span className="tl-time">1:00</span>
               <div className="tl-body">
                 <h3>Save it, rate it, stay in touch</h3>
-                <p>Keep the world alive for 30 days, rate your buddy, and swap Discords only if you both want to.</p>
+                <p>Save the world and download it to keep, rate your buddy, and swap Discords only if you both want to.</p>
               </div>
             </li>
           </ol>
@@ -256,6 +264,34 @@ export default function Landing() {
             <ChatReplay />
             <figcaption className="muted small">How the hour reads in your game chat.</figcaption>
           </figure>
+          </div>
+        </div>
+      </section>
+
+      {/* ── two more ways in: bring a friend, keep the fire going ── */}
+      <section className="stratum-surface">
+        <div className="pair">
+          <div className="frame how-section bring-friend">
+            <p className="section-eyebrow">Bring your own buddy</p>
+            <div className="bring-row">
+              <span className="bring-icon"><Ico name="lead" /></span>
+              <div>
+                <h3 className="how-title">Already got someone to play with?</h3>
+                <p className="how-desc">Make an invite link and send it to them. You get the same private server and the same hour: quests, build battle, redstone lab, One Block, Copycat. No questions to answer, no waiting for a match.</p>
+              </div>
+            </div>
+            <Link to="/invite" className="btn primary"><Ico name="lead" className="btn-ico" />Make an invite link</Link>
+          </div>
+          <div className="frame how-section campfire-teaser">
+            <p className="section-eyebrow">The Campfire</p>
+            <div className="bring-row">
+              <span className="bring-icon"><Ico name="campfire" /></span>
+              <div>
+                <h3 className="how-title">Free, and staying that way</h3>
+                <p className="how-desc">Every hour on MCOP is a real server switched on just for you two. Members chip in to keep them running, and get longer hours, a spot first in line and embers that follow them in-game. Nothing that changes how the game plays.</p>
+              </div>
+            </div>
+            <Link to="/campfire" className="btn"><Ico name="campfire" className="btn-ico" />Pull up a log</Link>
           </div>
         </div>
       </section>
@@ -297,6 +333,8 @@ export default function Landing() {
             <Link to="/help" className="inline-link">Questions</Link>
             <span className="end-sep">·</span>
             <Link to="/contact" className="inline-link">Say hi</Link>
+            <span className="end-sep">·</span>
+            <Link to="/games" className="inline-link">Vote for the next game</Link>
           </div>
         </div>
       </section>

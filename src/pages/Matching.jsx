@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { io } from 'socket.io-client'
 import { loadSession, saveSession } from '../lib/storage.js'
 import { fixedQuestions, patienceQuestion } from '../data/fixedQuestions.js'
@@ -15,6 +15,7 @@ import { joinSavedQueue } from '../lib/play.js'
 import { unlock } from '../lib/achievements.js'
 import MatchOffline from '../components/MatchOffline.jsx'
 import ShareInvite from '../components/ShareInvite.jsx'
+import MatchNight from '../components/MatchNight.jsx'
 
 const PHASE_INTERVAL_MS = 3500
 const QUIET_MS = 75000 // this long with no match and the queue's just quiet: say so
@@ -74,7 +75,7 @@ export default function Matching() {
   const [partner, setPartner] = useState(null)
   const [score, setScore] = useState(0)
   const [server, setServer] = useState(null)
-  const [matchMeta, setMatchMeta] = useState({ matchId: null, role: null, quest: null, endsAt: null })
+  const [matchMeta, setMatchMeta] = useState({ matchId: null, role: null, quest: null, modes: null, endsAt: null })
   const [offline, setOffline] = useState(() => !loadSession().queueId)
   const [quiet, setQuiet] = useState(false)
   const [attempt, setAttempt] = useState(0)   // bumps after a successful retry
@@ -126,9 +127,9 @@ export default function Matching() {
       setOffline(true)
     })
     socket.emit('queue_identify', queueId)
-    socket.on('match_found', ({ partner: p2, score: s, server: srv, matchId, role, quest, endsAt }) => {
+    socket.on('match_found', ({ partner: p2, score: s, server: srv, matchId, role, quest, modes, endsAt, campfire }) => {
       clearTimeout(quietT)
-      showMatch(p2, s, srv, { matchId, role, quest, endsAt })
+      showMatch(p2, s, srv, { matchId, role, quest, modes: modes || null, endsAt, party: false, campfire: !!campfire })
     })
 
     return () => {
@@ -142,7 +143,7 @@ export default function Matching() {
     saveSession({
       partner, score, server,
       matchId: matchMeta.matchId, role: matchMeta.role,
-      quest: matchMeta.quest, endsAt: matchMeta.endsAt,
+      quest: matchMeta.quest, modes: matchMeta.modes, endsAt: matchMeta.endsAt,
     })
     nav('/session')
   }
@@ -166,6 +167,11 @@ export default function Matching() {
               The queue's quiet right now: nobody who fits you has joined yet. Keep this tab
               open and you're in the moment someone does.
             </p>
+            <MatchNight className="in-card" />
+            <p className="muted small">
+              Know someone who plays? <Link to="/invite" className="inline-link">Make an invite link</Link> and
+              skip the queue.
+            </p>
             <ShareInvite compact label="Bring a buddy faster" />
           </>
         ) : (
@@ -177,7 +183,7 @@ export default function Matching() {
   }
 
   const breakdown = Object.keys(partner.answers)
-    .filter(qid => qid !== 'patience')
+    .filter(qid => qid !== 'patience' && qid !== 'age') // age is a filter (you're always in the same group), not a match
     .map(qid => ({
       qid,
       q: questionsById[qid],

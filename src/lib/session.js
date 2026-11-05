@@ -28,6 +28,15 @@ export async function getSessionState(matchId, role) {
   } catch { return null }
 }
 
+// the end-of-hour recap from the game server ({ ready: false } until it's in)
+export async function getSessionRecap(matchId) {
+  try {
+    const res = await fetch(`${API_URL}/session/recap?matchId=${encodeURIComponent(matchId)}`)
+    if (!res.ok) return null
+    return res.json()
+  } catch { return null }
+}
+
 // run a safe in-game action (day | clear | tp)
 export async function sessionCommand(matchId, role, action) {
   const res = await fetch(`${API_URL}/session/command`, {
@@ -48,7 +57,7 @@ export async function extendSession(matchId, role) {
     body: JSON.stringify({ matchId, role }),
   })
   const data = await res.json().catch(() => ({}))
-  if (!res.ok) throw new Error(data.error || 'could not extend')
+  if (!res.ok) { const e = new Error(data.error || 'could not extend'); e.campfire = !!data.campfire; throw e }
   return data
 }
 
@@ -88,3 +97,7 @@ export async function reportBuddy({ matchId, role, reason, details }) {
   if (!res.ok) throw new Error(data.error || 'could not send the report')
   return data
 }
+
+// the saved world as a .zip, laid out for singleplayer (a plain link: the API
+// sends it as a download, so the page stays put)
+export const worldZipUrl = (matchId, role) => `${API_URL}/session/world.zip?matchId=${encodeURIComponent(matchId)}&role=${role}`

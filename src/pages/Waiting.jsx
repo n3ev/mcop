@@ -8,6 +8,7 @@ import { joinSavedQueue } from '../lib/play.js'
 import { unlock } from '../lib/achievements.js'
 import MatchOffline from '../components/MatchOffline.jsx'
 import ShareInvite from '../components/ShareInvite.jsx'
+import MatchNight from '../components/MatchNight.jsx'
 
 const PUNS = [
   "Your duo is strip-mining at y=-59. We'll drag them up.",
@@ -48,8 +49,8 @@ export default function Waiting() {
 
     socket.on('queue_joined', ({ position: pos }) => setPosition(pos))
 
-    socket.on('match_found', ({ partner, score, server, matchId, role, quest, endsAt }) => {
-      saveSession({ partner, score, server, matchId, role, quest, endsAt })
+    socket.on('match_found', ({ partner, score, server, matchId, role, quest, modes, endsAt, campfire }) => {
+      saveSession({ partner, score, server, matchId, role, quest, modes: modes || null, endsAt, party: false, campfire: !!campfire })
       notifyMatchFound(partner?.displayName || 'your buddy')
       unlock('player-two')
       socket.disconnect()
@@ -78,6 +79,7 @@ export default function Waiting() {
         Keep this tab open and we'll drop you straight into the server when matched.
         Or close it, the email has everything you need.
       </p>
+      <MatchNight className="in-card" />
       <ShareInvite compact label="Bring a buddy faster" />
       <button className="btn ghost" onClick={() => nav('/')}>Back to start</button>
     </section>

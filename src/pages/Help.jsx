@@ -27,7 +27,7 @@ export default function Help() {
               <div className="hour-card">
                 <span className="hour-icon"><Ico name="clock_00" /></span>
                 <h3 className="hour-title">A spare hour</h3>
-                <p className="hour-desc">Sessions run 60 minutes, extendable by 30. Save the world for 30 days if you want to come back.</p>
+                <p className="hour-desc">Sessions run 60 minutes, extendable by 30. Save the world and download it if you want to keep it.</p>
               </div>
               <div className="hour-card">
                 <span className="hour-icon"><Ico name="music_disc_cat" /></span>

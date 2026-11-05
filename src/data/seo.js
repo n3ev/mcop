@@ -13,7 +13,7 @@ export const PAGES = {
   '/about': {
     page: true,
     title: 'About · MCOP',
-    description: 'Why MCOP exists, how the matchmaking scores your answers, and what you get in your hour: a private server, a shared quest, starting loadouts and a 30-day world save.',
+    description: 'Why MCOP exists, how the matchmaking scores your answers, and what you get in your hour: a private server, quests, a build battle, a redstone lab, starting loadouts, and a world save you can download.',
   },
   '/help': {
     page: true,
@@ -35,6 +35,21 @@ export const PAGES = {
     title: 'Sign up · MCOP',
     description: 'Save your playstyle, keep your match history and get one-click matching with a verified Minecraft username.',
   },
+  '/invite': {
+    page: true,
+    title: 'Play with a friend · MCOP',
+    description: 'Make an invite link, send it to a friend, and get a free private Minecraft server for the two of you for an hour, with quests, a build battle and a redstone lab.',
+  },
+  '/campfire': {
+    page: true,
+    title: 'The Campfire · MCOP',
+    description: 'Chip in to keep MCOP free. Members get longer sessions, a spot first in line when servers are busy, and cosmetic embers in-game. Nothing that changes gameplay.',
+  },
+  '/games': {
+    page: true,
+    title: "What's next · MCOP",
+    description: 'MCOP pairs Minecraft players for an hour. Vote for the co-op game that should get a buddy button next: Terraria, Stardew Valley, Valheim and more.',
+  },
   '/login': { page: true, title: 'Log in · MCOP', description: 'Log in to MCOP to pick up where you left off.' },
   '/terms': { page: true, title: 'Terms · MCOP', description: 'The terms for using MCOP.' },
   '/privacy': { page: true, title: 'Privacy · MCOP', description: 'What MCOP stores about you, why, and how to delete it.' },
@@ -46,6 +61,8 @@ export const PAGES = {
   '/preferences': { title: 'Your playstyle · MCOP' },
   '/settings': { title: 'Settings · MCOP' },
   '/worlds': { title: 'My worlds · MCOP' },
+  '/p': { title: "You're invited · MCOP" },
+  '/admin': { title: 'Scoreboard · MCOP' },
   '/verify-email': { title: 'Verify email · MCOP' },
   '/forgot': { title: 'Forgot password · MCOP' },
   '/reset-password': { title: 'Reset password · MCOP' },

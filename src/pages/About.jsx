@@ -22,17 +22,17 @@ export default function About() {
           </div>
 
           <div className="frame how-section">
-            <p className="section-eyebrow">Quests from the board</p>
+            <p className="section-eyebrow">What you do for the hour</p>
             <p className="muted" style={{ margin: '0 auto 18px' }}>
-              Every session rolls a shared quest. The kind of thing you'll see:
+              Once you're both in, a menu opens and you pick together. Change it any time with /hour.
             </p>
             <div className="chip-row" style={{ justifyContent: 'center' }}>
-              <span className="chip quest-chip"><Ico name="wheat" /> Build a wheat farm before the hour ends</span>
-              <span className="chip quest-chip"><Ico name="iron_chestplate" /> Full iron armour before sunset</span>
-              <span className="chip quest-chip"><Ico name="emerald" /> Find a village and rob... trade with it</span>
-              <span className="chip quest-chip"><Ico name="block:planks" /> Bridge a ravine, no scaffolding deaths</span>
-              <span className="chip quest-chip"><Ico name="flint_and_steel" /> Light a nether portal together</span>
-              <span className="chip quest-chip"><Ico name="oak_boat" /> Two cows, one boat. Good luck</span>
+              <span className="chip quest-chip"><Ico name="writable_book" /> Survival Quests: tame a wolf each, both reach the Nether, two cows in one boat</span>
+              <span className="chip quest-chip"><Ico name="block:planks" /> Build Battle: a secret theme, a plot each, then rate each other</span>
+              <span className="chip quest-chip"><Ico name="redstone" /> Redstone Lab: 12 puzzle rooms that test your circuit</span>
+              <span className="chip quest-chip"><Ico name="block:grass-side" /> One Block: one block in the void, nine phases deep</span>
+              <span className="chip quest-chip"><Ico name="spyglass" /> Copycat: build in secret, then copy each other's build, scored by the server</span>
+              <span className="chip quest-chip"><Ico name="campfire" /> Or just play survival</span>
             </div>
           </div>
         </div>
@@ -91,7 +91,7 @@ export default function About() {
               <div className="hour-card">
                 <span className="hour-icon"><Ico name="wheat_seeds" /></span>
                 <h3 className="hour-title">Fresh worlds</h3>
-                <p className="hour-desc">Every session spawns a clean world, unless you save yours for 30 days, free.</p>
+                <p className="hour-desc">Every session spawns a clean world, unless you save yours and download it, free.</p>
               </div>
             </div>
           </div>
@@ -118,6 +118,7 @@ export default function About() {
             </div>
           </div>
           <ul className="patch-list shipped-list">
+            <li><span className="patch-date">Oct 2026</span> Play with a friend: one invite link, your own server for the hour. Download any saved world as a singleplayer save. The Campfire, for anyone who wants to help keep MCOP free. And a vote on which game gets a buddy button next.</li>
             <li><span className="patch-date">Oct 2026</span> The ores are real now: mine them, craft better pickaxes, earn 29 advancements. And a smoother world.</li>
             <li><span className="patch-date">Jul 2026</span> Smarter matchmaking, no-show requeue, saved worlds page, email verification.</li>
             <li><span className="patch-date">Jul 2026</span> World saves, buddy ratings and reports went live.</li>

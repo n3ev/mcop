@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
-import { apiGetWorlds } from '../lib/auth.js'
+import { apiGetWorlds, apiDownloadWorld } from '../lib/auth.js'
+import { playError, playXp } from '../lib/sound.js'
 import Avatar from '../components/Avatar.jsx'
+import Ico from '../components/Ico.jsx'
+import { track } from '../lib/track.js'
 
 const KEEP_DAYS = 30
 
@@ -18,6 +21,14 @@ export default function Worlds() {
   const nav = useNavigate()
   const { user, loading } = useAuth()
   const [worlds, setWorlds] = useState(null)
+  const [busy, setBusy] = useState(null)
+  const [err, setErr] = useState('')
+
+  const download = async (key) => {
+    setErr('')
+    setBusy(key)
+    try { await apiDownloadWorld(key); playXp(); track('world_downloaded', { from: 'my-worlds' }) } catch (e) { setErr(e.message); playError() } finally { setBusy(null) }
+  }
 
   useEffect(() => {
     if (!loading && !user) nav('/login')
@@ -34,7 +45,10 @@ export default function Worlds() {
     <section className="card">
       <h2>My worlds</h2>
       <p className="muted">
-        Every world you saved after a session lives here for {KEEP_DAYS} days.
+        Every world saved after one of your sessions, by you or the person you played with.
+        {user.campfire
+          ? ' As a Campfire member, yours stay for as long as you\'re a member.'
+          : <> They stay for {KEEP_DAYS} days (<Link to="/campfire" className="inline-link">longer for Campfire members</Link>), and you can download any of them to keep.</>}
       </p>
 
       {worlds === null ? (
@@ -59,15 +73,24 @@ export default function Worlds() {
                     </span>
                     <span className="muted small">Saved {new Date(w.createdAt.includes('T') ? w.createdAt : w.createdAt.replace(' ', 'T') + 'Z').toLocaleDateString()}</span>
                   </div>
-                  <span className={'world-days' + (left <= 5 ? ' low' : '')}>
-                    {left > 0 ? `${left} day${left === 1 ? '' : 's'} left` : 'expiring'}
-                  </span>
+                  {!user.campfire && (
+                    <span className={'world-days' + (left <= 5 ? ' low' : '')}>
+                      {left > 0 ? `${left} day${left === 1 ? '' : 's'} left` : 'expiring'}
+                    </span>
+                  )}
+                  <button className="btn small" disabled={busy === w.matchKey} onClick={() => download(w.matchKey)}>
+                    <Ico name="filled_map" className="btn-ico" />{busy === w.matchKey ? 'Zipping…' : 'Download'}
+                  </button>
                 </li>
               )
             })}
           </ul>
+          {err && <p className="auth-error">{err}</p>}
           <p className="muted small" style={{ marginTop: 18 }}>
-            Want to hop back into one? Email <a href="mailto:nchavla5@gmail.com">nchavla5@gmail.com</a> and I'll load it onto a server for you. One-click restore is coming.
+            Downloads are singleplayer worlds: unzip one into your <code>.minecraft/saves</code> folder
+            and it's in your Singleplayer list, Nether and End included. Build Battle and Redstone Lab
+            worlds come along as their own saves. Want to play it with someone again? Upload it to a
+            Realm, or <Link to="/invite" className="inline-link">start a fresh hour with a friend</Link>.
           </p>
         </>
       )}

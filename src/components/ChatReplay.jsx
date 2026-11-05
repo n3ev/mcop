@@ -1,25 +1,27 @@
 import { useEffect, useRef, useState } from 'react'
 
-// a typical MCOP hour, replayed in the game's own chat box: the match, two
-// strangers joining, the quest landing, an advancement, the half-hour warning,
-// the save. it plays while it's on screen and loops; with reduced motion the
-// whole log just sits there.
+// a typical MCOP hour, replayed in the game's own chat box: two strangers
+// joining, picking a mode, a quest landing and getting done, the recap at the
+// end. the [MCOP] lines are what the session plugin really says. it plays while
+// it's on screen and loops; with reduced motion the whole log just sits there.
 const SCRIPT = [
-  { k: 'sys', text: 'Matched! Steve ⇄ Alex · 87% compatible' },
   { k: 'join', who: 'Steve' },
+  { k: 'sys', text: "Hi Steve! This server is yours and Alex's for 59:52." },
   { k: 'join', who: 'Alex' },
-  { k: 'quest', text: 'Light a nether portal together before the hour is up' },
-  { k: 'sys', text: 'Starting loadouts delivered: Iron Kit for both' },
+  { k: 'sys', text: 'Alex wants Survival Quests. [Vote]' },
+  { k: 'sys', text: 'You both picked Survival Quests.' },
+  { k: 'quest', text: 'Quest 1: Tame a wolf each' },
   { k: 'chat', who: 'Alex', text: 'hiii. builder or explorer?' },
-  { k: 'chat', who: 'Steve', text: 'explorer. you build, i find the obsidian?' },
-  { k: 'chat', who: 'Alex', text: 'deal. meet at the river' },
+  { k: 'chat', who: 'Steve', text: 'explorer. saw wolves by the river' },
+  { k: 'chat', who: 'Alex', text: 'skeletons tonight for bones then' },
+  { k: 'sys', text: '✔ Quest complete: Tame a wolf each' },
+  { k: 'quest', text: 'Quest 2: Both enter the Nether' },
   { k: 'adv', who: 'Steve', text: 'Diamonds!', tier: 'goal' },
   { k: 'chat', who: 'Alex', text: 'WAIT where' },
   { k: 'chat', who: 'Steve', text: 'y -58, follow the torches' },
-  { k: 'sys', text: '30 minutes left. Need longer? Add +30 on your session page' },
   { k: 'adv', who: 'Alex', text: 'We Need to Go Deeper', tier: 'goal' },
-  { k: 'chat', who: 'Alex', text: 'portal is LIT' },
-  { k: 'sys', text: 'Session over. World saved for 30 days. Swap Discords?' },
+  { k: 'sys', text: '✔ Quest complete: Both enter the Nether' },
+  { k: 'sys', text: 'Your hour: 2 quests done · 214 blocks mined' },
   { k: 'chat', who: 'Steve', text: 'gg. same time tomorrow?' },
 ]
 const SHOWN = 10        // the game shows the last ten lines
@@ -29,7 +31,7 @@ const reduced = () => window.matchMedia && window.matchMedia('(prefers-reduced-m
 function Line({ l }) {
   if (l.k === 'chat') return <><span className="cr-name">&lt;{l.who}&gt;</span> {l.text}</>
   if (l.k === 'join') return <span className="cr-yellow">{l.who} joined the game</span>
-  if (l.k === 'quest') return <><span className="cr-aqua">[Quest]</span> {l.text}</>
+  if (l.k === 'quest') return <><span className="cr-gold">[MCOP]</span> <span className="cr-aqua">{l.text}</span></>
   if (l.k === 'adv') return <>{l.who} has made the advancement <span className={l.tier === 'challenge' ? 'cr-purple' : 'cr-green'}>[{l.text}]</span></>
   return <><span className="cr-gold">[MCOP]</span> {l.text}</>
 }

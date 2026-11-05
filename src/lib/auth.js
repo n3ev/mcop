@@ -1,4 +1,5 @@
 import { API_URL } from './api.js'
+import { getRef } from './attribution.js'
 
 const TOKEN_KEY = 'mcop_token'
 
@@ -23,8 +24,8 @@ async function postJson(path, body) {
   return data
 }
 
-export function apiSignup({ email, password, displayName }) {
-  return postJson('/auth/signup', { email, password, displayName })
+export function apiSignup({ email, password, displayName, over13 }) {
+  return postJson('/auth/signup', { email, password, displayName, over13, ref: getRef() })
 }
 
 export function apiLogin({ email, password }) {
@@ -103,6 +104,26 @@ export async function apiGetWorlds() {
   })
   if (!res.ok) return { worlds: [] }
   return res.json()
+}
+
+// download a saved world as a singleplayer-ready .zip (needs the token, so it
+// comes down as a blob and is handed to the browser as a file)
+export async function apiDownloadWorld(matchKey) {
+  const res = await fetch(`${API_URL}/auth/worlds/${encodeURIComponent(matchKey)}/download`, {
+    headers: { Authorization: 'Bearer ' + getToken() },
+  })
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}))
+    throw new Error(data.error || 'could not download that world')
+  }
+  const name = /filename="([^"]+)"/.exec(res.headers.get('content-disposition') || '')?.[1] || 'MCOP world.zip'
+  const url = URL.createObjectURL(await res.blob())
+  const a = Object.assign(document.createElement('a'), { href: url, download: name })
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  setTimeout(() => URL.revokeObjectURL(url), 60000)
+  return name
 }
 
 // account management (auth)

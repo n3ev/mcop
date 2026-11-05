@@ -1,13 +1,22 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { loadSession, clearSession } from '../lib/storage.js'
-import { shareContact, getPartnerContact, saveWorld, rateBuddy, reportBuddy } from '../lib/session.js'
+import { shareContact, getPartnerContact, saveWorld, rateBuddy, reportBuddy, getSessionState, worldZipUrl } from '../lib/session.js'
 import { addFriend, blockBuddy } from '../lib/social.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import Avatar from '../components/Avatar.jsx'
 import { playError, playPop, playXp } from '../lib/sound.js'
 import { toast } from '../lib/toast.js'
 import Ico from '../components/Ico.jsx'
+import HourRecap from '../components/HourRecap.jsx'
+import RewardBanner from '../components/RewardBanner.jsx'
+import ShareCard from '../components/ShareCard.jsx'
+import { track } from '../lib/track.js'
+
+// a server host MCOP has a referral deal with, if any: set at build time.
+// shown with a plain disclosure; Realms (Mojang's own) is always offered too
+const HOST_NAME = import.meta.env.VITE_HOST_PARTNER_NAME || ''
+const HOST_URL = import.meta.env.VITE_HOST_PARTNER_URL || ''
 
 const SOCIALS = [
   { id: 'discord',   label: 'Discord',   placeholder: 'username or @user' },
@@ -38,6 +47,21 @@ export default function PostSession() {
   const [reportSent, setReportSent] = useState(false)
 
   const canExchange = !!session.matchId && !!session.role
+  const friends = !!session.party
+  const [world, setWorld] = useState(null) // null | 'saving' | 'saved'
+
+  // after asking for a save: wait for the copy to land, then offer the download
+  useEffect(() => {
+    if (!saveRequested || !canExchange || world === 'saved') return
+    let on = true
+    const t = setInterval(async () => {
+      const s = await getSessionState(session.matchId, session.role)
+      if (!on) return
+      if (s?.world) setWorld(s.world)
+      else if (s && !s.active) clearInterval(t) // the session record is gone
+    }, 2000)
+    return () => { on = false; clearInterval(t) }
+  }, [saveRequested, world])
 
   // nothing to wrap up (opened directly, or the session was cleared): home, like /session does
   useEffect(() => { if (!session.partner) nav('/', { replace: true }) }, [])
@@ -90,7 +114,7 @@ export default function PostSession() {
       await saveWorld(session.matchId, session.role)
       setSaveRequested(true)
       playXp()
-      toast('World snapshot saved for 30 days', '/assets/textures/items/filled_map.png')
+      toast('Saving your world…', '/assets/textures/items/filled_map.png')
     } catch (e) {
       setSaveErr(e.message)
       playError()
@@ -117,17 +141,19 @@ export default function PostSession() {
   if (!session.partner) return null
 
   return (
-    <section className="card">
+    <section className="card post-session">
       <h2>Hour's up, that was fun.</h2>
       <div className="post-partner">
         <Avatar name={session.partner?.mcUsername || session.partner?.displayName} size={44} />
         <p className="muted">
-          You played with <strong>{session.partner?.displayName}</strong> ({session.score}% match)
+          You played with <strong>{session.partner?.displayName}</strong>{friends ? '' : ` (${session.score}% match)`}
           {session.server?.host && <> on <code>{session.server.host}</code></>}.
         </p>
       </div>
 
-      <div className="rate-row">
+      {canExchange && friends && <RewardBanner matchId={session.matchId} role={session.role} />}
+
+      {!friends && <div className="rate-row">
         <span className="muted small">How was your buddy?</span>
         <button
           className={'btn small' + (rated === 1 ? ' primary' : '')}
@@ -144,7 +170,7 @@ export default function PostSession() {
         ) : (
           <span className="success small">Report sent. We'll handle it.</span>
         )}
-      </div>
+      </div>}
 
       {reporting && (
         <div className="report-box">
@@ -169,7 +195,7 @@ export default function PostSession() {
         </div>
       )}
 
-      {user && session.matchId && (
+      {user && session.matchId && !friends && (
         <div className="buddy-actions">
           {blocked ? (
             <span className="muted small">You won't be matched with them again.</span>
@@ -184,8 +210,10 @@ export default function PostSession() {
         </div>
       )}
 
+      {session.matchId && <HourRecap matchId={session.matchId} partnerMc={session.partner?.mcUsername} friends={friends} />}
+
       <div className="post-grid">
-        <div className="post-card">
+        {!friends && <div className="post-card">
           <h3>Stay in touch?</h3>
           <p className="muted small">Optional. We'll only show your handle to your buddy if they share back.</p>
 
@@ -225,27 +253,66 @@ export default function PostSession() {
           ) : (
             <p className="success">Shared ✓ Waiting for {session.partner?.displayName || 'your buddy'} to share back… {canExchange ? '' : '(they\'ll get it next time they\'re on)'}</p>
           )}
-        </div>
+        </div>}
 
         <div className="post-card">
           <h3>Save your world</h3>
           <p className="muted small">
-            We can keep your world alive for one free month so you can hop back in.
+            Keep what you built: download it as a singleplayer world, or find it in My Worlds
+            for {user?.campfire ? 'as long as you\'re a member' : '30 days'}.
           </p>
           {!saveRequested ? (
-            <button className="btn primary" onClick={onSaveWorld}>Save world, free for 30 days</button>
+            <button className="btn primary" onClick={onSaveWorld}>Save this world</button>
+          ) : !canExchange ? (
+            <p className="success">Saved ✓</p>
+          ) : world === 'saved' ? (
+            <>
+              <a className="btn primary" href={worldZipUrl(session.matchId, session.role)} onClick={() => { playXp(); track('world_downloaded', { friends }) }}>
+                <Ico name="filled_map" className="btn-ico" />Download the world (.zip)
+              </a>
+              <p className="muted small">Unzip it into your <code>.minecraft/saves</code> folder and it shows up in Singleplayer, Nether and all.{user ? ' It\'s in My Worlds too.' : ''}</p>
+            </>
           ) : (
-            <p className="success">Saved ✓ Your world snapshot is safe with us for 30 days.</p>
+            <>
+              <p className="success">Saving ✓ Packing it up…</p>
+              <div className="xpbar" role="progressbar" aria-label="Saving your world"><div className="xpbar-fill" /></div>
+            </>
           )}
           {saveErr && <p className="auth-error">{saveErr}</p>}
-          <p className="muted small soon">
-            <em>Coming soon:</em> keep playing past 30 days for $3.99/month.
-          </p>
+        </div>
+
+        <ShareCard
+          matchId={canExchange ? session.matchId : null}
+          you={{ name: session.user?.displayName || session.mcUsername || 'You', mc: session.mcUsername }}
+          buddy={{ name: session.partner?.displayName || 'Buddy', mc: session.partner?.mcUsername }}
+          friends={friends}
+        />
+
+        <div className="post-card">
+          <h3>Keep playing together</h3>
+          <ul className="keep-list">
+            <li>
+              <strong>Another hour, same {friends ? 'friend' : 'buddy'}.</strong>{' '}
+              <span className="muted small">{friends ? 'Make a fresh invite whenever you two are free.' : 'Swap socials above, then send them an invite link next time.'}</span>{' '}
+              <Link to="/invite" className="inline-link">Make an invite</Link>
+            </li>
+            <li>
+              <strong>A world that never closes.</strong>{' '}
+              <span className="muted small">Download the world, then upload it to a Minecraft Realm (Mojang's own servers){HOST_URL ? <> or a server from <a href={HOST_URL} target="_blank" rel="sponsored noopener noreferrer" className="inline-link">{HOST_NAME || 'our hosting partner'}</a></> : ' or any server host'}.</span>
+              {HOST_URL && <span className="muted small affiliate-note"> That's an affiliate link: MCOP gets a small cut, you pay the same.</span>}
+            </li>
+          </ul>
         </div>
       </div>
 
+      {!user?.campfire && (
+        <p className="muted small campfire-nudge">
+          <Ico name="campfire" className="btn-ico" />Had a good hour? <Link to="/campfire" className="inline-link">The Campfire</Link> keeps MCOP free for everyone.
+        </p>
+      )}
+
       <div className="cta-row">
-        <button className="btn ghost" onClick={newSession}>Find another buddy</button>
+        <button className="btn ghost" onClick={newSession}>{friends ? 'Back to the start' : 'Find another buddy'}</button>
       </div>
     </section>
   )

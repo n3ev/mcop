@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { fixedQuestions, patienceQuestion } from '../data/fixedQuestions.js'
+import { fixedQuestions, patienceQuestion, ageQuestion, AGE_UNDER_13 } from '../data/fixedQuestions.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import { startMatch } from '../lib/play.js'
 import Avatar from '../components/Avatar.jsx'
+import Under13 from '../components/Under13.jsx'
 
 // the temporary / one-off flow: guests, or a logged-in user trying a different style for a single session.
 // nothing here is saved to the account — permanent preferences live on /preferences.
@@ -14,10 +15,14 @@ export default function Questionnaire() {
   // verified accounts already have a linked username, so skip that step
   const needsName = !user || !user.mcVerified
 
+  // age group first: it decides who you can be matched with, and an under-13
+  // stops here before typing anything. accounts have it in their profile.
+  const savedAge = user?.preferences?.age
+  const [age, setAge] = useState(savedAge || null)
   const [name, setName] = useState('')
   const [step, setStep] = useState(needsName ? 0 : 1) // 0 = name, 1..N = questions
   const [answers, setAnswers] = useState({})
-  const [phase, setPhase] = useState('questions') // questions | patience | email
+  const [phase, setPhase] = useState(savedAge ? 'questions' : 'age') // age | under13 | questions | patience | email
   const [email, setEmail] = useState('')
   const [busy, setBusy] = useState(false)
 
@@ -32,7 +37,7 @@ export default function Questionnaire() {
   const play = async (finalAnswers, finalEmail) => {
     setBusy(true)
     const { displayName, mcUsername } = identity()
-    const target = await startMatch({ displayName, mcUsername, answers: finalAnswers, email: finalEmail || email || user?.email || null })
+    const target = await startMatch({ displayName, mcUsername, answers: { ...finalAnswers, age }, email: finalEmail || email || user?.email || null })
     nav(target)
   }
 
@@ -50,6 +55,30 @@ export default function Questionnaire() {
     setAnswers(next)
     if (value !== 'Right now' && !user) setPhase('email') // guests leave an email
     else play(next)
+  }
+
+  if (phase === 'under13') return <Under13 />
+
+  if (phase === 'age') {
+    return (
+      <section className="card">
+        <div className="progress"><div className="progress-bar" style={{ width: '4%' }} /></div>
+        <div className="step">
+          <span className="tag">First</span>
+          <h2>{ageQuestion.text}</h2>
+          <p className="muted">{ageQuestion.hint}</p>
+          <div className="options">
+            {ageQuestion.options.map(opt => (
+              <button key={opt} className="option" onClick={() => {
+                if (opt === AGE_UNDER_13) { setPhase('under13'); return }
+                setAge(opt)
+                setPhase('questions')
+              }}>{opt}</button>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
   }
 
   // name step

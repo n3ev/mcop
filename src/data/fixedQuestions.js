@@ -23,6 +23,19 @@ export const fixedQuestions = [
   },
 ]
 
+// age group: who you can be matched with. under-18s are only ever matched with
+// under-18s, adults with adults, and MCOP is 13+. the labels are what the
+// backend reads (agePool in mcop-server/index.js), so keep them in step.
+export const AGE_UNDER_13 = 'Under 13'
+export const AGE_TEEN = '13 to 17'
+export const AGE_ADULT = '18 or older'
+export const ageQuestion = {
+  id: 'age',
+  text: 'How old are you?',
+  hint: "Under-18s are only matched with other under-18s, and adults with adults.",
+  options: [AGE_UNDER_13, AGE_TEEN, AGE_ADULT],
+}
+
 // asked as its own step in the temporary/play flow only. routes the queue, never saved as a preference.
 export const patienceQuestion = {
   id: 'patience',

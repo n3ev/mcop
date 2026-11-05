@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext.jsx'
 import { apiGetMatches, apiResendVerification } from '../lib/auth.js'
 import { getFriends, respondFriend } from '../lib/social.js'
 import { startMatch } from '../lib/play.js'
-import { profileQuestions } from '../data/profileQuestions.js'
+import { styleQuestions } from '../data/profileQuestions.js'
 import Avatar from '../components/Avatar.jsx'
 import Ico from '../components/Ico.jsx'
 
@@ -54,7 +54,9 @@ export default function Dashboard() {
 
   const prefs = user.preferences
   const hasPrefs = prefs && Object.keys(prefs).length > 0
-  const chips = hasPrefs ? profileQuestions.filter(q => prefs[q.id]).slice(0, 6) : []
+  const chips = hasPrefs ? styleQuestions.filter(q => prefs[q.id]).slice(0, 6) : []
+  // the age group decides who you can be matched with: no quick play without it
+  const needsAge = hasPrefs && !prefs.age
 
   const quickPlay = async () => {
     setBusy(true)
@@ -87,13 +89,16 @@ export default function Dashboard() {
               <Link to="/preferences" className="pref-edit">Edit</Link>
             </div>
 
-            {user.mcVerified ? (
+            {needsAge ? (
+              <button className="btn primary big" onClick={() => nav('/preferences')}>Add your age group to play</button>
+            ) : user.mcVerified ? (
               <button className="btn primary big cta" disabled={busy} onClick={quickPlay}>
                 {busy ? 'Finding your buddy…' : '⛏ Play with my style'}
               </button>
             ) : (
               <button className="btn primary big" onClick={() => nav('/account')}>Link account to play ⛏</button>
             )}
+            <button className="btn" onClick={() => nav('/invite')}><Ico name="lead" className="btn-ico" />Play with a friend</button>
             <button className="btn ghost" onClick={() => nav('/questionnaire')}>Play a different style</button>
           </>
         ) : (
@@ -101,6 +106,7 @@ export default function Dashboard() {
             <p className="muted">Set up your profile so we can find your best matches.</p>
             <button className="btn primary big" onClick={() => nav('/preferences')}>Set up my profile</button>
             <button className="btn ghost" onClick={() => nav('/questionnaire')}>Or just play a quick one</button>
+            <button className="btn ghost" onClick={() => nav('/invite')}>Or play with a friend</button>
           </>
         )}
       </div>
@@ -116,6 +122,7 @@ export default function Dashboard() {
       )}
 
       <Link to="/worlds" className="panel-worlds-link"><Ico name="filled_map" className="btn-ico" />My saved worlds →</Link>
+      {!user.campfire && <Link to="/campfire" className="panel-worlds-link"><Ico name="campfire" className="btn-ico" />The Campfire: keep MCOP free →</Link>}
 
       {social.pending.length > 0 && (
         <div className="panel-history">
